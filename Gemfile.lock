@@ -64,14 +64,6 @@ GEM
       capistrano (~> 3.0)
       sshkit (~> 1.2)
     capistrano-stats (1.1.1)
-    carrierwave (0.10.0)
-      activemodel (>= 3.2.0)
-      activesupport (>= 3.2.0)
-      json (>= 1.7)
-      mime-types (>= 1.16)
-    carrierwave-aliyun (0.3.3)
-      carrierwave (>= 0.5.7)
-      rest-client (>= 1.6.7)
     coercible (1.0.0)
       descendants_tracker (~> 0.0.1)
     coffee-rails (4.1.0)
@@ -144,7 +136,6 @@ GEM
     net-scp (1.2.1)
       net-ssh (>= 2.6.5)
     net-ssh (2.9.2)
-    netrc (0.10.2)
     nokogiri (1.6.5)
       mini_portile (~> 0.6.0)
     pr_geohash (1.0.0)
@@ -186,10 +177,6 @@ GEM
     rdoc (4.2.0)
       json (~> 1.4)
     ref (1.0.5)
-    rest-client (1.7.2)
-      mime-types (>= 1.16, < 3.0)
-      netrc (~> 0.7)
-    rmagick (2.13.4)
     rsolr (1.0.10)
       builder (>= 2.1.2)
     sass (3.4.10)
@@ -263,8 +250,6 @@ DEPENDENCIES
   capistrano-bundler
   capistrano-rails
   capistrano-rvm
-  carrierwave
-  carrierwave-aliyun
   coffee-rails (~> 4.1.0)
   execjs
   faker
@@ -280,7 +265,6 @@ DEPENDENCIES
   quiet_assets
   rack-cors
   rails (= 4.2.0)
-  rmagick
   sass-rails (~> 5.0)
   sdoc (~> 0.4.0)
   spring
