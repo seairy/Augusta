@@ -30,7 +30,7 @@ class V1 < Grape::API
   error_formatter :json, ErrorFormatter
   content_type :json, 'application/json; charset=utf8'
 
-  mount V1::UserAPI
+  mount V1API::User
 
   namespace :doc do
     formatter :json, DocFormatter 

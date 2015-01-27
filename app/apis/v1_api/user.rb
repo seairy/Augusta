@@ -1,5 +1,5 @@
-module V1
-  class UserAPI < Grape::API
+module V1API
+  class User < Grape::API
     resources :users do
       desc '用户注册'
       post :sign_up do
