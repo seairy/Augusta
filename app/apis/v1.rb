@@ -30,6 +30,8 @@ class V1 < Grape::API
   error_formatter :json, ErrorFormatter
   content_type :json, 'application/json; charset=utf8'
 
+  mount V1::UserAPI
+
   namespace :doc do
     formatter :json, DocFormatter 
     add_swagger_documentation api_version: 'v1'
