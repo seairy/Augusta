@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 module JSONFormatter
   def self.call object, env
     if object.class == Hash and object.has_key?(:code)

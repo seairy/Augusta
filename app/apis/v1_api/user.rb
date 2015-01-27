@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 module V1API
   class User < Grape::API
     resources :users do

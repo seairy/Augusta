@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class CreateVerificationCodes < ActiveRecord::Migration
   def change
     create_table :verification_codes do |t|
