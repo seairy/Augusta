@@ -130,7 +130,7 @@ GEM
     kaminari-bootstrap (3.0.1)
       kaminari (>= 0.13.0)
       rails
-    libv8 (3.16.14.7)
+    libv8 (3.16.14.3)
     loofah (2.0.1)
       nokogiri (>= 1.5.9)
     mail (2.6.3)
