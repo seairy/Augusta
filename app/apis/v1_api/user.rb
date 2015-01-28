@@ -2,7 +2,7 @@
 module V1API
   class User < Grape::API
     resources :users do
-      desc '简单用户注册'
+      desc '用户简单注册'
       post :sign_up_simple do
         present uuid: SecureRandom.uuid
       end
