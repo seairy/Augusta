@@ -5,7 +5,7 @@ lock '3.3.5'
 set :application, 'booking'
 
 set :scm, :git
-set :repo_url, 'git@github.com:seairy/Augusta.git'
+set :repo_url, 'git@github.com:zzch/Augusta.git'
 
 set :keep_releases, 3
 
