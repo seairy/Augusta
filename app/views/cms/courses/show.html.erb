@@ -1,0 +1,148 @@
+<div class="pageheader">
+  <h2><i class="fa fa-file-text-o"></i> 球场管理 <span>查看</span></h2>
+</div>
+<div class="contentpanel">
+  <%= brac_flash %>
+  <div class="panel panel-dark">
+    <div class="panel-heading">
+      <h4 class="panel-title">球场信息</h4>
+    </div>
+    <div class="panel-body panel-body-nopadding">
+      <%= form_tag nil, class: 'form-horizontal form-bordered' do %>
+        <div class="form-group">
+          <label class="col-sm-3 control-label"><%= brac_t 'uuid' %></label>
+          <div class="col-sm-6">
+            <%= text_field_tag nil, @course.uuid, readonly: true, class: 'form-control' %>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-3 control-label"><%= brac_t 'course.province' %></label>
+          <div class="col-sm-6">
+            <%= text_field_tag nil, @course.city.province.name, readonly: true, class: 'form-control' %>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-3 control-label"><%= brac_t 'course.city' %></label>
+          <div class="col-sm-6">
+            <%= text_field_tag nil, @course.city.name, readonly: true, class: 'form-control' %>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-3 control-label"><%= brac_t 'course.name' %></label>
+          <div class="col-sm-6">
+            <%= text_field_tag nil, @course.name, readonly: true, class: 'form-control' %>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-3 control-label"><%= brac_t 'course.address' %></label>
+          <div class="col-sm-6">
+            <%= text_field_tag nil, @course.address, readonly: true, class: 'form-control' %>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-3 control-label"><%= brac_t 'course.position' %></label>
+          <div class="col-sm-3">
+            <div class="input-group">
+              <span class="input-group-addon"><%= brac_t 'course.lng' %></span>
+              <%= text_field_tag nil, @course.longitude, readonly: true, class: 'form-control' %>
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="input-group">
+              <span class="input-group-addon"><%= brac_t 'course.lat' %></span>
+              <%= text_field_tag nil, @course.latitude, readonly: true, class: 'form-control' %>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-3 control-label"><%= brac_t 'course.description' %></label>
+          <div class="col-sm-6">
+            <%= text_area_tag :description, @course.description, readonly: true, rows: 8, class: 'form-control' %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+    <div class="panel-footer">
+      <%= link_to '返回球场列表', cms_courses_path, class: 'btn btn-default' %>&nbsp;
+      <%= link_to '编辑', edit_cms_course_path(@course), class: 'btn btn-primary' %>&nbsp;
+      <div class="btn-group mt10">
+        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+          操作 <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu" role="menu">
+          <li><%= link_to '创建新子场', new_cms_course_group_path(@course) %></li>
+        </ul>
+      </div>&nbsp;
+      <%= link_to '删除', [:cms, @course], method: :delete, data: { confirm: '确定要删除吗？' }, class: 'btn btn-danger' %>
+    </div>
+  </div>
+  <% @course.groups.each do |group| %>
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h4 class="panel-title">子场 - <%= group.name %></h4>
+    </div>
+    <div class="panel-body panel-table">
+      <div class="table-responsive">
+        <table class="table table-striped">
+          <thead>
+            <tr class="table-head-alt">
+              <th><%= brac_t 'hole.name' %></th>
+              <th><%= brac_t 'hole.par' %></th>
+              <th><%= brac_t 'tee_box.red' %></th>
+              <th><%= brac_t 'tee_box.white' %></th>
+              <th><%= brac_t 'tee_box.blue' %></th>
+              <th><%= brac_t 'tee_box.black' %></th>
+              <th><%= brac_t 'tee_box.gold' %></th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <% group.holes.each do |hole| %>
+            <tr>
+              <td><%= hole.name %></td>
+              <td><%= hole.par %></td>
+              <% [:red, :white, :blue, :black, :gold].each do |color| %>
+              <td><%= content_tag 'a', "#{hole.tee_boxes.send(color).distance_from_hole}", name: 'updateTeeBoxDistanceFromHole', data: { type: 'text', pk: hole.tee_boxes.send(color).id, url: "/cms/tee_boxes/#{hole.tee_boxes.send(color).id}/update_distance_from_hole", title: '请输入码数' } %></td>
+              <% end %>
+              <td class="table-action">
+                <%= link_to raw('<i class="fa fa-trash-o"></i>'), [:cms, group, hole], method: :delete, data: { confirm: '确定要删除吗？' } %>
+              </td>
+            </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="panel-footer">
+     <%= link_to '编辑', edit_cms_group_path(group), class: 'btn btn-primary' %>&nbsp;
+      <%= link_to '删除', [:cms, @course, group], method: :delete, data: { confirm: '确定要删除吗？' }, class: 'btn btn-danger' %>
+    </div>
+  </div>
+  <% end %>
+</div>
+<% content_for :javascript do %>
+   <script>
+    jQuery(document).ready(function(){
+      $('#description').autosize();
+      jQuery("[name='updateTeeBoxDistanceFromHole']").editable({
+        display: function(value, response) {
+          if(response != undefined) {
+            $(this).html(response.message);
+          }
+        },
+        ajaxOptions: {
+          type: 'put',
+          dataType: 'json'
+        },
+        success: function(response, newValue) {
+          if(!response) {
+            return "服务器错误，请重试";
+          }
+          if(response.success === false) {
+            return response.message;
+          }
+        }
+      });
+    });
+  </script>
+<% end %>

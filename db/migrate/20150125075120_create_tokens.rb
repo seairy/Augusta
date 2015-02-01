@@ -7,5 +7,6 @@ class CreateTokens < ActiveRecord::Migration
       t.datetime :generated_at, null: false
       t.timestamps null: false
     end
+    add_index :tokens, :user_id
   end
 end

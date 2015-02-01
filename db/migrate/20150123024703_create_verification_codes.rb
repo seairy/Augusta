@@ -8,5 +8,6 @@ class CreateVerificationCodes < ActiveRecord::Migration
       t.datetime :generated_at, null: false
       t.timestamps null: false
     end
+    add_index :verification_codes, [:user_id, :available]
   end
 end

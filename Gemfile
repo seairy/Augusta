@@ -11,6 +11,7 @@ gem 'mysql2'
 gem 'kaminari'
 gem 'kaminari-bootstrap'
 gem 'aasm'
+gem 'simple_enum'
 # gem 'rmagick'
 # gem 'carrierwave'
 # gem 'carrierwave-aliyun'
@@ -33,6 +34,7 @@ group :development, :test do
   gem 'capistrano-rails'
   gem 'capistrano-rvm'
   gem 'thin'
+  gem 'sequel'
 end
 
 group :doc do

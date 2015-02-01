@@ -1,0 +1,40 @@
+<div class="pageheader">
+  <h2><i class="fa fa-list"></i> 系统管理 <span>管理员列表</span></h2>
+</div>
+<div class="contentpanel">
+  <%= brac_flash %>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="table-responsive">
+        <table class="table table-striped mb30">
+          <thead>
+            <tr>
+              <th><%= brac_t 'administrator.account' %></th>
+              <th><%= brac_t 'administrator.name' %></th>
+              <th><%= brac_t 'administrator.available' %></th>
+              <th></th>
+            </tr>
+          </thead>
+          <tfoot>
+            <tr>
+              <td colspan="5"><%= brac_paginate @administrators %></td>
+            </tr>
+          </tfoot>
+          <tbody>
+            <% @administrators.each do |administrator| %>
+            <tr>
+              <td><%= administrator.account %></td>
+              <td><%= administrator.name %></td>
+              <td><%= brac_styled_boolean administrator.available? %></td>
+              <td class="table-action">
+                <%= link_to raw('<i class="fa fa-file-text-o"></i>'), [:admin, administrator] %>
+                <%= link_to raw('<i class="fa fa-pencil"></i>'), edit_cms_administrator_path(administrator) %>
+              </td>
+            </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

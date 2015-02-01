@@ -1,0 +1,54 @@
+<div class="pageheader">
+  <h2><i class="fa fa-pencil-square-o"></i> 系统管理 <span>创建管理员</span></h2>
+</div>
+<div class="contentpanel">
+  <%= render "admin/commons/error_messages", target: @administrator %>
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h4 class="panel-title">管理员信息</h4>
+    </div>
+    <div class="panel-body panel-body-nopadding">
+      <%= form_for [:admin, @administrator], html: { class: 'form-horizontal form-bordered' } do |f| %>
+        <div class="form-group">
+          <label class="col-sm-3 control-label"><%= brac_t 'administrator.account' %></label>
+          <div class="col-sm-6">
+            <%= f.text_field :account, class: 'form-control' %>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-3 control-label"><%= brac_t 'administrator.name' %></label>
+          <div class="col-sm-6">
+            <%= f.text_field :name, class: 'form-control' %>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-3 control-label"><%= brac_t 'administrator.password' %></label>
+          <div class="col-sm-6">
+            <%= f.text_field :password, class: 'form-control' %>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-3 control-label"><%= brac_t 'administrator.password_confirmation' %></label>
+          <div class="col-sm-6">
+            <%= f.text_field :password_confirmation, class: 'form-control' %>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-3 control-label"><%= brac_t 'setting' %></label>
+          <div class="col-sm-6">
+            <div class="ckbox ckbox-default mt5">
+              <%= f.check_box :available %>
+              <label for="administrator_available"><%= brac_t 'administrator.available' %></label>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="col-sm-12 text-center">
+            <%= f.submit '提交', class: 'btn btn-primary' %>&nbsp;
+            <input type="reset" value="重置" class="btn" />
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
