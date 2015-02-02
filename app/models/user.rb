@@ -9,17 +9,12 @@ class User < ActiveRecord::Base
     state :prohibited
   end
 
-  def temporary?
-    phone.blank?
-  end
-
-  def available_token
-    tokens
-  end
-
   class << self
     def sign_up_simple
-      create!(signed_up_at: Time.now)
+      user = create!(signed_up_at: Time.now)
+      user.tokens.generate
+      user.update!(nickname: "临时用户#{user.id}")
+      user
     end
   end
 end
