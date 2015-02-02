@@ -1,11 +1,11 @@
 # -*- encoding : utf-8 -*-
 module Resources
-  class User < Grape::API
+  class UsersAPI < Grape::API
     resources :users do
       desc '用户简单注册'
       post :sign_up_simple do
-        User.sign_up_simple
-        present uuid: SecureRandom.uuid
+        user = ::User.sign_up_simple
+        present user, with: Entities::User
       end
 
       desc '用户注册'

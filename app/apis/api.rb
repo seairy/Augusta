@@ -1,4 +1,5 @@
 # -*- encoding : utf-8 -*-
+Dir[File.expand_path(File.dirname(__FILE__)) + "/**/*.rb"].each {|f| require f}
 
 module DocFormatter
   def self.call object, env
@@ -21,7 +22,7 @@ class API < Grape::API
   error_formatter :json, ErrorFormatter
   content_type :json, 'application/json; charset=utf8'
 
-  mount Resources::User
+  mount Resources::UsersAPI
 
   namespace :doc do
     formatter :json, DocFormatter 
