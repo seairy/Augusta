@@ -1,9 +1,10 @@
 # -*- encoding : utf-8 -*-
-module V1API
+module Resources
   class User < Grape::API
     resources :users do
       desc '用户简单注册'
       post :sign_up_simple do
+        User.sign_up_simple
         present uuid: SecureRandom.uuid
       end
 
@@ -13,6 +14,7 @@ module V1API
         requires :verification_code, type: String, desc: '验证码'
       end
       post :sign_up do
+        User.sign_up
         present uuid: SecureRandom.uuid
       end
     end

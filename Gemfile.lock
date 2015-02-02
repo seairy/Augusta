@@ -108,6 +108,9 @@ GEM
     grape-swagger-ui (0.0.9)
       railties (>= 3.1)
     hashie (3.3.2)
+    hashie_rails (0.0.1)
+      hashie (>= 3.0)
+      rails (~> 4.0)
     hike (1.2.3)
     i18n (0.7.0)
     ice_nine (0.11.1)
@@ -261,6 +264,7 @@ DEPENDENCIES
   grape-entity
   grape-swagger
   grape-swagger-ui
+  hashie_rails
   jquery-rails
   kaminari
   kaminari-bootstrap

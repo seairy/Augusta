@@ -9,6 +9,8 @@ Bundler.require(*Rails.groups)
 
 module Augusta
   class Application < Rails::Application
+    config.paths.add File.join('app', 'apis'), glob: File.join('**', '*.rb')
+    config.autoload_paths += Dir[Rails.root.join('app', 'apis', '*')]
     config.time_zone = 'Beijing'
     config.i18n.default_locale = :'zh-CN'
     config.active_record.raise_in_transactional_callbacks = true

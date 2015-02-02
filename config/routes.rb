@@ -1,6 +1,6 @@
 # -*- encoding : utf-8 -*-
 Rails.application.routes.draw do
-  mount BaseAPI => '/'
+  mount API => '/api'
   namespace :cms do
     root 'dashboard#index'
     get 'dashboard', to: 'dashboard#index', as: :dashboard

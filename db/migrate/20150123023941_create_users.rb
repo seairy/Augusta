@@ -3,7 +3,7 @@ class CreateUsers < ActiveRecord::Migration
   def change
     create_table :users do |t|
       t.string :uuid, limit: 36, null: false
-      t.string :phone, limit: 20, null: false
+      t.string :phone, limit: 20
       t.string :nickname, limit: 50
       t.string :portrait, limit: 100
       t.integer :gender, limit: 1
@@ -17,7 +17,7 @@ class CreateUsers < ActiveRecord::Migration
       t.timestamps null: false
     end
     add_index :users, :uuid, unique: true
-    add_index :users, :phone, unique: true
+    add_index :users, :phone
     add_index :users, :state
     add_index :users, :trashed
   end
