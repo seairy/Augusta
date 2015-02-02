@@ -1,0 +1,51 @@
+<div class="pageheader">
+  <h2><i class="fa fa-pencil-square-o"></i> 球洞管理 <span>编辑</span></h2>
+</div>
+<div class="contentpanel">
+  <%= render "cms/commons/error_messages", target: @hole %>
+  <div class="panel panel-dark">
+    <div class="panel-heading">
+      <h4 class="panel-title">子场信息</h4>
+    </div>
+    <div class="panel-body panel-body-nopadding">
+      <%= form_for [:cms, @hole], html: { class: 'form-horizontal form-bordered' } do |f| %>
+        <div class="form-group">
+          <label class="col-sm-3 control-label"><%= brac_t 'uuid' %></label>
+          <div class="col-sm-6">
+            <%= text_field_tag nil, @hole.uuid, readonly: true, class: 'form-control' %>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-3 control-label"><%= brac_t 'hole.course' %></label>
+          <div class="col-sm-6">
+            <%= text_field_tag nil, @hole.group.course.name, readonly: true, class: 'form-control' %>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-3 control-label"><%= brac_t 'hole.group' %></label>
+          <div class="col-sm-6">
+            <%= text_field_tag nil, @hole.group.name, readonly: true, class: 'form-control' %>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-3 control-label"><%= brac_t 'hole.name' %></label>
+          <div class="col-sm-6">
+            <%= f.text_field :name, class: 'form-control' %>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-3 control-label"><%= brac_t 'hole.par' %></label>
+          <div class="col-sm-6">
+            <%= f.text_field :par, class: 'form-control' %>
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="col-sm-12 text-center">
+            <%= f.submit '提交', class: 'btn btn-primary' %>&nbsp;
+            <%= link_to '返回球场信息', [:cms, @hole.group.course], class: 'btn btn-default' %>&nbsp;
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

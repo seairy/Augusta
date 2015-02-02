@@ -105,6 +105,7 @@
               <td><%= content_tag 'a', "#{hole.tee_boxes.send(color).distance_from_hole}", name: 'updateTeeBoxDistanceFromHole', data: { type: 'text', pk: hole.tee_boxes.send(color).id, url: "/cms/tee_boxes/#{hole.tee_boxes.send(color).id}/update_distance_from_hole", title: '请输入码数' } %></td>
               <% end %>
               <td class="table-action">
+                <%= link_to raw('<i class="fa fa-pencil"></i>'), edit_cms_hole_path(hole) %>
                 <%= link_to raw('<i class="fa fa-trash-o"></i>'), [:cms, group, hole], method: :delete, data: { confirm: '确定要删除吗？' } %>
               </td>
             </tr>
