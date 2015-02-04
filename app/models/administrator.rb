@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class Administrator < ActiveRecord::Base
   attr_accessor :password, :password_confirmation
   has_many :notifications

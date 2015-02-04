@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class CreateAdministrators < ActiveRecord::Migration
   def change
     create_table :administrators do |t|

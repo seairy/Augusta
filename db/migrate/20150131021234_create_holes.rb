@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class CreateHoles < ActiveRecord::Migration
   def change
     create_table :holes do |t|

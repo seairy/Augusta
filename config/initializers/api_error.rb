@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class APIError
   @contents = {
     10001 => { status: 401, message: 'Token失效' },

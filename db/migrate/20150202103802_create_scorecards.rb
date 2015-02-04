@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class CreateScorecards < ActiveRecord::Migration
   def change
     create_table :scorecards do |t|

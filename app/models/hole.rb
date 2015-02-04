@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class Hole < ActiveRecord::Base
   include UUID
   belongs_to :group, counter_cache: true

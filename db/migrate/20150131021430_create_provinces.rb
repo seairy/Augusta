@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class CreateProvinces < ActiveRecord::Migration
   def change
     create_table :provinces do |t|

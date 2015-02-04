@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class CreateTeeBoxes < ActiveRecord::Migration
   def change
     create_table :tee_boxes do |t|

@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class Notification < ActiveRecord::Base
   scope :by_administrator, ->(administrator_id) { where(administrator_id: administrator_id) }
   scope :unread, -> { where(read: false) }

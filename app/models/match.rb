@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class Match < ActiveRecord::Base
   include UUID
   attr_accessor :groups
