@@ -16,5 +16,9 @@ class User < ActiveRecord::Base
       user.update!(nickname: "临时用户#{user.id}")
       user
     end
+
+    def authorize! token
+      Token.available.where(content: token).first.try(:user)
+    end
   end
 end

@@ -1,0 +1,3 @@
+class InvalidStartHole < StandardError
+
+end
