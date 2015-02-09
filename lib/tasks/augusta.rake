@@ -7,6 +7,15 @@ namespace :data do
     Rake::Task['db:seed'].invoke
   end
 
+  desc 'Reset all counters.'
+  task :reset_counters => :environment do
+    { 'Course' => 'groups', 'Group' => 'holes' }.each do |k, v|
+      k.classify.constantize.all.each do |m|
+        k.classify.constantize.reset_counters m.id, v.to_sym
+      end
+    end
+  end
+
   desc 'Migrate the data of courses from YamiGolf.'
   task :migrate => :environment do
     bench = Benchmark.measure do

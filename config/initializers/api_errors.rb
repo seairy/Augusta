@@ -2,7 +2,8 @@
 class APIError
   @contents = {
     10001 => { status: 401, message: 'Token失效' },
-    10002 => { status: 404, message: '数据未找到' }
+    10002 => { status: 404, message: '数据未找到' },
+    10003 => { status: 403, message: '访问非当前用户数据' }
   }
 
   class << self

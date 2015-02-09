@@ -14,7 +14,7 @@ module V1
     resources :users do
       desc '用户简单注册'
       post :sign_up_simple do
-        user = ::User.sign_up_simple
+        user = User.sign_up_simple
         present user, with: Entities::SignUpSimple
       end
 

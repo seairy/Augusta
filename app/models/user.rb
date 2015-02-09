@@ -3,6 +3,7 @@ class User < ActiveRecord::Base
   include UUID, AASM
   has_many :verification_codes
   has_many :tokens
+  has_many :matches, foreign_key: :owner_id
   aasm column: 'state' do
     state :temporary, initial: true
     state :verified

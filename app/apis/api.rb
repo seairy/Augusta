@@ -42,6 +42,7 @@ class API < Grape::API
     end
     mount V1::CoursesAPI
     mount V1::MatchesAPI
+    mount V1::ScorecardsAPI
   end
 
   namespace :doc do

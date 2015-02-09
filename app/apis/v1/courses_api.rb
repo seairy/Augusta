@@ -4,8 +4,11 @@ module V1
     class Groups < Grape::Entity
       expose :uuid
       expose :name
-      expose :holes do |m, o|
-        m.holes.map(&:name)
+      expose :holes_count
+      expose :distance_from_hole do |m, o|
+        Hash[[:red, :white, :blue, :black, :gold].map do |color|
+          [color, m.holes.map{|hole| hole.tee_boxes.send("color_#{color}s").first.distance_from_hole}.reduce(&:+)]
+        end]
       end
     end
 
@@ -33,7 +36,7 @@ module V1
         optional :page, type: String, desc: '页数'
       end
       get :nearest do
-        courses = ::Course.nearest(params[:latitude], params[:longitude]).page(params[:page]).per(10)
+        courses = Course.nearest(params[:latitude], params[:longitude]).page(params[:page]).per(10)
         present courses, with: Entities::Courses, latitude: params[:latitude], longitude: params[:longitude]
       end
 
@@ -42,7 +45,7 @@ module V1
         requires :uuid, type: String, desc: '球场标识'
       end
       get :show do
-        course = ::Course.find_uuid(params[:uuid])
+        course = Course.find_uuid(params[:uuid])
         present course, with: Entities::Course
       end
     end
