@@ -9,7 +9,7 @@ class Match < ActiveRecord::Base
   scope :by_owner, ->(user) { where(owner_id: user.id) }
 
   class << self
-    def create_practice! options = {}
+    def create_practice options = {}
       ActiveRecord::Base.transaction do
         match = create!(owner: options[:owner], course: options[:groups].first.course, type: :practice)
         holes = options[:groups].map{|group| group.holes}.flatten

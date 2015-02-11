@@ -63,7 +63,7 @@ module V1
       post :practice do
         begin
           groups = params[:group_uuids].split(',').map{|group_uuid| Group.find_uuid(group_uuid)}
-          match = ::Match.create_practice!(owner: @current_user, groups: groups, tee_box: params[:tee_box])
+          match = ::Match.create_practice(owner: @current_user, groups: groups, tee_box: params[:tee_box])
           present match, with: Matches::Entities::Match, included_uuid: true
         rescue ActiveRecord::RecordNotFound
           api_error!(10002)
