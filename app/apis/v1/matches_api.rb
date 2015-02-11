@@ -68,7 +68,20 @@ module V1
         rescue ActiveRecord::RecordNotFound
           api_error!(10002)
         end
-      end 
+      end
+
+      desc '统计信息'
+      params do
+        requires :uuid, type: String, desc: '赛事标识'
+      end
+      get :statistics do
+        begin
+          match = @current_user.matches.find_uuid(params[:uuid])
+          present ''
+        rescue ActiveRecord::RecordNotFound
+          api_error!(10002)
+        end
+      end
     end
   end
 end
