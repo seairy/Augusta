@@ -57,4 +57,17 @@ namespace :data do
     end
     p "finished in #{bench.real} second(s)"
   end
+
+  desc 'Populate some user\'s matches and scorecards data.'
+  task :migrate => :environment do
+    bench = Benchmark.measure do
+      User.all.each do |user|
+        15.times do
+          course = Course.sample
+          Match.create!(owner: user, course: course, type: :practice, started_at: Time.now)
+        end
+      end
+    end
+    p "finished in #{bench.real} second(s)"
+  end
 end

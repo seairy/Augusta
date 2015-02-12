@@ -5,10 +5,8 @@ module V1
       expose :uuid
       expose :name
       expose :holes_count
-      expose :distance_from_hole do |m, o|
-        Hash[[:red, :white, :blue, :black, :gold].map do |color|
-          [color, m.holes.map{|hole| hole.tee_boxes.send("color_#{color}s").first.distance_from_hole}.reduce(&:+)]
-        end]
+      expose :tee_boxes do |m, o|
+        [:red, :white, :blue, :black, :gold]
       end
     end
 
@@ -25,6 +23,11 @@ module V1
         m.distance_to([o[:latitude], o[:longitude]]).round(2)
       end
     end
+
+    class Provinces < Grape::Entity
+      expose :name
+      expose :courses, using: Courses
+    end
   end
   
   class CoursesAPI < Grape::API
@@ -38,6 +41,11 @@ module V1
       get :nearest do
         courses = Course.nearest(params[:latitude], params[:longitude]).page(params[:page]).per(10)
         present courses, with: Entities::Courses, latitude: params[:latitude], longitude: params[:longitude]
+      end
+
+      desc '按省份划分的球场列表'
+      get :sectionalized_by_province do
+        present Province.includes(:courses), with: Entities::Provinces
       end
 
       desc '球场信息'

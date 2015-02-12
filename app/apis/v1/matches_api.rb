@@ -5,6 +5,7 @@ module V1
       class Course < Grape::Entity
         expose :uuid
         expose :name
+        expose :address
       end
 
       class Scorecards < Grape::Entity
@@ -26,7 +27,11 @@ module V1
 
       class Matches < Grape::Entity
         expose :uuid
+        expose :type
         expose :course, using: Course
+        expose :strokes
+        expose :recorded_scorecards_count
+        expose :started_at
       end
     end
   end
@@ -58,12 +63,13 @@ module V1
       desc '创建练习赛事'
       params do
         requires :group_uuids, type: String, desc: '子场标识'
-        requires :tee_box, type: String, values: ['red', 'white', 'blue', 'black', 'gold'], desc: '发球台'
+        requires :tee_boxes, type: String, desc: '发球台'
       end
       post :practice do
         begin
           groups = params[:group_uuids].split(',').map{|group_uuid| Group.find_uuid(group_uuid)}
-          match = ::Match.create_practice(owner: @current_user, groups: groups, tee_box: params[:tee_box])
+          tee_boxes = params[:tee_boxes].split(',')
+          match = ::Match.create_practice(owner: @current_user, groups: groups, tee_boxes: tee_boxes)
           present match, with: Matches::Entities::Match, included_uuid: true
         rescue ActiveRecord::RecordNotFound
           api_error!(10002)

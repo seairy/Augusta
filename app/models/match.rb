@@ -8,10 +8,18 @@ class Match < ActiveRecord::Base
   has_many :scorecards
   scope :by_owner, ->(user) { where(owner_id: user.id) }
 
+  def strokes
+    scorecards.map(&:strokes).compact.reduce(:+) || 0
+  end
+
+  def recorded_scorecards_count
+    scorecards.select{|s| s.strokes}.count
+  end
+
   class << self
     def create_practice options = {}
       ActiveRecord::Base.transaction do
-        match = create!(owner: options[:owner], course: options[:groups].first.course, type: :practice)
+        match = create!(owner: options[:owner], course: options[:groups].first.course, type: :practice, started_at: Time.now)
         holes = options[:groups].map{|group| group.holes}.flatten
         holes *= 2 if holes.length == 9
         holes.each_with_index{|hole, i| Scorecard.create!(match: match, hole: hole, number: i + 1, par: hole.par)}

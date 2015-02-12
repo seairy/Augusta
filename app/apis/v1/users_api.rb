@@ -3,6 +3,7 @@ module V1
   module Entities
     class SignUpSimple < Grape::Entity
       expose :uuid
+      expose :type
       expose :nickname
       expose :token do |m, o|
         m.tokens.available.first.content
