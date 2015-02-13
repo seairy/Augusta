@@ -12,6 +12,8 @@ module V1
         expose :uuid
         expose :number
         expose :par
+        expose :tee_box_color
+        expose :distance_from_hole_to_tee_box
         expose :strokes
         expose :putting
         expose :penalty
@@ -73,6 +75,8 @@ module V1
           present match, with: Matches::Entities::Match, included_uuid: true
         rescue ActiveRecord::RecordNotFound
           api_error!(10002)
+        rescue InvalidGroups
+          api_error!(20101)
         end
       end
 

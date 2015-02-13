@@ -19,10 +19,16 @@ class Match < ActiveRecord::Base
   class << self
     def create_practice options = {}
       ActiveRecord::Base.transaction do
+        raise InvalidGroups.new unless options[:groups].map(&:holes_count).reduce(:+) == 18
         match = create!(owner: options[:owner], course: options[:groups].first.course, type: :practice, started_at: Time.now)
-        holes = options[:groups].map{|group| group.holes}.flatten
-        holes *= 2 if holes.length == 9
-        holes.each_with_index{|hole, i| Scorecard.create!(match: match, hole: hole, number: i + 1, par: hole.par)}
+        hole_number = 1
+        options[:groups].each_with_index do |group, i|
+          group.holes.order(:name).each do |hole|
+            tee_box = hole.tee_boxes.send(options[:tee_boxes][i])
+            Scorecard.create!(match: match, hole: hole, number: hole_number, par: hole.par, tee_box_color: tee_box.color, distance_from_hole_to_tee_box: tee_box.distance_from_hole)
+            hole_number += 1
+          end
+        end
         match
       end
     end
