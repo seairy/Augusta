@@ -58,16 +58,22 @@ namespace :data do
     p "finished in #{bench.real} second(s)"
   end
 
-  desc 'Populate some user\'s matches and scorecards data.'
-  task :migrate => :environment do
-    bench = Benchmark.measure do
-      User.all.each do |user|
-        15.times do
-          course = Course.sample
-          Match.create!(owner: user, course: course, type: :practice, started_at: Time.now)
+  namespace :populate do
+    desc 'Populate some user\'s matches and scorecards data.'
+    task :matches_and_scorecards => :environment do
+      bench = Benchmark.measure do
+        User.all.each do |user|
+          15.times do
+            course = Course.all.joins(:groups).where(groups: { holes_count: [9, 18] }).sample
+            (groups = []) << course.groups.where(holes_count: [9, 18]).sample
+            groups << course.groups.where(holes_count: 9).where.not(id: groups.first.id).first unless groups.first.holes_count == 18
+            groups.compact!
+            groups << course.groups.where(holes_count: 9).first unless groups.map(&:holes_count).reduce(:+) == 18
+            Match.create_practice(owner: user, groups: groups, tee_boxes: ['red', 'red'])
+          end
         end
       end
+      p "finished in #{bench.real} second(s)"
     end
-    p "finished in #{bench.real} second(s)"
   end
 end

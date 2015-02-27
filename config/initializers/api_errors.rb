@@ -4,9 +4,9 @@ class APIError
     # 10001 ~ 19999: 通用错误
     10001 => { status: 401, message: 'Token失效' },
     10002 => { status: 404, message: '数据未找到' },
-    10003 => { status: 403, message: '访问非当前用户数据' }
+    10003 => { status: 403, message: '访问非当前用户数据' },
     # 20101 ~ 20199: 快捷记分错误
-    20101 => { message: '无效的分组' }
+    20101 => { message: '无效的分组' },
   }
 
   class << self

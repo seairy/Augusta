@@ -45,7 +45,7 @@ module V1
         optional :page, type: String, desc: '页数'
       end
       get '/' do
-        courses = ::Match.by_owner(@current_user).page(params[:page]).per(10)
+        courses = ::Match.by_owner(@current_user).includes(:course).includes(:scorecards).page(params[:page]).per(10)
         present courses, with: Matches::Entities::Matches, latitude: params[:latitude], longitude: params[:longitude]
       end
 
@@ -71,7 +71,7 @@ module V1
         begin
           groups = params[:group_uuids].split(',').map{|group_uuid| Group.find_uuid(group_uuid)}
           tee_boxes = params[:tee_boxes].split(',')
-          match = ::Match.create_practice(owner: @current_user, groups: groups, tee_boxes: tee_boxes)
+          match = Match.create_practice(owner: @current_user, groups: groups, tee_boxes: tee_boxes)
           present match, with: Matches::Entities::Match, included_uuid: true
         rescue ActiveRecord::RecordNotFound
           api_error!(10002)
@@ -80,7 +80,7 @@ module V1
         end
       end
 
-      desc '统计信息'
+      desc '赛事统计信息'
       params do
         requires :uuid, type: String, desc: '赛事标识'
       end
