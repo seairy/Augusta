@@ -4,6 +4,7 @@ class Course < ActiveRecord::Base
   belongs_to :city
   has_many :groups
   reverse_geocoded_by :latitude, :longitude
+  scope :alphabetic, -> { order('CONVERT(courses.name USING GBK) asc') }
   scope :nearest, ->(latitude, longitude) {
     near([latitude, longitude], 5000, unit: :km)
   }

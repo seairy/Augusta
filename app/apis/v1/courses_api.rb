@@ -45,7 +45,7 @@ module V1
 
       desc '按省份划分的球场列表'
       get :sectionalized_by_province do
-        present Province.includes(:courses), with: Entities::Provinces
+        present Province.alphabetic.includes(:courses), with: Entities::Provinces
       end
 
       desc '球场信息'
