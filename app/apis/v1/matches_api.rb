@@ -14,9 +14,9 @@ module V1
         expose :par
         expose :tee_box_color
         expose :distance_from_hole_to_tee_box
-        expose :strokes
-        expose :putting
-        expose :penalty
+        expose :score
+        expose :putts
+        expose :penalties
         expose :driving_distance
         expose :direction
       end

@@ -5,6 +5,7 @@ class Match < ActiveRecord::Base
   as_enum :type, [:practice], prefix: true, map: :string
   belongs_to :owner, class_name: 'User'
   belongs_to :course
+  has_one :statistic
   has_many :scorecards
   scope :by_owner, ->(user) { where(owner_id: user.id) }
 
