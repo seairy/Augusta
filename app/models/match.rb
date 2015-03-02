@@ -10,11 +10,11 @@ class Match < ActiveRecord::Base
   scope :by_owner, ->(user) { where(owner_id: user.id) }
 
   def strokes
-    scorecards.map(&:strokes).compact.reduce(:+) || 0
+    scorecards.map(&:score).compact.reduce(:+) || 0
   end
 
   def recorded_scorecards_count
-    scorecards.select{|s| s.strokes}.count
+    scorecards.select{|s| s.score}.count
   end
 
   class << self

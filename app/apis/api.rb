@@ -36,6 +36,8 @@ class API < Grape::API
   end
 
   mount V1::UsersAPI
+  mount V1::VerificationCodesAPI
+  
   namespace do
     before do
       authenticate!

@@ -21,6 +21,10 @@ class User < ActiveRecord::Base
       end
     end
 
+    def find_or_create options = {}
+      where(phone: options[:phone]).first || create!(phone: options[:phone], type: :member, signed_up_at: Time.now)
+    end
+
     def authorize! token
       Token.available.where(content: token).first.try(:user)
     end

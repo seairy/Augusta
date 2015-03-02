@@ -13,6 +13,12 @@ class CreateStatistics < ActiveRecord::Migration
       t.string :score_par_3, limit: 10
       t.string :score_par_4, limit: 10
       t.string :score_par_5, limit: 10
+      t.string :double_eagle, limit: 10
+      t.string :eagle, limit: 10
+      t.string :birdie, limit: 10
+      t.string :par, limit: 10
+      t.string :bogey, limit: 10
+      t.string :double_bogey, limit: 10
       t.timestamps null: false
     end
   end

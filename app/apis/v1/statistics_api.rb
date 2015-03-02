@@ -1,6 +1,12 @@
 # -*- encoding : utf-8 -*-
 module V1
-  class ScorecardsAPI < Grape::API
+  module Entities
+    class Scorecard < Grape::Entity
+
+    end
+  end
+
+  class StatisticsAPI < Grape::API
     resources :scorecards do
       desc '修改记分卡'
       params do
@@ -15,7 +21,6 @@ module V1
         begin
           scorecard = Scorecard.find_uuid(params[:uuid])
           raise PermissionDenied.new unless scorecard.match.owner_id == @current_user.id
-          scorecard.update!(score: params[:score], putts: params[:putts], penalties: params[:penalties], driving_distance: params[:driving_distance], direction: params[:direction])
           present nil
         rescue ActiveRecord::RecordNotFound
           api_error!(10002)
