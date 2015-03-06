@@ -16,7 +16,7 @@ module V1
           scorecard = Scorecard.find_uuid(params[:uuid])
           raise PermissionDenied.new unless scorecard.match.owner_id == @current_user.id
           scorecard.update!(score: params[:score], putts: params[:putts], penalties: params[:penalties], driving_distance: params[:driving_distance], direction: params[:direction])
-          present nil
+          present result: :success
         rescue ActiveRecord::RecordNotFound
           api_error!(10002)
         rescue PermissionDenied
