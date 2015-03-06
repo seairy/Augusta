@@ -33,6 +33,10 @@ class API < Grape::API
     def authenticate!
       api_error!(10001) unless current_user
     end
+
+    def successful_json
+      { result: :success }
+    end
   end
 
   mount V1::UsersAPI
