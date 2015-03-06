@@ -6,7 +6,7 @@ class Match < ActiveRecord::Base
   belongs_to :owner, class_name: 'User'
   belongs_to :course
   has_one :statistic
-  has_many :scorecards
+  has_many :scorecards, -> { order(:number) }
   scope :by_owner, ->(user) { where(owner_id: user.id) }
 
   def strokes
