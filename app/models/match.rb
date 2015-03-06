@@ -17,11 +17,60 @@ class Match < ActiveRecord::Base
     scorecards.select{|s| s.score}.count
   end
 
+  def par
+    scorecards.map(&:par).reduce(:+)
+  end
+
+  def out_par
+    scorecards.out.map(&:par).reduce(:+)
+  end
+
+  def in_par
+    scorecards.in.map(&:par).reduce(:+)
+  end
+
+  def score
+    scorecards.map(&:score).compact.reduce(:+)
+  end
+
+  def out_score
+    scorecards.out.map(&:score).compact.reduce(:+)
+  end
+
+  def in_score
+    scorecards.in.map(&:score).compact.reduce(:+)
+  end
+
+  def status
+    scorecards.map(&:status).compact.reduce(:+)
+  end
+
+  def out_status
+    scorecards.out.map(&:status).compact.reduce(:+)
+  end
+
+  def in_status
+    scorecards.in.map(&:status).compact.reduce(:+)
+  end
+
+  def net
+
+  end
+
+  def putts
+
+  end
+
+  def penalties
+
+  end
+
   class << self
     def create_practice options = {}
       ActiveRecord::Base.transaction do
         raise InvalidGroups.new unless options[:groups].map(&:holes_count).reduce(:+) == 18
         match = create!(owner: options[:owner], course: options[:groups].first.course, type: :practice, started_at: Time.now)
+        match.create_statistic!
         hole_number = 1
         options[:groups].each_with_index do |group, i|
           group.holes.order(:name).each do |hole|

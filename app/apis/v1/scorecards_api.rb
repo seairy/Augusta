@@ -9,7 +9,7 @@ module V1
         requires :putts, type: Integer, desc: '推杆数'
         requires :penalties, type: Integer, desc: '罚杆数'
         requires :driving_distance, type: Integer, desc: '开球距离'
-        requires :direction, type: Integer, desc: '开球方向'
+        requires :direction, type: Integer, values: ['hook', 'pure', 'slice'], desc: '开球方向'
       end
       put '/' do
         begin
