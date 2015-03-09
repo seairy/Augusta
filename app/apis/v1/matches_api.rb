@@ -92,6 +92,20 @@ module V1
           api_error!(10002)
         end
       end
+
+      desc '删除赛事'
+      params do
+        requires :uuid, type: String, desc: '赛事标识'
+      end
+      delete '/' do
+        begin
+          match = @current_user.matches.find_uuid(params[:uuid])
+          match.trash
+          present successful_json
+        rescue ActiveRecord::RecordNotFound
+          api_error!(10002)
+        end
+      end
     end
   end
 end
