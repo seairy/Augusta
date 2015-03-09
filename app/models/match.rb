@@ -1,6 +1,6 @@
 # -*- encoding : utf-8 -*-
 class Match < ActiveRecord::Base
-  include UUID
+  include UUID, Trashable
   attr_accessor :groups
   as_enum :type, [:practice], prefix: true, map: :string
   belongs_to :owner, class_name: 'User'

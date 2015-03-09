@@ -16,9 +16,5 @@ class CreateUsers < ActiveRecord::Migration
       t.boolean :trashed, default: false, null: false
       t.timestamps null: false
     end
-    add_index :users, :uuid, unique: true
-    add_index :users, :phone
-    add_index :users, :state
-    add_index :users, :trashed
   end
 end

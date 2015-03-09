@@ -7,6 +7,5 @@ class CreateTeeBoxes < ActiveRecord::Migration
       t.integer :distance_from_hole, limit: 3, null: false
       t.timestamps null: false
     end
-    add_index :tee_boxes, [:hole_id, :color_cd], unique: true
   end
 end

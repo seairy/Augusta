@@ -7,7 +7,5 @@ class CreateProvinces < ActiveRecord::Migration
       t.integer :cities_count, default: 0, null: false
       t.timestamps null: false
     end
-    add_index :provinces, :uuid, unique: true
-    add_index :provinces, :name
   end
 end

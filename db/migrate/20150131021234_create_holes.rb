@@ -8,8 +8,5 @@ class CreateHoles < ActiveRecord::Migration
       t.integer :par, limit: 1, null: false
       t.timestamps null: false
     end
-    add_index :holes, :uuid, unique: true
-    add_index :holes, :group_id
-    add_index :holes, :name
   end
 end

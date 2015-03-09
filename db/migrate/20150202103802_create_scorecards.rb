@@ -13,6 +13,5 @@ class CreateScorecards < ActiveRecord::Migration
       t.integer :direction, limit: 1
       t.timestamps null: false
     end
-    add_index :scorecards, [:match_id, :hole_id, :number], unique: true
   end
 end

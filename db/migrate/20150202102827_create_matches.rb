@@ -9,7 +9,5 @@ class CreateMatches < ActiveRecord::Migration
       t.string :name, limit: 100
       t.timestamps null: false
     end
-    add_index :matches, [:owner_id, :type_cd]
-    add_index :matches, :course_id
   end
 end

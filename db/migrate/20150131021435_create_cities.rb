@@ -8,8 +8,5 @@ class CreateCities < ActiveRecord::Migration
       t.integer :courses_count, default: 0, null: false
       t.timestamps null: false
     end
-    add_index :cities, :uuid, unique: true
-    add_index :cities, :province_id
-    add_index :cities, :name
   end
 end

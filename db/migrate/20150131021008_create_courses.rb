@@ -13,10 +13,5 @@ class CreateCourses < ActiveRecord::Migration
       t.integer :groups_count, default: 0, null: false
       t.timestamps null: false
     end
-    add_index :courses, :uuid, unique: true
-    add_index :courses, :city_id
-    add_index :courses, :name
-    add_index :courses, [:latitude, :longitude]
-    add_index :courses, :trashed
   end
 end

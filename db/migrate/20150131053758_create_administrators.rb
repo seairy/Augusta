@@ -11,7 +11,5 @@ class CreateAdministrators < ActiveRecord::Migration
       t.boolean :trashed, default: false, null: false
       t.timestamps null: false
     end
-    add_index :administrators, :account, unique: true
-    add_index :administrators, :trashed
   end
 end

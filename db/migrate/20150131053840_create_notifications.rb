@@ -8,6 +8,5 @@ class CreateNotifications < ActiveRecord::Migration
       t.boolean :read, default: false, null: false
       t.timestamps null: false
     end
-    add_index :notifications, [:administrator_id, :read]
   end
 end
