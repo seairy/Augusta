@@ -31,7 +31,7 @@ module V1
         expose :uuid
         expose :type
         expose :course, using: Course
-        expose :strokes
+        expose :score
         expose :recorded_scorecards_count
         expose :started_at
       end

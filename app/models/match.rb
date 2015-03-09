@@ -9,7 +9,7 @@ class Match < ActiveRecord::Base
   has_many :scorecards, -> { order(:number) }
   scope :by_owner, ->(user) { where(owner_id: user.id) }
 
-  def strokes
+  def score
     scorecards.map(&:score).compact.reduce(:+) || 0
   end
 
