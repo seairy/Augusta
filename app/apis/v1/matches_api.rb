@@ -33,7 +33,9 @@ module V1
         expose :course, using: Course
         expose :score
         expose :recorded_scorecards_count
-        expose :started_at
+        expose :started_at do |m, o|
+          m.started_at.to_i
+        end
       end
     end
   end
