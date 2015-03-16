@@ -70,7 +70,7 @@ namespace :data do
             groups.compact!
             groups << course.groups.where(holes_count: 9).first unless groups.map(&:holes_count).reduce(:+) == 18
             Match.create_practice(owner: user, groups: groups, tee_boxes: ['red', 'red'])
-          end
+          end if user.matches.blank?
         end
       end
       p "finished in #{bench.real} second(s)"

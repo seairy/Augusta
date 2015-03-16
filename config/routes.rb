@@ -1,6 +1,10 @@
 # -*- encoding : utf-8 -*-
 Rails.application.routes.draw do
   mount API => '/api'
+  namespace :sim do
+    root 'matches#practice'
+    get 'courses/nearest', to: 'courses#nearest'
+  end
   namespace :cms do
     root 'dashboard#index'
     get 'dashboard', to: 'dashboard#index', as: :dashboard
