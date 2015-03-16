@@ -82,19 +82,6 @@ module V1
         end
       end
 
-      desc '赛事统计信息'
-      params do
-        requires :uuid, type: String, desc: '赛事标识'
-      end
-      get :statistics do
-        begin
-          match = @current_user.matches.find_uuid(params[:uuid])
-          present ''
-        rescue ActiveRecord::RecordNotFound
-          api_error!(10002)
-        end
-      end
-
       desc '删除赛事'
       params do
         requires :uuid, type: String, desc: '赛事标识'

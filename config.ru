@@ -1,7 +1,7 @@
 require 'rack/cors'
 require ::File.expand_path('../config/environment', __FILE__)
 
-run Rails.application
+run API
 
 use Rack::Cors do
   allow do
