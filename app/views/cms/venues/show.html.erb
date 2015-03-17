@@ -1,85 +1,85 @@
 <div class="pageheader">
-  <h2><i class="fa fa-file-text-o"></i> 球场管理 <span>查看</span></h2>
+  <h2><i class="fa fa-file-text-o"></i> 球会管理 <span>查看</span></h2>
 </div>
 <div class="contentpanel">
   <%= brac_flash %>
   <div class="panel panel-dark">
     <div class="panel-heading">
-      <h4 class="panel-title">球场信息</h4>
+      <h4 class="panel-title">球会信息</h4>
     </div>
     <div class="panel-body panel-body-nopadding">
       <%= form_tag nil, class: 'form-horizontal form-bordered' do %>
         <div class="form-group">
           <label class="col-sm-3 control-label"><%= brac_t 'uuid' %></label>
           <div class="col-sm-6">
-            <%= text_field_tag nil, @course.uuid, readonly: true, class: 'form-control' %>
+            <%= text_field_tag nil, @venue.uuid, readonly: true, class: 'form-control' %>
           </div>
         </div>
         <div class="form-group">
-          <label class="col-sm-3 control-label"><%= brac_t 'course.province' %></label>
+          <label class="col-sm-3 control-label"><%= brac_t 'venue.province' %></label>
           <div class="col-sm-6">
-            <%= text_field_tag nil, @course.city.province.name, readonly: true, class: 'form-control' %>
+            <%= text_field_tag nil, @venue.city.province.name, readonly: true, class: 'form-control' %>
           </div>
         </div>
         <div class="form-group">
-          <label class="col-sm-3 control-label"><%= brac_t 'course.city' %></label>
+          <label class="col-sm-3 control-label"><%= brac_t 'venue.city' %></label>
           <div class="col-sm-6">
-            <%= text_field_tag nil, @course.city.name, readonly: true, class: 'form-control' %>
+            <%= text_field_tag nil, @venue.city.name, readonly: true, class: 'form-control' %>
           </div>
         </div>
         <div class="form-group">
-          <label class="col-sm-3 control-label"><%= brac_t 'course.name' %></label>
+          <label class="col-sm-3 control-label"><%= brac_t 'venue.name' %></label>
           <div class="col-sm-6">
-            <%= text_field_tag nil, @course.name, readonly: true, class: 'form-control' %>
+            <%= text_field_tag nil, @venue.name, readonly: true, class: 'form-control' %>
           </div>
         </div>
         <div class="form-group">
-          <label class="col-sm-3 control-label"><%= brac_t 'course.address' %></label>
+          <label class="col-sm-3 control-label"><%= brac_t 'venue.address' %></label>
           <div class="col-sm-6">
-            <%= text_field_tag nil, @course.address, readonly: true, class: 'form-control' %>
+            <%= text_field_tag nil, @venue.address, readonly: true, class: 'form-control' %>
           </div>
         </div>
         <div class="form-group">
-          <label class="col-sm-3 control-label"><%= brac_t 'course.position' %></label>
+          <label class="col-sm-3 control-label"><%= brac_t 'venue.position' %></label>
           <div class="col-sm-3">
             <div class="input-group">
-              <span class="input-group-addon"><%= brac_t 'course.lng' %></span>
-              <%= text_field_tag nil, @course.longitude, readonly: true, class: 'form-control' %>
+              <span class="input-group-addon"><%= brac_t 'venue.lng' %></span>
+              <%= text_field_tag nil, @venue.longitude, readonly: true, class: 'form-control' %>
             </div>
           </div>
           <div class="col-sm-3">
             <div class="input-group">
-              <span class="input-group-addon"><%= brac_t 'course.lat' %></span>
-              <%= text_field_tag nil, @course.latitude, readonly: true, class: 'form-control' %>
+              <span class="input-group-addon"><%= brac_t 'venue.lat' %></span>
+              <%= text_field_tag nil, @venue.latitude, readonly: true, class: 'form-control' %>
             </div>
           </div>
         </div>
         <div class="form-group">
-          <label class="col-sm-3 control-label"><%= brac_t 'course.description' %></label>
+          <label class="col-sm-3 control-label"><%= brac_t 'venue.description' %></label>
           <div class="col-sm-6">
-            <%= text_area_tag :description, @course.description, readonly: true, rows: 8, class: 'form-control' %>
+            <%= text_area_tag :description, @venue.description, readonly: true, rows: 8, class: 'form-control' %>
           </div>
         </div>
       <% end %>
     </div>
     <div class="panel-footer">
-      <%= link_to '返回球场列表', cms_courses_path, class: 'btn btn-default' %>&nbsp;
-      <%= link_to '编辑', edit_cms_course_path(@course), class: 'btn btn-primary' %>&nbsp;
+      <%= link_to '返回球会列表', cms_venues_path, class: 'btn btn-default' %>&nbsp;
+      <%= link_to '编辑', edit_cms_venue_path(@venue), class: 'btn btn-primary' %>&nbsp;
       <div class="btn-group mt10">
         <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
           操作 <span class="caret"></span>
         </button>
         <ul class="dropdown-menu" role="menu">
-          <li><%= link_to '创建新子场', new_cms_course_group_path(@course) %></li>
+          <li><%= link_to '创建新球场', new_cms_venue_course_path(@venue) %></li>
         </ul>
       </div>&nbsp;
-      <%= link_to '删除', [:cms, @course], method: :delete, data: { confirm: '确定要删除吗？' }, class: 'btn btn-danger' %>
+      <%= link_to '删除', [:cms, @venue], method: :delete, data: { confirm: '确定要删除吗？' }, class: 'btn btn-danger' %>
     </div>
   </div>
-  <% @course.groups.each do |group| %>
+  <% @venue.courses.each do |course| %>
   <div class="panel panel-default">
     <div class="panel-heading">
-      <h4 class="panel-title">子场 - <%= group.name %></h4>
+      <h4 class="panel-title">球场 - <%= course.name %></h4>
     </div>
     <div class="panel-body panel-table">
       <div class="table-responsive">
@@ -97,7 +97,7 @@
             </tr>
           </thead>
           <tbody>
-            <% group.holes.each do |hole| %>
+            <% course.holes.each do |hole| %>
             <tr>
               <td><%= hole.name %></td>
               <td><%= hole.par %></td>
@@ -106,7 +106,7 @@
               <% end %>
               <td class="table-action">
                 <%= link_to raw('<i class="fa fa-pencil"></i>'), edit_cms_hole_path(hole) %>
-                <%= link_to raw('<i class="fa fa-trash-o"></i>'), [:cms, group, hole], method: :delete, data: { confirm: '确定要删除吗？' } %>
+                <%= link_to raw('<i class="fa fa-trash-o"></i>'), [:cms, course, hole], method: :delete, data: { confirm: '确定要删除吗？' } %>
               </td>
             </tr>
             <% end %>
@@ -115,8 +115,8 @@
       </div>
     </div>
     <div class="panel-footer">
-     <%= link_to '编辑', edit_cms_group_path(group), class: 'btn btn-primary' %>&nbsp;
-      <%= link_to '删除', [:cms, @course, group], method: :delete, data: { confirm: '确定要删除吗？' }, class: 'btn btn-danger' %>
+     <%= link_to '编辑', edit_cms_course_path(course), class: 'btn btn-primary' %>&nbsp;
+      <%= link_to '删除', [:cms, @venue, course], method: :delete, data: { confirm: '确定要删除吗？' }, class: 'btn btn-danger' %>
     </div>
   </div>
   <% end %>

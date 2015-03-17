@@ -10,59 +10,18 @@
     <div class="panel-body panel-body-nopadding">
       <%= form_for [:cms, @course], html: { class: 'form-horizontal form-bordered' } do |f| %>
         <div class="form-group">
-          <label class="col-sm-3 control-label"><%= brac_t 'course.city' %></label>
-          <div class="col-sm-6">
-            <%= f.grouped_collection_select :city_id, Province.all, :cities, :name, :id, :name, class: 'form-control' %>
-          </div>
-        </div>
-        <div class="form-group">
           <label class="col-sm-3 control-label"><%= brac_t 'course.name' %></label>
           <div class="col-sm-6">
             <%= f.text_field :name, class: 'form-control' %>
           </div>
         </div>
         <div class="form-group">
-          <label class="col-sm-3 control-label"><%= brac_t 'course.address' %></label>
-          <div class="col-sm-6">
-            <%= f.text_field :address, class: 'form-control' %>
-          </div>
-        </div>
-        <div class="form-group">
-          <label class="col-sm-3 control-label"><%= brac_t 'course.position' %></label>
-          <div class="col-sm-3">
-            <div class="input-group">
-              <span class="input-group-addon"><%= brac_t 'course.lng' %></span>
-              <%= f.text_field :longitude, class: 'form-control' %>
-            </div>
-          </div>
-          <div class="col-sm-3">
-            <div class="input-group">
-              <span class="input-group-addon"><%= brac_t 'course.lat' %></span>
-              <%= f.text_field :latitude, class: 'form-control' %>
-            </div>
-          </div>
-        </div>
-        <div class="form-group">
-          <label class="col-sm-3 control-label"><%= brac_t 'course.description' %></label>
-          <div class="col-sm-6">
-            <%= f.text_area :description, class: 'form-control' %>
-          </div>
-        </div>
-        <div class="form-group">
           <div class="col-sm-12 text-center">
             <%= f.submit '提交', class: 'btn btn-primary' %>&nbsp;
-            <%= link_to '返回球场列表', cms_courses_path, class: 'btn btn-default' %>
+            <%= link_to '返回球会信息', [:cms, @venue], class: 'btn btn-default' %>
           </div>
         </div>
       <% end %>
     </div>
   </div>
 </div>
-<% content_for :javascript do %>
-  <script>
-    jQuery(document).ready(function(){
-      $('#course_city_id').chosen({'width': '100%', 'white-space': 'nowrap'});
-      $('#course_description').autosize();
-    });
-  </script>
-<% end %>

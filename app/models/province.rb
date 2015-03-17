@@ -2,6 +2,6 @@
 class Province < ActiveRecord::Base
   include UUID
   has_many :cities
-  has_many :courses, through: :cities
+  has_many :venues, through: :cities
   scope :alphabetic, -> { order('CONVERT(provinces.name USING GBK) asc') }
 end

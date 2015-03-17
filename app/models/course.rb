@@ -1,11 +1,6 @@
 # -*- encoding : utf-8 -*-
 class Course < ActiveRecord::Base
-  include UUID, Trashable
-  belongs_to :city
-  has_many :groups
-  reverse_geocoded_by :latitude, :longitude
-  scope :alphabetic, -> { order('CONVERT(courses.name USING GBK) asc') }
-  scope :nearest, ->(latitude, longitude) {
-    near([latitude, longitude], 5000, unit: :km)
-  }
+  include UUID
+  belongs_to :venue, counter_cache: true
+  has_many :holes
 end

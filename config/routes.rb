@@ -5,10 +5,10 @@ Rails.application.routes.draw do
     root 'dashboard#index'
     get 'dashboard', to: 'dashboard#index', as: :dashboard
     get 'search', to: 'searches#show', as: :search
-    resources :courses do
-      resources :groups
+    resources :venues do
+      resources :courses
     end
-    resources :groups do
+    resources :courses do
       resources :holes
     end
     resources :holes do

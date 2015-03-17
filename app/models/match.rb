@@ -3,8 +3,9 @@ class Match < ActiveRecord::Base
   include UUID, Trashable
   attr_accessor :groups
   as_enum :type, [:practice], prefix: true, map: :string
+  as_enum :scoring_type, [:simple, :professional], prefix: true, map: :string
   belongs_to :owner, class_name: 'User'
-  belongs_to :course
+  belongs_to :venue
   has_one :statistic
   has_many :scorecards, -> { order(:number) }
   scope :by_owner, ->(user) { where(owner_id: user.id) }
@@ -68,12 +69,12 @@ class Match < ActiveRecord::Base
   class << self
     def create_practice options = {}
       ActiveRecord::Base.transaction do
-        raise InvalidGroups.new unless options[:groups].map(&:holes_count).reduce(:+) == 18
-        match = create!(owner: options[:owner], course: options[:groups].first.course, type: :practice, started_at: Time.now)
+        raise InvalidGroups.new unless options[:courses].map(&:holes_count).reduce(:+) == 18
+        match = create!(owner: options[:owner], venue: options[:courses].first.venue, type: :practice, scoring_type: options[:scoring_type], started_at: Time.now)
         match.create_statistic!(score: 0, net: 0, putts: 0, penalties: 0)
         hole_number = 1
-        options[:groups].each_with_index do |group, i|
-          group.holes.order(:name).each do |hole|
+        options[:courses].each_with_index do |course, i|
+          course.holes.order(:name).each do |hole|
             tee_box = hole.tee_boxes.send(options[:tee_boxes][i])
             Scorecard.create!(match: match, hole: hole, number: hole_number, par: hole.par, tee_box_color: tee_box.color, distance_from_hole_to_tee_box: tee_box.distance_from_hole)
             hole_number += 1

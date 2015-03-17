@@ -2,7 +2,7 @@
 module V1
   module Matches
     module Entities
-      class Course < Grape::Entity
+      class Venue < Grape::Entity
         expose :uuid
         expose :name
         expose :address
@@ -24,13 +24,15 @@ module V1
       class Match < Grape::Entity
         expose :uuid, if: lambda{|m, o| o[:included_uuid]}
         expose :type
+        expose :scoring_type
         expose :scorecards, using: Scorecards
       end
 
       class Matches < Grape::Entity
         expose :uuid
         expose :type
-        expose :course, using: Course
+        expose :scoring_type
+        expose :venue, using: Venue
         expose :score
         expose :recorded_scorecards_count
         expose :started_at do |m, o|
@@ -47,8 +49,8 @@ module V1
         optional :page, type: String, desc: '页数'
       end
       get '/' do
-        courses = ::Match.by_owner(@current_user).includes(:course).includes(:scorecards).page(params[:page]).per(10)
-        present courses, with: Matches::Entities::Matches, latitude: params[:latitude], longitude: params[:longitude]
+        matches = ::Match.by_owner(@current_user).includes(:venue).includes(:scorecards).page(params[:page]).per(10)
+        present matches, with: Matches::Entities::Matches, latitude: params[:latitude], longitude: params[:longitude]
       end
 
       desc '赛事信息'
@@ -66,14 +68,15 @@ module V1
 
       desc '创建练习赛事'
       params do
-        requires :group_uuids, type: String, desc: '子场标识'
+        requires :course_uuids, type: String, desc: '球场标识'
         requires :tee_boxes, type: String, desc: '发球台'
+        requires :scoring_type, type: String, values: ['simple', 'professional'], desc: '记分类型'
       end
       post :practice do
         begin
-          groups = params[:group_uuids].split(',').map{|group_uuid| Group.find_uuid(group_uuid)}
+          courses = params[:course_uuids].split(',').map{|course_uuid| Course.find_uuid(course_uuid)}
           tee_boxes = params[:tee_boxes].split(',')
-          match = Match.create_practice(owner: @current_user, groups: groups, tee_boxes: tee_boxes)
+          match = Match.create_practice(owner: @current_user, courses: courses, tee_boxes: tee_boxes, scoring_type: params[:scoring_type])
           present match, with: Matches::Entities::Match, included_uuid: true
         rescue ActiveRecord::RecordNotFound
           api_error!(10002)

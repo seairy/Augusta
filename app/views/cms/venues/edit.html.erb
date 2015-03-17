@@ -1,0 +1,69 @@
+<div class="pageheader">
+  <h2><i class="fa fa-pencil-square-o"></i> 球会管理 <span>编辑</span></h2>
+</div>
+<div class="contentpanel">
+  <%= render "cms/commons/error_messages", target: @venue %>
+  <div class="panel panel-dark">
+    <div class="panel-heading">
+      <h4 class="panel-title">球会信息</h4>
+    </div>
+    <div class="panel-body panel-body-nopadding">
+      <%= form_for [:cms, @venue], html: { class: 'form-horizontal form-bordered' } do |f| %>
+        <div class="form-group">
+          <label class="col-sm-3 control-label"><%= brac_t 'venue.city' %></label>
+          <div class="col-sm-6">
+            <%= f.grouped_collection_select :city_id, Province.all, :cities, :name, :id, :name, class: 'form-control' %>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-3 control-label"><%= brac_t 'venue.name' %></label>
+          <div class="col-sm-6">
+            <%= f.text_field :name, class: 'form-control' %>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-3 control-label"><%= brac_t 'venue.address' %></label>
+          <div class="col-sm-6">
+            <%= f.text_field :address, class: 'form-control' %>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-3 control-label"><%= brac_t 'venue.position' %></label>
+          <div class="col-sm-3">
+            <div class="input-group">
+              <span class="input-group-addon"><%= brac_t 'venue.lng' %></span>
+              <%= f.text_field :longitude, class: 'form-control' %>
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="input-group">
+              <span class="input-group-addon"><%= brac_t 'venue.lat' %></span>
+              <%= f.text_field :latitude, class: 'form-control' %>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-3 control-label"><%= brac_t 'venue.description' %></label>
+          <div class="col-sm-6">
+            <%= f.text_area :description, class: 'form-control' %>
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="col-sm-12 text-center">
+            <%= f.submit '提交', class: 'btn btn-primary' %>&nbsp;
+            <%= link_to '返回球会信息', [:cms, @venue], class: 'btn btn-default' %>&nbsp;
+            <%= link_to '返回球会列表', cms_venues_path, class: 'btn btn-default' %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
+<% content_for :javascript do %>
+  <script>
+    jQuery(document).ready(function(){
+      $('#venue_city_id').chosen({'width': '100%', 'white-space': 'nowrap'});
+      $('#venue_description').autosize();
+    });
+  </script>
+<% end %>

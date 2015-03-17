@@ -1,8 +1,8 @@
 # -*- encoding : utf-8 -*-
 module V1
-  module Courses
+  module Venues
     module Entities
-      class Groups < Grape::Entity
+      class Courses < Grape::Entity
         expose :uuid
         expose :name
         expose :holes_count
@@ -11,12 +11,12 @@ module V1
         end
       end
 
-      class Course < Grape::Entity
+      class Venue < Grape::Entity
         expose :name
-        expose :groups, using: Groups
+        expose :courses, using: Courses
       end
 
-      class Courses < Grape::Entity
+      class Venues < Grape::Entity
         expose :uuid
         expose :name
         expose :address
@@ -27,36 +27,36 @@ module V1
 
       class Provinces < Grape::Entity
         expose :name
-        expose :courses, using: Courses
+        expose :venues, using: Venues
       end
     end
   end
   
-  class CoursesAPI < Grape::API
-    resources :courses do
-      desc '距离最近的球场列表'
+  class VenuesAPI < Grape::API
+    resources :venues do
+      desc '距离最近的球会列表'
       params do
         requires :latitude, type: String, desc: '纬度'
         requires :longitude, type: String, desc: '经度'
         optional :page, type: String, desc: '页数'
       end
       get :nearest do
-        courses = Course.nearest(params[:latitude], params[:longitude]).page(params[:page]).per(10)
-        present courses, with: Courses::Entities::Courses, latitude: params[:latitude], longitude: params[:longitude]
+        venues = Venue.nearest(params[:latitude], params[:longitude]).page(params[:page]).per(10)
+        present venues, with: Venues::Entities::Venues, latitude: params[:latitude], longitude: params[:longitude]
       end
 
-      desc '按省份划分的球场列表'
+      desc '按省份划分的球会列表'
       get :sectionalized_by_province do
-        present Province.alphabetic.includes(:courses), with: Courses::Entities::Provinces
+        present Province.alphabetic.includes(:venues), with: Venues::Entities::Provinces
       end
 
-      desc '球场信息'
+      desc '球会信息'
       params do
-        requires :uuid, type: String, desc: '球场标识'
+        requires :uuid, type: String, desc: '球会标识'
       end
       get :show do
-        course = Course.find_uuid(params[:uuid])
-        present course, with: Courses::Entities::Course
+        venue = Venue.find_uuid(params[:uuid])
+        present venue, with: Venues::Entities::Venue
       end
     end
   end

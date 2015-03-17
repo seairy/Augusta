@@ -46,7 +46,7 @@ class API < Grape::API
     before do
       authenticate!
     end
-    mount V1::CoursesAPI
+    mount V1::VenuesAPI
     mount V1::MatchesAPI
     mount V1::ScorecardsAPI
     mount V1::StatisticsAPI

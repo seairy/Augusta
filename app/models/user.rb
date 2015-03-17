@@ -11,6 +11,10 @@ class User < ActiveRecord::Base
     state :prohibited
   end
 
+  def available_token
+    tokens.available.first.try(:content)
+  end
+
   class << self
     def sign_up_simple
       ActiveRecord::Base.transaction do

@@ -1,5 +1,6 @@
 # -*- encoding : utf-8 -*-
 class Cms::CoursesController < Cms::BaseController
+  before_action :find_venue, only: [:new, :create]
   
   def index
     @courses = Course.page(params[:page])
@@ -42,6 +43,10 @@ class Cms::CoursesController < Cms::BaseController
   end
 
   protected
+  def find_venue
+    @venue = Venue.find(params[:venue_id])
+  end
+
   def course_params
     params.require(:course).permit!
   end
