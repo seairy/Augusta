@@ -2,20 +2,20 @@
 class Cms::SearchesController < Cms::BaseController
   
   def show
-    @courses = []
+    @venues = []
     Province.where("name LIKE '%#{params[:keyword]}%'").each do |province|
       province.cities.each do |city|
-        city.courses.each do |course|
-          @courses << course
+        city.venues.each do |venue|
+          @venues << venue
         end
       end
     end
-    @courses << City.where("name LIKE '%#{params[:keyword]}%'").map do |city|
-      city.courses.each do |course|
-        @courses << course
+    @venues << City.where("name LIKE '%#{params[:keyword]}%'").map do |city|
+      city.venues.each do |venue|
+        @venues << venue
       end
     end
-    @courses << Course.where("name LIKE '%#{params[:keyword]}%'").to_a
-    @courses.flatten!.uniq!
+    @venues << Venue.where("name LIKE '%#{params[:keyword]}%'").to_a
+    @venues.flatten!.uniq!
   end
 end

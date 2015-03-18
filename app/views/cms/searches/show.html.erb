@@ -9,20 +9,20 @@
         <table class="table table-primary table-striped mb30">
           <thead>
             <tr>
-              <th><%= brac_t 'course.city' %></th>
-              <th><%= brac_t 'course.name' %></th>
+              <th><%= brac_t 'venue.city' %></th>
+              <th><%= brac_t 'venue.name' %></th>
               <th></th>
             </tr>
           </thead>
           <tbody>
-            <% @courses.each do |course| %>
+            <% @venues.each do |venue| %>
             <tr>
-              <td><%= course.city.province.name %> - <%= course.city.name %></td>
-              <td><%= course.name %></td>
+              <td><%= venue.city.province.name %> - <%= venue.city.name %></td>
+              <td><%= venue.name %></td>
               <td class="table-action">
-                <%= link_to raw('<i class="fa fa-file-text-o"></i>'), [:cms, course] %>
-                <%= link_to raw('<i class="fa fa-pencil"></i>'), edit_cms_course_path(course) %>
-                <%= link_to raw('<i class="fa fa-trash-o"></i>'), [:cms, course], method: :delete, data: { confirm: '确定要删除吗？' } %>
+                <%= link_to raw('<i class="fa fa-file-text-o"></i>'), [:cms, venue] %>
+                <%= link_to raw('<i class="fa fa-pencil"></i>'), edit_cms_venue_path(venue) %>
+                <%= link_to raw('<i class="fa fa-trash-o"></i>'), [:cms, venue], method: :delete, data: { confirm: '确定要删除吗？' } %>
               </td>
             </tr>
             <% end %>
