@@ -8,62 +8,6 @@ class Match < ActiveRecord::Base
   has_many :players
   scope :by_owner, ->(user) { where(owner_id: user.id) }
 
-  def score
-    scorecards.map(&:score).compact.reduce(:+) || 0
-  end
-
-  def recorded_scorecards_count
-    scorecards.select{|s| s.score}.count
-  end
-
-  def par
-    scorecards.map(&:par).reduce(:+)
-  end
-
-  def out_par
-    scorecards.out.map(&:par).reduce(:+)
-  end
-
-  def in_par
-    scorecards.in.map(&:par).reduce(:+)
-  end
-
-  def score
-    scorecards.map(&:score).compact.reduce(:+)
-  end
-
-  def out_score
-    scorecards.out.map(&:score).compact.reduce(:+)
-  end
-
-  def in_score
-    scorecards.in.map(&:score).compact.reduce(:+)
-  end
-
-  def status
-    scorecards.map(&:status).compact.reduce(:+)
-  end
-
-  def out_status
-    scorecards.out.map(&:status).compact.reduce(:+)
-  end
-
-  def in_status
-    scorecards.in.map(&:status).compact.reduce(:+)
-  end
-
-  def net
-
-  end
-
-  def putts
-
-  end
-
-  def penalties
-
-  end
-
   def default_player
     players.first if type_practice?
   end

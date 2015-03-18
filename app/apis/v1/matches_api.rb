@@ -39,8 +39,12 @@ module V1
           m.default_player.scoring_type
         end
         expose :venue, using: Venue
-        expose :score
-        expose :recorded_scorecards_count
+        expose :score do |m, o|
+          m.default_player.score
+        end
+        expose :recorded_scorecards_count do |m, o|
+          m.default_player.recorded_scorecards_count
+        end
         expose :started_at do |m, o|
           m.started_at.to_i
         end
@@ -55,7 +59,7 @@ module V1
         optional :page, type: String, desc: '页数'
       end
       get :practice do
-        matches = Match.by_owner(@current_user).includes(:venue).includes(:scorecards).page(params[:page]).per(10)
+        matches = Match.by_owner(@current_user).includes(:venue).includes(:players).page(params[:page]).per(10)
         present matches, with: Matches::Entities::PracticeMatches, latitude: params[:latitude], longitude: params[:longitude]
       end
 
