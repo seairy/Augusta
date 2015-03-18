@@ -21,17 +21,23 @@ module V1
         expose :direction
       end
 
-      class Match < Grape::Entity
+      class PracticeMatch < Grape::Entity
         expose :uuid, if: lambda{|m, o| o[:included_uuid]}
         expose :type
-        expose :scoring_type
-        expose :scorecards, using: Scorecards
+        expose :scoring_type do |m, o|
+          m.default_player.scoring_type
+        end
+        expose :scorecards, using: Scorecards do |m, o|
+          m.players.first.scorecards
+        end
       end
 
-      class Matches < Grape::Entity
+      class PracticeMatches < Grape::Entity
         expose :uuid
         expose :type
-        expose :scoring_type
+        expose :scoring_type do |m, o|
+          m.default_player.scoring_type
+        end
         expose :venue, using: Venue
         expose :score
         expose :recorded_scorecards_count
@@ -44,23 +50,23 @@ module V1
 
   class MatchesAPI < Grape::API
     resources :matches do
-      desc '历史赛事列表'
+      desc '历史练习赛事列表'
       params do
         optional :page, type: String, desc: '页数'
       end
-      get '/' do
-        matches = ::Match.by_owner(@current_user).includes(:venue).includes(:scorecards).page(params[:page]).per(10)
-        present matches, with: Matches::Entities::Matches, latitude: params[:latitude], longitude: params[:longitude]
+      get :practice do
+        matches = Match.by_owner(@current_user).includes(:venue).includes(:scorecards).page(params[:page]).per(10)
+        present matches, with: Matches::Entities::PracticeMatches, latitude: params[:latitude], longitude: params[:longitude]
       end
 
-      desc '赛事信息'
+      desc '练习赛事信息'
       params do
         requires :uuid, type: String, desc: '赛事标识'
       end
-      get :show do
+      get '/practice/show' do
         begin
           match = @current_user.matches.find_uuid(params[:uuid])
-          present match, with: Matches::Entities::Match
+          present match, with: Matches::Entities::PracticeMatch
         rescue ActiveRecord::RecordNotFound
           api_error!(10002)
         end
@@ -77,7 +83,7 @@ module V1
           courses = params[:course_uuids].split(',').map{|course_uuid| Course.find_uuid(course_uuid)}
           tee_boxes = params[:tee_boxes].split(',')
           match = Match.create_practice(owner: @current_user, courses: courses, tee_boxes: tee_boxes, scoring_type: params[:scoring_type])
-          present match, with: Matches::Entities::Match, included_uuid: true
+          present match, with: Matches::Entities::PracticeMatch, included_uuid: true
         rescue ActiveRecord::RecordNotFound
           api_error!(10002)
         rescue InvalidGroups
@@ -85,11 +91,11 @@ module V1
         end
       end
 
-      desc '删除赛事'
+      desc '删除练习赛事'
       params do
         requires :uuid, type: String, desc: '赛事标识'
       end
-      delete '/' do
+      delete :practice do
         begin
           match = @current_user.matches.find_uuid(params[:uuid])
           match.trash

@@ -42,6 +42,7 @@ end
 group :test do
   gem 'rspec', '~> 3.1'
   gem 'rack-test', '~> 0.6.2'
+  gem 'database_cleaner', '~> 1.4.0'
 end
 
 group :doc do

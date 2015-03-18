@@ -1,8 +1,6 @@
 require 'spec_helper'
 
 describe 'UsersAPI' do
-  include Rack::Test::Methods
-
   def app
     API
   end
