@@ -64,12 +64,12 @@ namespace :data do
       bench = Benchmark.measure do
         User.all.each do |user|
           15.times do
-            course = Course.all.joins(:groups).where(groups: { holes_count: [9, 18] }).sample
-            (groups = []) << course.groups.where(holes_count: [9, 18]).sample
-            groups << course.groups.where(holes_count: 9).where.not(id: groups.first.id).first unless groups.first.holes_count == 18
-            groups.compact!
-            groups << course.groups.where(holes_count: 9).first unless groups.map(&:holes_count).reduce(:+) == 18
-            Match.create_practice(owner: user, groups: groups, tee_boxes: ['red', 'red'])
+            venue = Venue.all.joins(:courses).where(courses: { holes_count: [9, 18] }).sample
+            (courses = []) << venue.courses.where(holes_count: [9, 18]).sample
+            courses << venue.courses.where(holes_count: 9).where.not(id: courses.first.id).first unless courses.first.holes_count == 18
+            courses.compact!
+            courses << venue.courses.where(holes_count: 9).first unless courses.map(&:holes_count).reduce(:+) == 18
+            Match.create_practice(owner: user, courses: courses, tee_boxes: ['red', 'red'])
           end if user.matches.blank?
         end
       end
