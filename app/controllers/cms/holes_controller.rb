@@ -30,7 +30,7 @@ class Cms::HolesController < Cms::BaseController
   def update
     @hole = Hole.find(params[:id])
     if @hole.update_attributes(hole_params)
-      redirect_to [:cms, @hole.group.course], notice: '球洞更新成功！'
+      redirect_to [:cms, @hole.course.venue], notice: '球洞更新成功！'
     else
       render action: 'edit'
     end
