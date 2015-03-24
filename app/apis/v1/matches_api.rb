@@ -45,9 +45,7 @@ module V1
         expose :recorded_scorecards_count do |m, o|
           m.default_player.recorded_scorecards_count
         end
-        expose :started_at do |m, o|
-          m.started_at.to_i
-        end
+        with_options(format_with: :timestamp){expose :started_at}
       end
     end
   end

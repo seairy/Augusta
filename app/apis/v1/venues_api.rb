@@ -38,10 +38,9 @@ module V1
       params do
         requires :latitude, type: String, desc: '纬度'
         requires :longitude, type: String, desc: '经度'
-        optional :page, type: String, desc: '页数'
       end
       get :nearest do
-        venues = Venue.nearest(params[:latitude], params[:longitude]).page(params[:page]).per(10)
+        venues = Venue.nearest(params[:latitude], params[:longitude])
         present venues, with: Venues::Entities::Venues, latitude: params[:latitude], longitude: params[:longitude]
       end
 

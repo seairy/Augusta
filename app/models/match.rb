@@ -18,7 +18,7 @@ class Match < ActiveRecord::Base
         raise InvalidGroups.new unless options[:courses].map(&:holes_count).reduce(:+) == 18
         match = create!(owner: options[:owner], venue: options[:courses].first.venue, type: :practice, started_at: Time.now)
         player = match.players.create(user: options[:owner], scoring_type: options[:scoring_type])
-        player.create_statistic!(score: 0, net: 0, putts: 0, penalties: 0)
+        player.create_statistic!
         hole_number = 1
         options[:courses].each_with_index do |course, i|
           course.holes.order(:name).each do |hole|
