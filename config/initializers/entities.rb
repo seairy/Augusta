@@ -14,7 +14,7 @@ module V1
     def formatted_scorecards_status scorecards_status
       scorecards_status.map do |scorecard_status|
         if scorecard_status.nil?
-          ''
+          nil
         elsif scorecard_status < 0
           "#{scorecard_status}"
         elsif scorecard_status == 0
