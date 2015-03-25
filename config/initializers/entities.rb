@@ -13,10 +13,12 @@ module V1
 
     def formatted_scorecards_status scorecards_status
       scorecards_status.map do |scorecard_status|
-        if scorecard_status < 0
+        if scorecard_status.nil?
+          ''
+        elsif scorecard_status < 0
           "#{scorecard_status}"
         elsif scorecard_status == 0
-          "E"
+          'E'
         else
           "+#{scorecard_status}"
         end
