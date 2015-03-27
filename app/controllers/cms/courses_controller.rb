@@ -20,8 +20,9 @@ class Cms::CoursesController < Cms::BaseController
   
   def create
     @course = Course.new(course_params)
+    @course.venue = @venue
     if @course.save
-      redirect_to [:cms, @course], notice: '创建成功！'
+      redirect_to [:cms, @venue], notice: '创建成功！'
     else
       render action: 'new'
     end
@@ -30,7 +31,7 @@ class Cms::CoursesController < Cms::BaseController
   def update
     @course = Course.find(params[:id])
     if @course.update_attributes(course_params)
-      redirect_to [:cms, @course], notice: '更新成功！'
+      redirect_to [:cms, @course.venue], notice: '更新成功！'
     else
       render action: 'edit'
     end

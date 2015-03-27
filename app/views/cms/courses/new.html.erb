@@ -8,7 +8,7 @@
       <h4 class="panel-title">球场信息</h4>
     </div>
     <div class="panel-body panel-body-nopadding">
-      <%= form_for [:cms, @course], html: { class: 'form-horizontal form-bordered' } do |f| %>
+      <%= form_for [:cms, @venue, @course], html: { class: 'form-horizontal form-bordered' } do |f| %>
         <div class="form-group">
           <label class="col-sm-3 control-label"><%= brac_t 'course.name' %></label>
           <div class="col-sm-6">

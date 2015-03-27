@@ -15,7 +15,7 @@ class Statistic < ActiveRecord::Base
       self.average_drive_length = (par_4_and_5_scorecards.map(&:driving_distance).reduce(:+).to_f / par_4_and_5_scorecards.count).round(2)
       self.drive_fairways_hit = "#{((par_4_and_5_scorecards.select{|scorecard| scorecard.direction_pure?}.count.to_f / par_4_and_5_scorecards.count) * 100).round(2)}%"
       self.scrambles = "#{((non_gir_scorecards.select{|scorecard| scorecard.score <= scorecard.par}.count.to_f / non_gir_scorecards.count) * 100).round(2)}%"
-      self.bounce = scorecards.inject(previous: nil, bounce: 0) do |result, scorecard|
+      self.bounce = "#{((scorecards.inject(previous: nil, bounce: 0) do |result, scorecard|
         if scorecard.score - scorecard.par >= 1
           result[:previous] = 'bogey+'
         elsif scorecard.par - scorecard.score >= 1
@@ -25,7 +25,7 @@ class Statistic < ActiveRecord::Base
           result[:previous] = 'par'
         end
         result
-      end[:bounce]
+      end[:bounce].to_f / 9) * 100).round(2)}%"
       self.advantage_transformation = gir_scorecards.select{|scorecard| scorecard.par - scorecard.score >= 1}.count
       self.greens_in_regulation = "#{((gir_scorecards.count.to_f / 18) * 100).round(2)}%"
       self.putts_per_gir = (gir_scorecards.map(&:putts).reduce(:+).to_f / gir_scorecards.count).round(2)
