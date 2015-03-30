@@ -19,12 +19,12 @@
           <label class="col-sm-3 control-label"><%= brac_t 'course.holes_count' %></label>
           <div class="col-sm-6">
             <div class="rdio rdio-default">
-              <%= f.radio_button :holes_count, 9 %>
-              <label for="course_holes_count_9"><%= brac_t 'course.9_holes' %></label>
+              <%= radio_button_tag :holes_count, 9, checked: true %>
+              <label for="holes_count_9"><%= brac_t 'course.9_holes' %></label>
             </div>
             <div class="rdio rdio-default">
-              <%= f.radio_button :holes_count, 18 %>
-              <label for="course_holes_count_18"><%= brac_t 'course.18_holes' %></label>
+              <%= radio_button_tag :holes_count, 18 %>
+              <label for="holes_count_18"><%= brac_t 'course.18_holes' %></label>
             </div>
           </div>
         </div>
