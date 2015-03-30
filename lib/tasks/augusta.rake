@@ -58,6 +58,24 @@ namespace :data do
     p "finished in #{bench.real} second(s)"
   end
 
+  desc 'Import data at Mar 30, 2015.'
+  task :import_150330 => :environment do
+    bench = Benchmark.measure do
+      csv_text = File.read(File.join(Rails.root, 'db', 'data', '150330.csv'))
+      csv = CSV.parse(csv_text, headers: false)
+      csv.each do |row|
+        unless Venue.where("name like '#{row[2]}'").any?
+          province = Province.where(name: row[0]).first_or_create
+          city = City.where(province_id: province.id).where(name: row[1]).first_or_create
+          Venue.create!(city: city, name: row[2], address: row[3])
+        else
+          puts "duplicated venue: #{row[2]}"
+        end
+      end
+    end
+    p "finished in #{bench.real} second(s)"
+  end
+
   namespace :populate do
     desc 'Populate some user\'s matches and scorecards data.'
     task :matches_and_scorecards => :environment do
