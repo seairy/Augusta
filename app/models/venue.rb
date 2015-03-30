@@ -8,4 +8,5 @@ class Venue < ActiveRecord::Base
   scope :nearest, ->(latitude, longitude) {
     near([latitude, longitude], 5000, unit: :km)
   }
+  validates :name, presence: true, length: { maximum: 50 }
 end

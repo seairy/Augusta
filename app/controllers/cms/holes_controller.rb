@@ -42,6 +42,15 @@ class Cms::HolesController < Cms::BaseController
     redirect_to cms_holes_path, notice: '删除成功！'
   end
 
+  def update_par
+    hole = Hole.find(params[:id])
+    if hole.update(par: params[:value])
+      render json: { success: true, message: hole.par }
+    else
+      render json: { success: false, message: '格式不正确，请重新输入！' }
+    end
+  end
+
   protected
   def find_group
     @group = Group.find(params[:group_id])

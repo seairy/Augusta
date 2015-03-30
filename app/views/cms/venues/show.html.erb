@@ -100,7 +100,7 @@
             <% course.holes.each do |hole| %>
             <tr>
               <td><%= hole.name %></td>
-              <td><%= hole.par %></td>
+              <td><%= content_tag 'a', "#{hole.par}", name: 'updateHolePar', data: { type: 'text', pk: hole.id, url: "/cms/holes/#{hole.id}/update_par", title: '请输入标准杆' } %></td>
               <% [:red, :white, :blue, :black, :gold].each do |color| %>
               <td><%= content_tag 'a', "#{hole.tee_boxes.send(color).distance_from_hole}", name: 'updateTeeBoxDistanceFromHole', data: { type: 'text', pk: hole.tee_boxes.send(color).id, url: "/cms/tee_boxes/#{hole.tee_boxes.send(color).id}/update_distance_from_hole", title: '请输入码数' } %></td>
               <% end %>
@@ -125,6 +125,25 @@
    <script>
     jQuery(document).ready(function(){
       $('#description').autosize();
+      jQuery("[name='updateHolePar']").editable({
+        display: function(value, response) {
+          if(response != undefined) {
+            $(this).html(response.message);
+          }
+        },
+        ajaxOptions: {
+          type: 'put',
+          dataType: 'json'
+        },
+        success: function(response, newValue) {
+          if(!response) {
+            return "服务器错误，请重试";
+          }
+          if(response.success === false) {
+            return response.message;
+          }
+        }
+      });
       jQuery("[name='updateTeeBoxDistanceFromHole']").editable({
         display: function(value, response) {
           if(response != undefined) {

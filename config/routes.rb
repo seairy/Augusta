@@ -13,6 +13,9 @@ Rails.application.routes.draw do
     end
     resources :holes do
       resources :tee_boxes
+      member do
+        put 'update_par'
+      end
     end
     resources :tee_boxes do
       member do

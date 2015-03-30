@@ -22,6 +22,7 @@ class Cms::CoursesController < Cms::BaseController
     @course = Course.new(course_params)
     @course.venue = @venue
     if @course.save
+      @course.create_holes_and_tee_boxes!
       redirect_to [:cms, @venue], notice: '创建成功！'
     else
       render action: 'new'
