@@ -14,7 +14,8 @@ module V1
       put '/' do
         begin
           scorecard = Scorecard.find_uuid(params[:uuid])
-          raise PermissionDenied.new unless scorecard.player.match.owner_id == @current_user.id
+          raise PermissionDenied.new unless scorecard.player.user_id == @current_user.id
+          raise InvalidScoringType.new if scorecard.player.scoring_type_professional?
           scorecard.update!(score: params[:score], putts: params[:putts], penalties: params[:penalties], driving_distance: params[:driving_distance], direction: params[:direction])
           scorecard.player.statistic.calculate!
           present successful_json
@@ -22,6 +23,8 @@ module V1
           api_error!(10002)
         rescue PermissionDenied
           api_error!(10003)
+        rescue InvalidScoringType
+          api_error!(20102)
         end
       end
     end

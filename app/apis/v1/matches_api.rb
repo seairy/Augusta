@@ -28,7 +28,7 @@ module V1
           m.default_player.scoring_type
         end
         expose :scorecards, using: Scorecards do |m, o|
-          m.players.first.scorecards
+          m.default_player.scorecards
         end
       end
 
@@ -54,10 +54,11 @@ module V1
     resources :matches do
       desc '历史练习赛事列表'
       params do
+        optional :scoring_type, type: String, values: ['simple', 'professional'], default: 'simple', desc: '记分类型'
         optional :page, type: String, desc: '页数'
       end
       get :practice do
-        matches = Match.by_owner(@current_user).includes(:venue).includes(:players).page(params[:page]).per(10)
+        matches = Match.by_owner(@current_user).joins(:players).where(players: { scoring_type_cd: params[:scoring_type]}).includes(:venue).includes(:players).page(params[:page]).per(10)
         present matches, with: Matches::Entities::PracticeMatches, latitude: params[:latitude], longitude: params[:longitude]
       end
 

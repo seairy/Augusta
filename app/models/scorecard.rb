@@ -5,6 +5,7 @@ class Scorecard < ActiveRecord::Base
   as_enum :direction, [:hook, :pure, :slice], prefix: true, map: :string
   belongs_to :player
   belongs_to :hole
+  has_many :strokes
   scope :sorted, -> { order(:number) }
   scope :out, -> { where(number: 1..9) }
   scope :in, -> { where(number: 10..18) }

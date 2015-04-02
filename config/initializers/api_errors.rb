@@ -5,8 +5,10 @@ class APIError
     10001 => { status: 401, message: 'Token失效' },
     10002 => { status: 404, message: '数据未找到' },
     10003 => { status: 403, message: '访问非当前用户数据' },
-    # 20101 ~ 20199: 简单记分错误
+    # 20101 ~ 20199: 记分卡错误
     20101 => { message: '无效的球场' },
+    20102 => { message: '专业记分方式无法修改记分卡' },
+    20103 => { message: '简单记分方式无法修改击球记录' },
   }
 
   class << self
