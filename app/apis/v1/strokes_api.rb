@@ -12,12 +12,14 @@ module V1
       end
 
       class Scorecard < Grape::Entity
-        expose :scorecard
-        expose :sequence
-        expose :distance_from_hole
-        expose :point_of_fall
+        expose :score
+        expose :putts
         expose :penalties
-        expose :club
+      end
+
+      class StrokeAndScorecard < Grape::Entity
+        expose :stroke
+        expose :scorecard, using: Scorecard
       end
     end
   end
@@ -33,7 +35,7 @@ module V1
           scorecard = Scorecard.find_uuid(params[:scorecard_uuid])
           raise PermissionDenied.new unless scorecard.player.user_id == @current_user.id
           raise InvalidScoringType.new if scorecard.player.scoring_type_simple?
-          present scorecard.strokes.sorted
+          present scorecard.strokes.sorted, with: Strokes::Entities::Strokes
         rescue ActiveRecord::RecordNotFound
           api_error!(10002)
         rescue PermissionDenied
@@ -49,15 +51,16 @@ module V1
         requires :distance_from_hole, type: Integer, desc: '距离球洞码数'
         optional :point_of_fall, type: String, values: ['fairway', 'green', 'left_rough', 'right_rough', 'bunker', 'unplayable'], desc: '球的落点'
         optional :penalties, type: Integer, desc: '罚杆数'
-        requires :club, type: String, values: ['1w', '3w'], desc: '球杆'
+        requires :club, type: String, values: ['1w', '3w', 'pt'], desc: '球杆'
       end
       post '/' do
         begin
           scorecard = Scorecard.find_uuid(params[:scorecard_uuid])
           raise PermissionDenied.new unless scorecard.player.user_id == @current_user.id
           raise InvalidScoringType.new if scorecard.player.scoring_type_simple?
-          scorecard.strokes.create!(distance_from_hole: params[:distance_from_hole], point_of_fall: params[:point_of_fall], penalties: params[:penalties], club: params[:club])
-          present successful_json
+          stroke = scorecard.strokes.create!(distance_from_hole: params[:distance_from_hole], point_of_fall: params[:point_of_fall], penalties: params[:penalties], club: params[:club])
+          entity = { stroke: { uuid: stroke.uuid}, scorecard: scorecard }
+          present entity, with: Strokes::Entities::StrokeAndScorecard
         rescue ActiveRecord::RecordNotFound
           api_error!(10002)
         rescue PermissionDenied
@@ -69,19 +72,19 @@ module V1
 
       desc '编辑击球记录'
       params do
-        requires :scorecard_uuid, type: String, desc: '记分卡标识'
+        requires :uuid, type: String, desc: '击球记录标识'
         requires :distance_from_hole, type: Integer, desc: '距离球洞码数'
         optional :point_of_fall, type: String, values: ['fairway', 'green', 'left_rough', 'right_rough', 'bunker', 'unplayable'], desc: '球的落点'
         optional :penalties, type: Integer, desc: '罚杆数'
-        requires :club, type: String, values: ['1w', '3w'], desc: '球杆'
+        requires :club, type: String, values: ['1w', '3w', 'pt'], desc: '球杆'
       end
       put '/' do
         begin
-          scorecard = Scorecard.find_uuid(params[:scorecard_uuid])
-          raise PermissionDenied.new unless scorecard.player.user_id == @current_user.id
-          raise InvalidScoringType.new if scorecard.player.scoring_type_simple?
-          scorecard.strokes.create!(distance_from_hole: params[:distance_from_hole], point_of_fall: params[:point_of_fall], penalties: params[:penalties], club: params[:club])
-          present successful_json
+          stroke = Stroke.find_uuid(params[:uuid])
+          raise PermissionDenied.new unless stroke.scorecard.player.user_id == @current_user.id
+          raise InvalidScoringType.new if stroke.scorecard.player.scoring_type_simple?
+          stroke.update!(distance_from_hole: params[:distance_from_hole], point_of_fall: params[:point_of_fall], penalties: params[:penalties], club: params[:club])
+          present stroke.scorecard, with: Strokes::Entities::Scorecard
         rescue ActiveRecord::RecordNotFound
           api_error!(10002)
         rescue PermissionDenied
@@ -101,7 +104,7 @@ module V1
           raise PermissionDenied.new unless stroke.scorecard.player.user_id == @current_user.id
           raise InvalidScoringType.new if stroke.scorecard.player.scoring_type_simple?
           stroke.destroy!
-          present successful_json
+          present stroke.scorecard, with: Strokes::Entities::Scorecard
         rescue ActiveRecord::RecordNotFound
           api_error!(10002)
         rescue PermissionDenied

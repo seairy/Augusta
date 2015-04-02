@@ -2,15 +2,20 @@ class Stroke < ActiveRecord::Base
   include UUID
   belongs_to :scorecard
   as_enum :point_of_fall, [:fairway, :green, :left_rough, :right_rough, :bunker, :unplayable], prefix: true, map: :string
-  as_enum :club, ['1w', '3w'], prefix: true, map: :string
+  as_enum :club, ['1w', '3w', 'pt'], prefix: true, map: :string
   before_create :setup_sequence
-  after_destroy :reorder_sequence
+  after_save :recalculate_scorecard
+  after_destroy :reorder_sequence, :recalculate_scorecard
   scope :by_scorecard, ->(scorecard_id) { where(scorecard_id: scorecard_id) }
   scope :sorted, -> { order(:sequence) }
 
   protected
     def setup_sequence
       self.sequence = Stroke.by_scorecard(self.scorecard).count + 1
+    end
+
+    def recalculate_scorecard
+      self.scorecard.calculate!
     end
 
     def reorder_sequence

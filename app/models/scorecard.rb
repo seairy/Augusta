@@ -17,4 +17,21 @@ class Scorecard < ActiveRecord::Base
   def status
     score - par if score and par
   end
+
+  def calculate!
+    if player.scoring_type_professional?
+      self.score = strokes.count
+      self.putts = strokes.select{|stroke| stroke.club_pt?}.count
+      self.penalties = strokes.map{|stroke| stroke.penalties}.compact.reduce(:+)
+      self.driving_distance = (distance_from_hole_to_tee_box - strokes.first.distance_from_hole) if strokes.first
+      self.direction = (if strokes.first.point_of_fall_left_rough?
+          :hook
+        elsif strokes.first.point_of_fall_right_rough?
+          :slice
+        else
+          :pure
+        end) if strokes.first
+      save!
+    end
+  end
 end
