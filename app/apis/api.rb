@@ -10,7 +10,7 @@ module ErrorFormatter
     if message.to_s =~ /\d{5}/
       { error_code: message, message: APIError.message(message) }.to_json
     else
-      { error_code: 99999, message: message }.to_json
+      { error_code: 10000, message: message }.to_json
     end
   end
 end
@@ -56,5 +56,9 @@ class API < Grape::API
   namespace :doc do
     formatter :json, DocFormatter 
     add_swagger_documentation api_version: 'v1'
+  end
+
+  route :any, '*path' do
+    api_error!(10004)
   end
 end

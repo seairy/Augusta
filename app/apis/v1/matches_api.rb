@@ -54,7 +54,7 @@ module V1
     resources :matches do
       desc '历史练习赛事列表'
       params do
-        optional :scoring_type, type: String, values: ['simple', 'professional'], default: 'simple', desc: '记分类型'
+        optional :scoring_type, type: String, values: Player.scoring_types.keys, default: 'simple', desc: '记分类型'
         optional :page, type: String, desc: '页数'
       end
       get :practice do
@@ -79,7 +79,7 @@ module V1
       params do
         requires :course_uuids, type: String, desc: '球场标识'
         requires :tee_boxes, type: String, desc: '发球台'
-        requires :scoring_type, type: String, values: ['simple', 'professional'], desc: '记分类型'
+        requires :scoring_type, type: String, values: Player.scoring_types.keys, desc: '记分类型'
       end
       post :practice do
         begin

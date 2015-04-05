@@ -49,9 +49,9 @@ module V1
       params do
         requires :scorecard_uuid, type: String, desc: '记分卡标识'
         requires :distance_from_hole, type: Integer, desc: '距离球洞码数'
-        optional :point_of_fall, type: String, values: ['fairway', 'green', 'left_rough', 'right_rough', 'bunker', 'unplayable'], desc: '球的落点'
+        optional :point_of_fall, type: String, values: Stroke.point_of_falls.keys, desc: '球的落点'
         optional :penalties, type: Integer, desc: '罚杆数'
-        requires :club, type: String, values: ['1w', '3w', 'pt'], desc: '球杆'
+        requires :club, type: String, values: Stroke.clubs.keys, desc: '球杆'
       end
       post '/' do
         begin
@@ -74,9 +74,9 @@ module V1
       params do
         requires :uuid, type: String, desc: '击球记录标识'
         requires :distance_from_hole, type: Integer, desc: '距离球洞码数'
-        optional :point_of_fall, type: String, values: ['fairway', 'green', 'left_rough', 'right_rough', 'bunker', 'unplayable'], desc: '球的落点'
+        optional :point_of_fall, type: String, values: Stroke.point_of_falls.keys, desc: '球的落点'
         optional :penalties, type: Integer, desc: '罚杆数'
-        requires :club, type: String, values: ['1w', '3w', 'pt'], desc: '球杆'
+        requires :club, type: String, values: Stroke.clubs.keys, desc: '球杆'
       end
       put '/' do
         begin

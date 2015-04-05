@@ -4,8 +4,9 @@ class Token < ActiveRecord::Base
   scope :available, -> { where(available: true) }
 
   class << self
-    def generate
-      create!(content: SecureRandom.urlsafe_base64, generated_at: Time.now)
+    def generate! user
+      user.tokens.update_all(available: false)
+      create!(user: user, content: SecureRandom.urlsafe_base64, generated_at: Time.now)
     end
   end
 end
