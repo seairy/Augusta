@@ -2,7 +2,7 @@
 class Match < ActiveRecord::Base
   include UUID, Trashable
   attr_accessor :groups
-  as_enum :type, [:practice], prefix: true, map: :string
+  as_enum :type, [:practice, :tournament], prefix: true, map: :string
   belongs_to :owner, class_name: 'User'
   belongs_to :venue
   has_many :players

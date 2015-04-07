@@ -62,6 +62,13 @@ module V1
         end
       end
 
+      desc '用户注销'
+      delete :sign_out do
+        authenticate!
+        user = @current_user.sign_out
+        present successful_json
+      end
+
       desc '更新密码'
       params do
         requires :original_password, type: String, desc: '原密码'

@@ -25,6 +25,10 @@ class User < ActiveRecord::Base
     update(hashed_password: Digest::MD5.hexdigest(options[:password]))
   end
 
+  def sign_out options = {}
+    user.tokens.available.first.try(:expired!)
+  end
+
   class << self
     def sign_up_simple
       ActiveRecord::Base.transaction do
@@ -42,7 +46,7 @@ class User < ActiveRecord::Base
         verification_code = user.verification_codes.available.type_sign_ups.first
         raise InvalidVerificationCode.new if options[:verification_code] != '8888'
         verification_code.expired!
-        user.tokens.generate
+        Token.generate!(user)
         user.active!
         user.update!(nickname: "会员#{user.id}", hashed_password: Digest::MD5.hexdigest(options[:password]))
         user
