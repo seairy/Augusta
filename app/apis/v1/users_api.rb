@@ -25,12 +25,16 @@ module V1
       params do
         requires :phone, type: String, regexp: /^1\d{10}$/, desc: '手机号码'
         requires :password, type: String, desc: '密码'
+        requires :password_confirmation, type: String, desc: '确认密码'
         requires :verification_code, type: String, regexp: /^\d{4}$/, desc: '验证码'
       end
       post :sign_up do
         begin
+          raise InvalidPasswordConfirmation.new unless params[:password] == params[:password_confirmation]
           user = User.sign_up(phone: params[:phone], password: params[:password], verification_code: params[:verification_code])
           present user, with: Users::Entities::User
+        rescue InvalidPasswordConfirmation
+          api_error!(20309)
         rescue PhoneNotFound
           api_error!(20302)
         rescue DuplicatedPhone
@@ -55,6 +59,28 @@ module V1
           api_error!(20305)
         rescue InvalidPassword
           api_error!(20306)
+        end
+      end
+
+      desc '更新密码'
+      params do
+        requires :original_password, type: String, desc: '原密码'
+        requires :password, type: String, desc: '新密码'
+        requires :password_confirmation, type: String, desc: '确认密码'
+      end
+      put :update_password do
+        authenticate!
+        begin
+          raise InvalidPasswordConfirmation.new unless params[:password] == params[:password_confirmation]
+          if @current_user.update_password(original_password: params[:original_password], password: params[:password])
+            present successful_json
+          else
+            api_error!(20306)
+          end
+        rescue InvalidPasswordConfirmation
+          api_error!(20309)
+        rescue InvalidOriginalPassword
+          api_error!(20310)
         end
       end
 

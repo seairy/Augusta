@@ -20,6 +20,11 @@ class User < ActiveRecord::Base
     tokens.available.first.try(:content)
   end
 
+  def update_password options = {}
+    raise InvalidOriginalPassword.new unless Digest::MD5.hexdigest(options[:original_password]) == hashed_password
+    update(hashed_password: Digest::MD5.hexdigest(options[:password]))
+  end
+
   class << self
     def sign_up_simple
       ActiveRecord::Base.transaction do
