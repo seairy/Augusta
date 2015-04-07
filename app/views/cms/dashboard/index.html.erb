@@ -104,7 +104,8 @@
 
       var piedata = [
         { label: "游客<%= @guests_count %>人", data: [[1, <%= @guests_count %>]], color: '#D9534F'},
-        { label: "会员<%= @members_count %>人", data: [[1, <%= @members_count %>]], color: '#1CAF9A'},
+        { label: "未激活会员<%= @unactivated_members_count %>人", data: [[1, <%= @unactivated_members_count %>]], color: '#F0AD4E'},
+        { label: "正式会员<%= @activated_members_count %>人", data: [[1, <%= @activated_members_count %>]], color: '#1CAF9A'},
        ];
       
       jQuery.plot('#users-flot', piedata, {
