@@ -14,6 +14,7 @@ class User < ActiveRecord::Base
       transitions from: :unactivated, to: :activated
     end
   end
+  scope :recently, ->(days) { where('signed_up_at >= ?', (Time.now - days).beginning_of_day) }
   validates :nickname, length: { maximum: 20 }
 
   def available_token

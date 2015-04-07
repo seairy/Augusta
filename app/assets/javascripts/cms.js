@@ -13,6 +13,10 @@
 //= require cms/bootstrap-editable.min
 //= require cms/flot/flot.min
 //= require cms/flot/flot.resize.min
+//= require cms/flot/flot.symbol.min
+//= require cms/flot/flot.crosshair.min
+//= require cms/flot/flot.categories.min
+//= require cms/flot/flot.pie.min
 //= require cms/morris.min
 //= require cms/raphael-2.1.0.min
 //= require cms/jquery.datatables.min

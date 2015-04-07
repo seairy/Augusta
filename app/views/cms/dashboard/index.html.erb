@@ -2,4 +2,133 @@
   <h2><i class="fa fa-home"></i> 控制面板</h2>
 </div>
 <div class="contentpanel">
+  <div class="panel panel-default">
+    <div class="panel-body">
+      <div class="row">
+        <div class="col-md-6 mb30">
+          <h5 class="subtitle subtitle-lined mb5">最近10天注册用户</h5>
+          <div id="ten-days-users-flot" style="width: 100%; height: 300px"></div>
+        </div>
+        <div class="col-md-6 mb30">
+          <h5 class="subtitle subtitle-lined mb5">全部<%= @users_count %>位用户</h5>
+          <div id="users-flot" style="width: 100%; height: 300px"></div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
+<% content_for :javascript do %>
+  <script>
+    jQuery(document).ready(function() {
+      function showTooltip(x, y, contents) {
+        jQuery('<div id="tooltip" class="tooltipflot">' + contents + '</div>').css( {
+          position: 'absolute',
+          display: 'none',
+          top: y + 5,
+          left: x + 5
+        }).appendTo("body").fadeIn(200);
+      }
+    
+      var guest = <%= raw @ten_days_guests_chart %>;
+      var member = <%= raw @ten_days_members_chart %>;
+      var plot = jQuery.plot(jQuery("#ten-days-users-flot"),
+      [{
+          data: guest,
+          label: "游客",
+          color: "#1CAF9A"
+        }, {
+          data: member,
+          label: "会员",
+          color: "#428BCA"
+      }], {
+        series: {
+          lines: {
+            show: true,
+            fill: true,
+            lineWidth: 1,
+            fillColor: {
+              colors: [
+                { opacity: 0.5 },
+                { opacity: 0.5 }
+              ]
+            }
+          }, points: {
+              show: true
+          }, shadowSize: 0
+        }, legend: {
+          position: 'nw'
+        }, grid: {
+          hoverable: true,
+          clickable: true,
+          borderColor: '#ddd',
+          borderWidth: 1,
+          labelMargin: 10,
+          backgroundColor: '#fff'
+        }, yaxis: {
+          min: 0,
+          max: <%= @ten_days_users_count %>,
+          color: '#eee'
+        }, xaxis: {
+        mode: "categories",
+          color: '#eee'
+        }
+      });
+      
+      var previousPoint = null;
+      jQuery("#ten-days-users-flot").bind("plothover", function (event, pos, item) {
+        jQuery("#x").text(pos.x.toFixed(2));
+        jQuery("#y").text(pos.y.toFixed(2));
+        
+        if(item) {
+          if (previousPoint != item.dataIndex) {
+            previousPoint = item.dataIndex;
+                
+            jQuery("#tooltip").remove();
+            var x = item.series.data[item.dataIndex][0],
+            y = item.datapoint[1];
+
+            showTooltip(item.pageX, item.pageY,
+              x + ": 新增" + item.series.label + y + "人");
+          }
+        } else {
+          jQuery("#tooltip").remove();
+          previousPoint = null;            
+        }
+      });
+
+      jQuery("#ten-days-users-flot").bind("plotclick", function (event, pos, item) {
+        if (item) {
+          plot.highlight(item.series, item.datapoint);
+        }
+      });
+
+      var piedata = [
+        { label: "游客<%= @guests_count %>人", data: [[1, <%= @guests_count %>]], color: '#D9534F'},
+        { label: "会员<%= @members_count %>人", data: [[1, <%= @members_count %>]], color: '#1CAF9A'},
+       ];
+      
+      jQuery.plot('#users-flot', piedata, {
+          series: {
+              pie: {
+                  show: true,
+                  radius: 1,
+                  label: {
+                      show: true,
+                      radius: 2/3,
+                      formatter: labelFormatter,
+                      threshold: 0.1
+                  }
+              }
+          },
+          grid: {
+              hoverable: true,
+              clickable: true
+          }
+      });
+      
+      function labelFormatter(label, series) {
+      return "<div style='font-size:8pt; text-align:center; padding:2px; color:white;'>" + label + "<br/>" + Math.round(series.percent) + "%</div>";
+      }
+    });
+  </script>
+<% end %>
