@@ -86,7 +86,7 @@ module V1
 
       desc '更新头像'
       params do
-        requires :portrait, type: File, desc: '头像'
+        requires :portrait, desc: '头像'
       end
       put :update_portrait do
         authenticate!
