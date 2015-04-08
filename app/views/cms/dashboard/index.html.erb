@@ -109,22 +109,22 @@
        ];
       
       jQuery.plot('#users-flot', piedata, {
-          series: {
-              pie: {
-                  show: true,
-                  radius: 1,
-                  label: {
-                      show: true,
-                      radius: 2/3,
-                      formatter: labelFormatter,
-                      threshold: 0.1
-                  }
-              }
-          },
-          grid: {
-              hoverable: true,
-              clickable: true
+        series: {
+          pie: {
+            show: true,
+            radius: 1,
+            label: {
+              show: true,
+              radius: 2/3,
+              formatter: labelFormatter,
+              threshold: 0.1
+            }
           }
+        },
+        grid: {
+          hoverable: true,
+          clickable: true
+        }
       });
       
       function labelFormatter(label, series) {

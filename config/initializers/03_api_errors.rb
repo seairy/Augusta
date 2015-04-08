@@ -6,6 +6,7 @@ class APIError
     10002 => { status: 404, message: '数据未找到' },
     10003 => { status: 403, message: '访问非当前用户数据' },
     10004 => { status: 404, message: 'API不存在' },
+    10005 => { status: 408, message: '请求超时' },
     # 20101 ~ 20199: 记分卡
     20101 => { message: '无效的球场' },
     20102 => { message: '专业记分方式无法修改记分卡' },
@@ -23,6 +24,9 @@ class APIError
     20308 => { message: '无效的性别' },
     20309 => { message: '无效的确认密码' },
     20310 => { message: '无效的原密码' },
+    20311 => { message: '无效的头像' },
+    20312 => { message: '无效的签名' },
+    20313 => { message: '无效的出生日期' },
   }
 
   class << self

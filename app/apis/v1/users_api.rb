@@ -10,6 +10,23 @@ module V1
           m.available_token
         end
       end
+
+      class Portrait < Grape::Entity
+        expose :user do
+          expose :portrait do |m, o|
+            oss_image(m, :portrait, :w300_h300_fl_q50)
+          end
+        end
+      end
+
+      class Details < Grape::Entity
+        expose :gender
+        with_options(format_with: :timestamp){expose :birthday}
+        expose :description
+        expose :handicap
+        with_options(format_with: :timestamp){expose :signed_up_at}
+        with_options(format_with: :timestamp){expose :last_signed_in_at}
+      end
     end
   end
   
@@ -65,8 +82,20 @@ module V1
       desc '用户注销'
       delete :sign_out do
         authenticate!
-        user = @current_user.sign_out
+        @current_user.sign_out
         present successful_json
+      end
+
+      desc '用户头像'
+      get :portrait do
+        authenticate!
+        present @current_user, with: Users::Entities::Portrait
+      end
+
+      desc '用户详细资料'
+      get :details do
+        authenticate!
+        present @current_user, with: Users::Entities::Details
       end
 
       desc '更新密码'
@@ -123,10 +152,40 @@ module V1
       end
       put :update_portrait do
         authenticate!
-        if @current_user.update(portrait: params[:portrait])
+        begin
+          if @current_user.update(portrait: params[:portrait])
+            present @current_user, with: Users::Entities::Portrait
+          else
+            api_error!(20311)
+          end
+        rescue RestClient::RequestTimeout
+          api_error!(10005)
+        end
+      end
+
+      desc '更新签名'
+      params do
+        requires :description, desc: '签名'
+      end
+      put :update_description do
+        authenticate!
+        if @current_user.update(description: params[:description])
           present successful_json
         else
-          api_error!(20309)
+          api_error!(20312)
+        end
+      end
+
+      desc '更新出生日期'
+      params do
+        requires :birthday, desc: '出生日期'
+      end
+      put :update_birthday do
+        authenticate!
+        if @current_user.update_birthday(params[:birthday].to_i)
+          present successful_json
+        else
+          api_error!(20313)
         end
       end
     end

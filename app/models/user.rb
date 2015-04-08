@@ -26,6 +26,10 @@ class User < ActiveRecord::Base
     update(hashed_password: Digest::MD5.hexdigest(options[:password]))
   end
 
+  def update_birthday birthday
+    update(birthday: Time.at(birthday))
+  end
+
   def sign_out options = {}
     user.tokens.available.first.try(:expired!)
   end

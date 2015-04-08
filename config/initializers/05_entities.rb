@@ -4,10 +4,14 @@ module V1
       case datetime.class.to_s
       when 'Date' then datetime.to_datetime.to_i
       else datetime.to_i
-      end
+      end if datetime
     end
 
     format_with(:float) do |float|
+      float.try(:to_f)
+    end
+
+    format_with(:image) do |image|
       float.try(:to_f)
     end
 
@@ -23,6 +27,10 @@ module V1
           "+#{scorecard_status}"
         end
       end
+    end
+
+    def oss_image object, asset_name, version
+      object ? (object.send("#{asset_name}?") ? object.send(asset_name).send(version) : nil) : nil
     end
   end
 end
