@@ -7,6 +7,8 @@ class Stroke < ActiveRecord::Base
   after_save :recalculate_scorecard
   after_destroy :reorder_sequence, :recalculate_scorecard
   scope :by_scorecard, ->(scorecard_id) { where(scorecard_id: scorecard_id) }
+  scope :shot, -> { where.not(club_cd: 'pt') }
+  scope :putt, -> { where(club_cd: 'pt') }
   scope :sorted, -> { order(:sequence) }
 
   protected

@@ -20,6 +20,9 @@ module V1
       end
 
       class Details < Grape::Entity
+        expose :portrait do |m, o|
+          oss_image(m, :portrait, :w300_h300_fl_q50)
+        end
         expose :gender
         with_options(format_with: :timestamp){expose :birthday}
         expose :description
@@ -165,7 +168,7 @@ module V1
 
       desc '更新签名'
       params do
-        requires :description, desc: '签名'
+        requires :description, type: String, desc: '签名'
       end
       put :update_description do
         authenticate!
