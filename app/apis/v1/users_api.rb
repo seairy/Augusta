@@ -20,9 +20,6 @@ module V1
       end
 
       class Details < Grape::Entity
-        expose :portrait do |m, o|
-          oss_image(m, :portrait, :w300_h300_fl_q50)
-        end
         expose :gender
         with_options(format_with: :timestamp){expose :birthday}
         expose :description
