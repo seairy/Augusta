@@ -21,6 +21,7 @@ class Stroke < ActiveRecord::Base
       raise ArgumentError.new
     end
   end)
+  scope :distance_within_40, -> { where('distance_from_hole <= 40') }
   scope :sorted, -> { order(:sequence) }
 
   def next
