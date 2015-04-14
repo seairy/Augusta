@@ -129,11 +129,17 @@ module V1
         end
         expose :item_09 do |m, o|
           {
+            double_eagle: m.double_eagle,
             double_eagle_percentage: m.double_eagle_percentage,
+            eagle: m.eagle,
             eagle_percentage: m.eagle_percentage,
+            birdie: m.birdie,
             birdie_percentage: m.birdie_percentage,
+            par: m.par,
             par_percentage: m.par_percentage,
+            bogey: m.bogey,
             bogey_percentage: m.bogey_percentage,
+            double_bogey: m.double_bogey,
             double_bogey_percentage: m.double_bogey_percentage,
             advantage_transformation: m.advantage_transformation,
             bounce: m.bounce

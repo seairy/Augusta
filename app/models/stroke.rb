@@ -11,6 +11,7 @@ class Stroke < ActiveRecord::Base
   scope :putt, -> { where(club_cd: 'pt') }
   scope :holed, -> { where(distance_from_hole: 0) }
   scope :non_holed, -> { where.not(distance_from_hole: 0) }
+  scope :distanced, ->(range) { where('distance_from_hole > ?', range.begin).where('distance_from_hole <= ?', range.end) }
   scope :sorted, -> { order(:sequence) }
 
   protected
