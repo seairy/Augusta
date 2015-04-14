@@ -121,6 +121,7 @@ module V1
         expose :item_08 do |m, o|
           {
             longest_drive_length: m.longest_drive_length,
+            longest_2_drive_length: m.longest_2_drive_length,
             average_drive_length: m.average_drive_length,
             good_drives: m.good_drives,
             good_drives_percentage: m.good_drives_percentage,
