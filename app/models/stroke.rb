@@ -9,6 +9,8 @@ class Stroke < ActiveRecord::Base
   scope :by_scorecard, ->(scorecard_id) { where(scorecard_id: scorecard_id) }
   scope :shot, -> { where.not(club_cd: 'pt') }
   scope :putt, -> { where(club_cd: 'pt') }
+  scope :holed, -> { where(distance_from_hole: 0) }
+  scope :non_holed, -> { where.not(distance_from_hole: 0) }
   scope :sorted, -> { order(:sequence) }
 
   protected

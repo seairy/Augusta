@@ -96,7 +96,7 @@ module V1
         end
         expose :item_06 do |m, o|
           {
-            greens_in_regulation: m.greens_in_regulation,
+            gir: m.gir,
             non_gir: m.non_gir,
             gir_percentage: m.gir_percentage,
             non_gir_percentage: m.non_gir_percentage,
@@ -108,18 +108,6 @@ module V1
         end
         expose :item_07 do |m, o|
           {
-            greens_in_regulation: m.greens_in_regulation,
-            non_gir: m.non_gir,
-            gir_percentage: m.gir_percentage,
-            non_gir_percentage: m.non_gir_percentage,
-            holes_of_gir: m.holes_of_gir,
-            gir_to_within_15ft: m.gir_to_within_15ft,
-            gir_to_within_15ft_percentage: m.gir_to_within_15ft_percentage,
-            holes_of_gir_to_within_15ft: m.holes_of_gir_to_within_15ft
-          }
-        end
-        expose :item_08 do |m, o|
-          {
             drive_fairways_hit: m.drive_fairways_hit,
             drive_left_roughs_hit: m.drive_left_roughs_hit,
             drive_right_roughs_hit: m.drive_right_roughs_hit,
@@ -130,7 +118,7 @@ module V1
             holes_of_drive_right_roughs: m.holes_of_drive_right_roughs
           }
         end
-        expose :item_09 do |m, o|
+        expose :item_08 do |m, o|
           {
             longest_drive_length: m.longest_drive_length,
             average_drive_length: m.average_drive_length,
@@ -139,7 +127,7 @@ module V1
             holes_of_good_drives: m.holes_of_good_drives
           }
         end
-        expose :item_10 do |m, o|
+        expose :item_09 do |m, o|
           {
             double_eagle_percentage: m.double_eagle_percentage,
             eagle_percentage: m.eagle_percentage,
@@ -151,7 +139,7 @@ module V1
             bounce: m.bounce
           }
         end
-        expose :item_11 do |m, o|
+        expose :item_10 do |m, o|
           {
             club_1w: m.club_1w,
             club_3w: m.club_3w,

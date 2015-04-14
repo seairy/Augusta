@@ -6,12 +6,13 @@ class Scorecard < ActiveRecord::Base
   belongs_to :player
   belongs_to :hole
   has_many :strokes
+  scope :finished, -> { where.not(score: nil) }
   scope :sorted, -> { order(:number) }
   scope :out, -> { where(number: 1..9) }
   scope :in, -> { where(number: 10..18) }
 
   def finished?
-    score and putts
+    score
   end
 
   def status

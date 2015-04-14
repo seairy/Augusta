@@ -25,7 +25,7 @@ class Statistic < ActiveRecord::Base
   attr_accessor :scrambles_percentage
   attr_accessor :bounce
   attr_accessor :advantage_transformation
-  attr_accessor :greens_in_regulation
+  attr_accessor :gir
   attr_accessor :non_gir
   attr_accessor :gir_percentage
   attr_accessor :non_gir_percentage
@@ -64,11 +64,29 @@ class Statistic < ActiveRecord::Base
   attr_accessor :club_3w
   attr_accessor :club_5w
   attr_accessor :club_7w
+  attr_accessor :club_2h
+  attr_accessor :club_3h
+  attr_accessor :club_4h
+  attr_accessor :club_5h
+  attr_accessor :club_1i
+  attr_accessor :club_2i
+  attr_accessor :club_3i
+  attr_accessor :club_4i
+  attr_accessor :club_5i
+  attr_accessor :club_6i
+  attr_accessor :club_7i
+  attr_accessor :club_8i
+  attr_accessor :club_9i
+  attr_accessor :club_pw
+  attr_accessor :club_gw
+  attr_accessor :club_sw
+  attr_accessor :club_lw
+  attr_accessor :club_pt
   after_initialize :setup_after_initialize
 
   def setup_after_initialize
-    scorecards = player.scorecards
-    if scorecards.all?{|scorecard| scorecard.score}
+    scorecards = player.scorecards.finished
+    if scorecards.any?
       par_4_and_5_scorecards = scorecards.select{|scorecard| scorecard.par > 3}
       gir_scorecards = scorecards.select{|scorecard| (scorecard.score - scorecard.putts - scorecard.penalties) <= (scorecard.par - 2)}
       non_gir_scorecards = scorecards.select{|scorecard| (scorecard.score - scorecard.putts - scorecard.penalties) > (scorecard.par - 2)}
@@ -88,52 +106,59 @@ class Statistic < ActiveRecord::Base
         result
       end[:bounce].to_f / 9) * 100).round(2)}%"
       @advantage_transformation = gir_scorecards.select{|scorecard| scorecard.par - scorecard.score >= 1}.count
-      @greens_in_regulation = "#{((gir_scorecards.count.to_f / 18) * 100).round(2)}%"
-      @average_putts = (scorecards.map(&:putts).reduce(:+).to_f / 18).round(2)
+      @gir = gir_scorecards.count
+      @non_gir = non_gir_scorecards.count
+      @gir_percentage = "#{((gir_scorecards.count.to_f / scorecards.count) * 100).round(2)}%"
+      @non_gir_percentage = "#{((non_gir_scorecards.count.to_f / scorecards.count) * 100).round(2)}%"
+      @holes_of_gir = gir_scorecards.map(&:number)
+      @average_putts = (scorecards.map(&:putts).reduce(:+).to_f / scorecards.count).round(2)
       @putts_per_gir = (gir_scorecards.map(&:putts).reduce(:+).to_f / gir_scorecards.count).round(2)
       @putts_per_non_gir = (non_gir_scorecards.map(&:putts).reduce(:+).to_f / non_gir_scorecards.count).round(2)
       if player.scoring_type_professional?
-        @front_6_score = scorecards.select{|scorecard| scorecard.number >= 1 and scorecard.number <= 6}.map(&:score).reduce(:+)
-        @middle_6_score = scorecards.select{|scorecard| scorecard.number >= 7 and scorecard.number <= 12}.map(&:score).reduce(:+)
-        @last_6_score = scorecards.select{|scorecard| scorecard.number >= 13 and scorecard.number <= 18}.map(&:score).reduce(:+)
+        @front_6_score = scorecards.select{|scorecard| scorecard.number >= 1 and scorecard.number <= 6}.map(&:score).reduce(:+) || 0
+        @middle_6_score = scorecards.select{|scorecard| scorecard.number >= 7 and scorecard.number <= 12}.map(&:score).reduce(:+) || 0
+        @last_6_score = scorecards.select{|scorecard| scorecard.number >= 13 and scorecard.number <= 18}.map(&:score).reduce(:+) || 0
         @first_putt_length = scorecards.map{|scorecard| scorecard.strokes.putt.sorted.first}.compact.map(&:distance_from_hole).instance_eval{(reduce(:+) || 0) / size.to_f}
         @first_putt_length_gir = gir_scorecards.map{|scorecard| scorecard.strokes.putt.sorted.first}.compact.map(&:distance_from_hole).instance_eval{(reduce(:+) || 0) / size.to_f}
         @first_putt_length_non_gir = non_gir_scorecards.map{|scorecard| scorecard.strokes.putt.sorted.first}.compact.map(&:distance_from_hole).instance_eval{(reduce(:+) || 0) / size.to_f}
-        # @holed_putt_length = scorecards.map do |scorecard|
-        #   last_putts = scorecard.strokes.sorted.putt.last(2)
-        #   if last_putts.count == 2
-        #     last_putts.last.distance_from_hole == 0 ? last_putts.first : last_putts.last
-        #   elsif last_putts.count == 1
+        @holed_putt_length = scorecards.map do |scorecard|
+          last_putts = scorecard.strokes.sorted.putt.last(2)
+          if last_putts.count == 2
+            last_putts.last.distance_from_hole == 0 ? last_putts.first : last_putts.last
+          elsif last_putts.count == 1
 
-        #   end
-        # end
+          end
+        end
+        @double_eagle_percentage = "#{((double_eagle.to_f / scorecards.count) * 100).round(2)}%"
+        @eagle_percentage = "#{((eagle.to_f / scorecards.count) * 100).round(2)}%"
+        @birdie_percentage = "#{((birdie.to_f / scorecards.count) * 100).round(2)}%"
+        @par_percentage = "#{((par.to_f / scorecards.count) * 100).round(2)}%"
+        @bogey_percentage = "#{((bogey.to_f / scorecards.count) * 100).round(2)}%"
+        @double_bogey_percentage = "#{((double_bogey.to_f / scorecards.count) * 100).round(2)}%"
+
         @scrambles_percentage = '17%'
-        @non_gir = 14
         @wasted_shots_from_drives = 2
         @holed_putt_length = 1.8
-        @distance_0_1_from_hole_in_green = { per_round: 17, shots_to_hole: 1.4, holed_percentage: '86%', dispersion: '0.12'}
-        @distance_1_2_from_hole_in_green = { per_round: 14, shots_to_hole: 1.2, holed_percentage: '80%', dispersion: '0.08'}
-        @distance_2_3_from_hole_in_green = { per_round: 11, shots_to_hole: 1.6, holed_percentage: '92%', dispersion: '0.1'}
-        @distance_3_5_from_hole_in_green = { per_round: 8, shots_to_hole: 1.1, holed_percentage: '98%', dispersion: '0.13'}
+        @distance_0_1_from_hole_in_green = { per_round: 17, shots_to_hole: 1.4, holed_percentage: '86%', dispersion: '0.12' }
+        @distance_1_2_from_hole_in_green = { per_round: 14, shots_to_hole: 1.2, holed_percentage: '80%', dispersion: '0.08' }
+        @distance_2_3_from_hole_in_green = { per_round: 11, shots_to_hole: 1.6, holed_percentage: '92%', dispersion: '0.1' }
+        @distance_3_5_from_hole_in_green = { per_round: 8, shots_to_hole: 1.1, holed_percentage: '98%', dispersion: '0.13' }
         @sand_saves = 1
         @bunker_shots = 4
         @sand_saves_percentage = '25%'
-        @distance_0_10_from_hole_in_bunker = { per_round: 6, shots_to_hole: 1.4, dispersion: '0.12'}
-        @distance_10_20_from_hole_in_bunker = { per_round: 12, shots_to_hole: 1.1, dispersion: '0.09'}
-        @distance_20_50_from_hole_in_bunker = { per_round: 19, shots_to_hole: 1.7, dispersion: '0.14'}
-        @distance_50_100_from_hole_in_bunker = { per_round: 11, shots_to_hole: 1.3, dispersion: '0.28'}
+        @distance_0_10_from_hole_in_bunker = { per_round: 6, shots_to_hole: 1.4, dispersion: '0.12' }
+        @distance_10_20_from_hole_in_bunker = { per_round: 12, shots_to_hole: 1.1, dispersion: '0.09' }
+        @distance_20_50_from_hole_in_bunker = { per_round: 19, shots_to_hole: 1.7, dispersion: '0.14' }
+        @distance_50_100_from_hole_in_bunker = { per_round: 11, shots_to_hole: 1.3, dispersion: '0.28' }
         @up_and_downs = [
-          { distance_from_hole: 84, putt_length: 17},
-          { distance_from_hole: 129, putt_length: 6},
+          { distance_from_hole: 84, putt_length: 17 },
+          { distance_from_hole: 129, putt_length: 6 }
         ]
         @up_and_downs_count = 2
         @shots_within_100ft = 32
         @up_and_downs_percentage = '6%'
         @chip_ins = 0
         @longest_chip_ins_length = nil
-        @gir_percentage = '65%'
-        @non_gir_percentage = '35%'
-        @holes_of_gir = [1, 3, 5, 12, 18]
         @gir_to_within_15ft = 1
         @gir_to_within_15ft_percentage = '10%'
         @holes_of_gir_to_within_15ft = [3]
@@ -148,12 +173,6 @@ class Statistic < ActiveRecord::Base
         @good_drives = 12
         @good_drives_percentage = '93%'
         @holes_of_good_drives = [1, 2, 6, 11]
-        @double_eagle_percentage = '12%'
-        @eagle_percentage = '22%'
-        @birdie_percentage = '9%'
-        @par_percentage = '19%'
-        @bogey_percentage = '37%'
-        @double_bogey_percentage = '0%'
         @club_1w = { uses: 20, average_length: 160, minimum_length: 30, maximum_length: 210, less_than_average_length: 7, greater_than_average_length: 18 }
         @club_3w = { uses: 1, average_length: 320, minimum_length: 320, maximum_length: 320, less_than_average_length: nil, greater_than_average_length: nil }
         @club_5w = { uses: 3, average_length: 130, minimum_length: 80, maximum_length: 190, less_than_average_length: 2, greater_than_average_length: 10 }
@@ -163,22 +182,20 @@ class Statistic < ActiveRecord::Base
   end
 
   def calculate!
-    scorecards = player.scorecards
-    if scorecards.all?{|scorecard| scorecard.score}
-      self.score = scorecards.map(&:score).reduce(:+)
-      self.net = scorecards.map(&:score).reduce(:+)
-      self.putts = scorecards.map(&:putts).reduce(:+)
-      self.penalties = scorecards.map(&:penalties).reduce(:+)
-      self.score_par_3 = scorecards.select{|scorecard| scorecard.par == 3}.map(&:score).reduce(:+)
-      self.score_par_4 = scorecards.select{|scorecard| scorecard.par == 4}.map(&:score).reduce(:+)
-      self.score_par_5 = scorecards.select{|scorecard| scorecard.par == 5}.map(&:score).reduce(:+)
-      self.double_eagle = scorecards.select{|scorecard| scorecard.par - scorecard.score >= 3}.count
-      self.eagle = scorecards.select{|scorecard| scorecard.par - scorecard.score == 2}.count
-      self.birdie = scorecards.select{|scorecard| scorecard.par - scorecard.score == 1}.count
-      self.par = scorecards.select{|scorecard| scorecard.par == scorecard.score}.count
-      self.bogey = scorecards.select{|scorecard| scorecard.score - scorecard.par == 1}.count
-      self.double_bogey = scorecards.select{|scorecard| scorecard.score - scorecard.par >= 2}.count
-      save!
-    end
+    scorecards = player.scorecards.finished
+    self.score = scorecards.map(&:score).reduce(:+)
+    self.net = scorecards.map(&:score).reduce(:+)
+    self.putts = scorecards.map(&:putts).reduce(:+)
+    self.penalties = scorecards.map(&:penalties).reduce(:+)
+    self.score_par_3 = scorecards.select{|scorecard| scorecard.par == 3}.map(&:score).reduce(:+)
+    self.score_par_4 = scorecards.select{|scorecard| scorecard.par == 4}.map(&:score).reduce(:+)
+    self.score_par_5 = scorecards.select{|scorecard| scorecard.par == 5}.map(&:score).reduce(:+)
+    self.double_eagle = scorecards.select{|scorecard| scorecard.par - scorecard.score >= 3}.count
+    self.eagle = scorecards.select{|scorecard| scorecard.par - scorecard.score == 2}.count
+    self.birdie = scorecards.select{|scorecard| scorecard.par - scorecard.score == 1}.count
+    self.par = scorecards.select{|scorecard| scorecard.par == scorecard.score}.count
+    self.bogey = scorecards.select{|scorecard| scorecard.score - scorecard.par == 1}.count
+    self.double_bogey = scorecards.select{|scorecard| scorecard.score - scorecard.par >= 2}.count
+    save!
   end
 end
