@@ -185,7 +185,7 @@ class Statistic < ActiveRecord::Base
         @up_and_downs_percentage = "#{@shots_within_100.zero? ? 0 : ((@up_and_downs_count.to_f / @shots_within_100) * 100).round(2)}%"
         @chip_ins = up_and_downs_scorecards.select{|scorecard| scorecard.chip_ins?}.count
         @longest_chip_ins_length = up_and_downs_scorecards.select{|scorecard| scorecard.chip_ins?}.map{|scorecard| scorecard.strokes.last(2).first.distance_from_hole}.max
-        @gir_to_within_5 = gir_scorecards.select{|scorecard| scorecard.strokes.putt.first.distance_from_hole <= 5}.count
+        @gir_to_within_5 = gir_scorecards.select{|scorecard| scorecard.strokes.putt.any? and scorecard.strokes.putt.first.distance_from_hole <= 5}.count
         @gir_to_within_5_percentage = "#{gir_scorecards.count.zero? ? 0 : ((@gir_to_within_5.to_f / gir_scorecards.count) * 100).round(2)}%"
         @holes_of_gir_to_within_5 = gir_scorecards.select{|scorecard| scorecard.strokes.putt.first.distance_from_hole <= 5}.map(&:number)
         good_drives_scorecards = par_4_and_5_scorecards.select do |scorecard|
