@@ -22,6 +22,7 @@ class Stroke < ActiveRecord::Base
     end
   end)
   scope :distance_within_40, -> { where('distance_from_hole <= 40') }
+  scope :distance_within_100, -> { where('distance_from_hole <= 100') }
   scope :sorted, -> { order(:sequence) }
 
   def next
