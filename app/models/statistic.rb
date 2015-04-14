@@ -92,8 +92,8 @@ class Statistic < ActiveRecord::Base
       non_gir_scorecards = scorecards.select{|scorecard| (scorecard.score - scorecard.putts - scorecard.penalties) > (scorecard.par - 2)}
       @longest_drive_length = par_4_and_5_scorecards.map(&:driving_distance).max
       @average_drive_length = (par_4_and_5_scorecards.map(&:driving_distance).reduce(:+).to_f / par_4_and_5_scorecards.count).round(2)
-      @drive_fairways_hit = "#{((par_4_and_5_scorecards.select{|scorecard| scorecard.direction_pure?}.count.to_f / par_4_and_5_scorecards.count) * 100).round(2)}%"
-      @scrambles = "#{((non_gir_scorecards.select{|scorecard| scorecard.score <= scorecard.par}.count.to_f / non_gir_scorecards.count) * 100).round(2)}%"
+      @scrambles = non_gir_scorecards.select{|scorecard| scorecard.score <= scorecard.par}.count
+      @scrambles_percentage = "#{((non_gir_scorecards.select{|scorecard| scorecard.score <= scorecard.par}.count.to_f / non_gir_scorecards.count) * 100).round(2)}%"
       @bounce = "#{((scorecards.inject(previous: nil, bounce: 0) do |result, scorecard|
         if scorecard.score - scorecard.par >= 1
           result[:previous] = 'bogey+'
@@ -114,6 +114,9 @@ class Statistic < ActiveRecord::Base
       @average_putts = (scorecards.map(&:putts).reduce(:+).to_f / scorecards.count).round(2)
       @putts_per_gir = (gir_scorecards.map(&:putts).reduce(:+).to_f / gir_scorecards.count).round(2)
       @putts_per_non_gir = (non_gir_scorecards.map(&:putts).reduce(:+).to_f / non_gir_scorecards.count).round(2)
+      if player.scoring_type_simple?
+        @drive_fairways_hit = "#{((par_4_and_5_scorecards.select{|scorecard| scorecard.direction_pure?}.count.to_f / par_4_and_5_scorecards.count) * 100).round(2)}%"
+      end
       if player.scoring_type_professional?
         @front_6_score = scorecards.select{|scorecard| scorecard.number >= 1 and scorecard.number <= 6}.map(&:score).reduce(:+) || 0
         @middle_6_score = scorecards.select{|scorecard| scorecard.number >= 7 and scorecard.number <= 12}.map(&:score).reduce(:+) || 0
@@ -135,9 +138,9 @@ class Statistic < ActiveRecord::Base
         @par_percentage = "#{((par.to_f / scorecards.count) * 100).round(2)}%"
         @bogey_percentage = "#{((bogey.to_f / scorecards.count) * 100).round(2)}%"
         @double_bogey_percentage = "#{((double_bogey.to_f / scorecards.count) * 100).round(2)}%"
-
-        @scrambles_percentage = '17%'
-        @wasted_shots_from_drives = 2
+        @drive_fairways_hit = "#{((par_4_and_5_scorecards.select{|scorecard| ['fairway', 'green', 'bunker'].include?(scorecard.strokes.sorted.first.point_of_fall)}.count.to_f / par_4_and_5_scorecards.count) * 100).round(2)}%"
+        @wasted_shots_from_drives = par_4_and_5_scorecards.select{|scorecard| scorecard.strokes.sorted.first.penalties > 0}
+        
         @holed_putt_length = 1.8
         @distance_0_1_from_hole_in_green = { per_round: 17, shots_to_hole: 1.4, holed_percentage: '86%', dispersion: '0.12' }
         @distance_1_2_from_hole_in_green = { per_round: 14, shots_to_hole: 1.2, holed_percentage: '80%', dispersion: '0.08' }

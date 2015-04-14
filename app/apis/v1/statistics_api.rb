@@ -14,7 +14,7 @@ module V1
         expose :scrambles
         expose :bounce
         expose :advantage_transformation
-        expose :greens_in_regulation
+        expose :gir
         expose :putts_per_gir
         expose :score_par_3
         expose :score_par_4
