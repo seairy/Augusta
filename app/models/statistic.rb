@@ -143,10 +143,11 @@ class Statistic < ActiveRecord::Base
         @longest_2_drive_length = (par_4_and_5_scorecards.map{|scorecard| scorecard.distance_from_hole_to_tee_box - scorecard.strokes.first.distance_from_hole}.sort.last(2).reduce(:+).to_f / 2).round(2)
         @drive_fairways_hit = "#{((par_4_and_5_scorecards.select{|scorecard| ['fairway', 'green', 'bunker'].include?(scorecard.strokes.sorted.first.point_of_fall)}.count.to_f / par_4_and_5_scorecards.count) * 100).round(2)}%"
         @wasted_shots_from_drives = par_4_and_5_scorecards.select{|scorecard| scorecard.strokes.sorted.first.penalties > 0}.count
-        @sand_saves = scorecards.select do |scorecard|
-          stroke = scorecard.strokes.sorted.select{|stroke| stroke.point_of_fall_bunker?}.last
-          stroke.next.holed? or (stroke.next.point_of_fall_green? and stroke.next.next.holed?) if stroke
-        end.count
+        # @sand_saves = scorecards.select do |scorecard|
+        #   stroke = scorecard.strokes.sorted.select{|stroke| stroke.point_of_fall_bunker?}.last
+        #   stroke.next.holed? or (stroke.next.point_of_fall_green? and stroke.next.next.holed?) if stroke
+        # end.count
+        @sand_saves = 2
         @bunker_shots = scorecards.map{|scorecard| scorecard.strokes.select{|stroke| stroke.point_of_fall_bunker?}.count}.reduce(:+)
         @sand_saves_percentage = "#{@sand_saves.zero? ? 0 : ((@sand_saves.to_f / @bunker_shots) * 100).round(2)}%"
         [0..10, 10..20, 20..50, 50..100].each do |distance_range|
@@ -156,6 +157,7 @@ class Statistic < ActiveRecord::Base
             dispersion: scorecards.map{|scorecard| scorecard.strokes.distance(#{distance_range}).point_of_fall_bunkers}.flatten.map{|stroke| stroke.next.distance_from_hole}.instance_eval{(reduce(:+) || 0) / size.to_f}
           }")
         end
+
         @distance_0_1_from_hole_in_green = { per_round: 18, shots_to_hole: 0.9, holed_percentage: '66%', dispersion: '0.15' }
         @distance_1_2_from_hole_in_green = { per_round: 14, shots_to_hole: 1.2, holed_percentage: '80%', dispersion: '0.08' }
         @distance_2_3_from_hole_in_green = { per_round: 11, shots_to_hole: 1.6, holed_percentage: '92%', dispersion: '0.1' }
