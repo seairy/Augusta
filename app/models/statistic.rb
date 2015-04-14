@@ -171,13 +171,15 @@ class Statistic < ActiveRecord::Base
           }")
         end
         up_and_downs = scorecards.select do |scorecard|
-          scorecard.strokes.sorted.last
+          scorecard.strokes.sorted.last(2)[0].instance_eval{distance_from_hole <= 100 and point_of_fall_fairway?} or
+          (scorecard.strokes.sorted.last(3)[0].instance_eval{distance_from_hole <= 100 and point_of_fall_fairway?} and
+            scorecard.strokes.sorted.last(3)[1].instance_eval{point_of_fall_green?})
         end
         @up_and_downs = [
           { distance_from_hole: 84, putt_length: 17 },
           { distance_from_hole: 129, putt_length: 6 }
         ]
-        @up_and_downs_count = scorecards.select{|scorecard| scorecard.strokes.sorted.point_of_fall_fairways.distance_within_100.select{|stroke| stroke.shots_to_hole <= 2}}
+        @up_and_downs_count = up_and_downs.count
         @shots_within_100ft = 32
         @up_and_downs_percentage = '6%'
         @chip_ins = 0
