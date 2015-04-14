@@ -7,12 +7,17 @@ class Stroke < ActiveRecord::Base
   after_save :recalculate_scorecard
   after_destroy :reorder_sequence, :recalculate_scorecard
   scope :by_scorecard, ->(scorecard_id) { where(scorecard_id: scorecard_id) }
+  scope :sequenced, ->(sequence) { where(sequence: sequence) }
   scope :shot, -> { where.not(club_cd: 'pt') }
   scope :putt, -> { where(club_cd: 'pt') }
   scope :holed, -> { where(distance_from_hole: 0) }
   scope :non_holed, -> { where.not(distance_from_hole: 0) }
   scope :distanced, ->(range) { where('distance_from_hole > ?', range.begin).where('distance_from_hole <= ?', range.end) }
   scope :sorted, -> { order(:sequence) }
+
+  def next
+    scorecard.strokes.sequenced(sequence + 1).first
+  end
 
   protected
     def setup_sequence

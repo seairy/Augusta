@@ -11,6 +11,7 @@ class Statistic < ActiveRecord::Base
   attr_accessor :last_6_score
   attr_accessor :wasted_shots_from_drives
   attr_accessor :longest_drive_length
+  attr_accessor :longest_2_drive_length
   attr_accessor :average_drive_length
   attr_accessor :drive_fairways_hit
   attr_accessor :drive_left_roughs_hit
@@ -90,7 +91,6 @@ class Statistic < ActiveRecord::Base
       par_4_and_5_scorecards = scorecards.select{|scorecard| scorecard.par > 3}
       gir_scorecards = scorecards.select{|scorecard| (scorecard.score - scorecard.putts - scorecard.penalties) <= (scorecard.par - 2)}
       non_gir_scorecards = scorecards.select{|scorecard| (scorecard.score - scorecard.putts - scorecard.penalties) > (scorecard.par - 2)}
-      @longest_drive_length = par_4_and_5_scorecards.map(&:driving_distance).max
       @average_drive_length = (par_4_and_5_scorecards.map(&:driving_distance).reduce(:+).to_f / par_4_and_5_scorecards.count).round(2)
       @scrambles = non_gir_scorecards.select{|scorecard| scorecard.score <= scorecard.par}.count
       @scrambles_percentage = "#{((non_gir_scorecards.select{|scorecard| scorecard.score <= scorecard.par}.count.to_f / non_gir_scorecards.count) * 100).round(2)}%"
@@ -114,7 +114,15 @@ class Statistic < ActiveRecord::Base
       @average_putts = (scorecards.map(&:putts).reduce(:+).to_f / scorecards.count).round(2)
       @putts_per_gir = (gir_scorecards.map(&:putts).reduce(:+).to_f / gir_scorecards.count).round(2)
       @putts_per_non_gir = (non_gir_scorecards.map(&:putts).reduce(:+).to_f / non_gir_scorecards.count).round(2)
+      @double_eagle_percentage = "#{((double_eagle.to_f / scorecards.count) * 100).round(2)}%"
+      @eagle_percentage = "#{((eagle.to_f / scorecards.count) * 100).round(2)}%"
+      @birdie_percentage = "#{((birdie.to_f / scorecards.count) * 100).round(2)}%"
+      @par_percentage = "#{((par.to_f / scorecards.count) * 100).round(2)}%"
+      @bogey_percentage = "#{((bogey.to_f / scorecards.count) * 100).round(2)}%"
+      @double_bogey_percentage = "#{((double_bogey.to_f / scorecards.count) * 100).round(2)}%"
       if player.scoring_type_simple?
+        @longest_drive_length = par_4_and_5_scorecards.map(&:driving_distance).max
+        @longest_2_drive_length = par_4_and_5_scorecards.map(&:driving_distance).sort.last(2).reduce(:+).to_f / 2
         @drive_fairways_hit = "#{((par_4_and_5_scorecards.select{|scorecard| scorecard.direction_pure?}.count.to_f / par_4_and_5_scorecards.count) * 100).round(2)}%"
       end
       if player.scoring_type_professional?
@@ -125,14 +133,10 @@ class Statistic < ActiveRecord::Base
         @first_putt_length_gir = gir_scorecards.map{|scorecard| scorecard.strokes.putt.sorted.first}.compact.map(&:distance_from_hole).instance_eval{(reduce(:+) || 0) / size.to_f}
         @first_putt_length_non_gir = non_gir_scorecards.map{|scorecard| scorecard.strokes.putt.sorted.first}.compact.map(&:distance_from_hole).instance_eval{(reduce(:+) || 0) / size.to_f}
         @holed_putt_length = scorecards.map{|scorecard| scorecard.strokes.sorted.putt.non_holed.last}.map(&:distance_from_hole).reduce(:+)
-        @double_eagle_percentage = "#{((double_eagle.to_f / scorecards.count) * 100).round(2)}%"
-        @eagle_percentage = "#{((eagle.to_f / scorecards.count) * 100).round(2)}%"
-        @birdie_percentage = "#{((birdie.to_f / scorecards.count) * 100).round(2)}%"
-        @par_percentage = "#{((par.to_f / scorecards.count) * 100).round(2)}%"
-        @bogey_percentage = "#{((bogey.to_f / scorecards.count) * 100).round(2)}%"
-        @double_bogey_percentage = "#{((double_bogey.to_f / scorecards.count) * 100).round(2)}%"
+        @longest_drive_length = par_4_and_5_scorecards.map{|scorecard| scorecard.distance_from_hole_to_tee_box - scorecard.strokes.first.distance_from_hole}.max
+        @longest_2_drive_length = par_4_and_5_scorecards.map{|scorecard| scorecard.distance_from_hole_to_tee_box - scorecard.strokes.first.distance_from_hole}.sort.last(2).reduce(:+).to_f / 2
         @drive_fairways_hit = "#{((par_4_and_5_scorecards.select{|scorecard| ['fairway', 'green', 'bunker'].include?(scorecard.strokes.sorted.first.point_of_fall)}.count.to_f / par_4_and_5_scorecards.count) * 100).round(2)}%"
-        @wasted_shots_from_drives = par_4_and_5_scorecards.select{|scorecard| scorecard.strokes.sorted.first.penalties > 0}
+        @wasted_shots_from_drives = par_4_and_5_scorecards.select{|scorecard| scorecard.strokes.sorted.first.penalties > 0}.count
         
         @distance_0_1_from_hole_in_green = {
           per_round: scorecards.map{|scorecard| scorecard.strokes.putt.distanced(0..1)},
