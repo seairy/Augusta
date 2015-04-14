@@ -50,9 +50,9 @@ module V1
         end
         expose :item_02 do |m, o|
           {
-            score_par_3: m.score_par_3,
-            score_par_4: m.score_par_4,
-            score_par_5: m.score_par_5,
+            average_score_par_3: m.average_score_par_3,
+            average_score_par_4: m.average_score_par_4,
+            average_score_par_5: m.average_score_par_5,
             scrambles: m.scrambles,
             scrambles_percentage: m.scrambles_percentage,
             non_gir: m.non_gir

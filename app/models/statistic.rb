@@ -1,5 +1,8 @@
 class Statistic < ActiveRecord::Base
   belongs_to :player
+  attr_accessor :average_score_par_3
+  attr_accessor :average_score_par_4
+  attr_accessor :average_score_par_5
   attr_accessor :double_eagle_percentage
   attr_accessor :eagle_percentage
   attr_accessor :birdie_percentage
@@ -91,6 +94,9 @@ class Statistic < ActiveRecord::Base
       par_4_and_5_scorecards = scorecards.select{|scorecard| scorecard.par > 3}
       gir_scorecards = scorecards.select{|scorecard| (scorecard.score - scorecard.putts - scorecard.penalties) <= (scorecard.par - 2)}
       non_gir_scorecards = scorecards.select{|scorecard| (scorecard.score - scorecard.putts - scorecard.penalties) > (scorecard.par - 2)}
+      @average_score_par_3 = ((score_par_3.to_f / scorecards.select{|scorecard| scorecard.par == 3}.count) * 100).round(2)
+      @average_score_par_4 = ((score_par_4.to_f / scorecards.select{|scorecard| scorecard.par == 4}.count) * 100).round(2)
+      @average_score_par_5 = ((score_par_5.to_f / scorecards.select{|scorecard| scorecard.par == 5}.count) * 100).round(2)
       @average_drive_length = (par_4_and_5_scorecards.map(&:driving_distance).reduce(:+).to_f / par_4_and_5_scorecards.count).round(2)
       @scrambles = non_gir_scorecards.select{|scorecard| scorecard.score <= scorecard.par}.count
       @scrambles_percentage = "#{((non_gir_scorecards.select{|scorecard| scorecard.score <= scorecard.par}.count.to_f / non_gir_scorecards.count) * 100).round(2)}%"
@@ -122,7 +128,7 @@ class Statistic < ActiveRecord::Base
       @double_bogey_percentage = "#{((double_bogey.to_f / scorecards.count) * 100).round(2)}%"
       if player.scoring_type_simple?
         @longest_drive_length = par_4_and_5_scorecards.map(&:driving_distance).max
-        @longest_2_drive_length = par_4_and_5_scorecards.map(&:driving_distance).sort.last(2).reduce(:+).to_f / 2
+        @longest_2_drive_length = (par_4_and_5_scorecards.map(&:driving_distance).sort.last(2).reduce(:+).to_f / 2).round(2)
         @drive_fairways_hit = "#{((par_4_and_5_scorecards.select{|scorecard| scorecard.direction_pure?}.count.to_f / par_4_and_5_scorecards.count) * 100).round(2)}%"
       end
       if player.scoring_type_professional?
@@ -134,26 +140,28 @@ class Statistic < ActiveRecord::Base
         @first_putt_length_non_gir = non_gir_scorecards.map{|scorecard| scorecard.strokes.putt.sorted.first}.compact.map(&:distance_from_hole).instance_eval{(reduce(:+) || 0) / size.to_f}
         @holed_putt_length = scorecards.map{|scorecard| scorecard.strokes.sorted.putt.non_holed.last}.compact.map(&:distance_from_hole).reduce(:+)
         @longest_drive_length = par_4_and_5_scorecards.map{|scorecard| scorecard.distance_from_hole_to_tee_box - scorecard.strokes.first.distance_from_hole}.max
-        @longest_2_drive_length = par_4_and_5_scorecards.map{|scorecard| scorecard.distance_from_hole_to_tee_box - scorecard.strokes.first.distance_from_hole}.sort.last(2).reduce(:+).to_f / 2
+        @longest_2_drive_length = (par_4_and_5_scorecards.map{|scorecard| scorecard.distance_from_hole_to_tee_box - scorecard.strokes.first.distance_from_hole}.sort.last(2).reduce(:+).to_f / 2).round(2)
         @drive_fairways_hit = "#{((par_4_and_5_scorecards.select{|scorecard| ['fairway', 'green', 'bunker'].include?(scorecard.strokes.sorted.first.point_of_fall)}.count.to_f / par_4_and_5_scorecards.count) * 100).round(2)}%"
         @wasted_shots_from_drives = par_4_and_5_scorecards.select{|scorecard| scorecard.strokes.sorted.first.penalties > 0}.count
-        
-        @distance_0_1_from_hole_in_green = {
-          per_round: scorecards.map{|scorecard| scorecard.strokes.putt.distanced(0..1)},
-          shots_to_hole: 1.4,
-          holed_percentage: '86%',
-          dispersion: '0.12'
+        @sand_saves = scorecards.select do |scorecard|
+          stroke = scorecard.strokes.sorted.select{|stroke| stroke.point_of_fall_bunker?}.last
+          stroke.next.holed? or (stroke.next.point_of_fall_green? and stroke.next.next.holed?) if stroke
+        end.count
+        @bunker_shots = scorecards.map{|scorecard| scorecard.strokes.select{|stroke| stroke.point_of_fall_bunker?}.count}.reduce(:+)
+        @sand_saves_percentage = "#{@sand_saves.zero? ? 0 : ((@sand_saves.to_f / @bunker_shots) * 100).round(2)}%"
+        @distance_0_10_from_hole_in_bunker = {
+          per_round: scorecards.map{|scorecard| scorecard.strokes.distance(0..10).point_of_fall_bunkers.count}.reduce(:+),
+          shots_to_hole: scorecards.map{|scorecard| scorecard.strokes.distance(0..10).point_of_fall_bunkers}.flatten.map{|stroke| stroke.shots_to_hole}.instance_eval{(reduce(:+) || 0) / size.to_f},
+          dispersion: scorecards.map{|scorecard| scorecard.strokes.distance(0..10).point_of_fall_bunkers}.flatten.map{|stroke| stroke.next.distance_from_hole}.instance_eval{(reduce(:+) || 0) / size.to_f}
         }
-        @distance_1_2_from_hole_in_green = { per_round: 14, shots_to_hole: 1.2, holed_percentage: '80%', dispersion: '0.08' }
-        @distance_2_3_from_hole_in_green = { per_round: 11, shots_to_hole: 1.6, holed_percentage: '92%', dispersion: '0.1' }
-        @distance_3_5_from_hole_in_green = { per_round: 8, shots_to_hole: 1.1, holed_percentage: '98%', dispersion: '0.13' }
-        @sand_saves = 1
-        @bunker_shots = 4
-        @sand_saves_percentage = '25%'
-        @distance_0_10_from_hole_in_bunker = { per_round: 6, shots_to_hole: 1.4, dispersion: '0.12' }
         @distance_10_20_from_hole_in_bunker = { per_round: 12, shots_to_hole: 1.1, dispersion: '0.09' }
         @distance_20_50_from_hole_in_bunker = { per_round: 19, shots_to_hole: 1.7, dispersion: '0.14' }
         @distance_50_100_from_hole_in_bunker = { per_round: 11, shots_to_hole: 1.3, dispersion: '0.28' }
+
+        @distance_0_1_from_hole_in_green = { per_round: 18, shots_to_hole: 0.9, holed_percentage: '66%', dispersion: '0.15' }
+        @distance_1_2_from_hole_in_green = { per_round: 14, shots_to_hole: 1.2, holed_percentage: '80%', dispersion: '0.08' }
+        @distance_2_3_from_hole_in_green = { per_round: 11, shots_to_hole: 1.6, holed_percentage: '92%', dispersion: '0.1' }
+        @distance_3_5_from_hole_in_green = { per_round: 8, shots_to_hole: 1.1, holed_percentage: '98%', dispersion: '0.13' }
         @up_and_downs = [
           { distance_from_hole: 84, putt_length: 17 },
           { distance_from_hole: 129, putt_length: 6 }
