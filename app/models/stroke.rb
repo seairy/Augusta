@@ -6,6 +6,7 @@ class Stroke < ActiveRecord::Base
   before_create :setup_sequence
   after_save :recalculate_scorecard
   after_destroy :reorder_sequence, :recalculate_scorecard
+  default_scope { order(:sequence) }
   scope :by_scorecard, ->(scorecard_id) { where(scorecard_id: scorecard_id) }
   scope :sequence, ->(sequence) { where(sequence: sequence) }
   scope :shot, -> { where.not(club_cd: 'pt') }
@@ -23,7 +24,6 @@ class Stroke < ActiveRecord::Base
   end)
   scope :distance_within_40, -> { where('distance_from_hole <= 40') }
   scope :distance_within_100, -> { where('distance_from_hole <= 100') }
-  scope :sorted, -> { order(:sequence) }
 
   def next
     scorecard.strokes.sequence(sequence + 1).first

@@ -89,7 +89,7 @@ module V1
             up_and_downs: m.up_and_downs,
             up_and_downs_count: m.up_and_downs_count,
             up_and_downs_percentage: m.up_and_downs_percentage,
-            shots_within_100ft: m.shots_within_100ft,
+            shots_within_100: m.shots_within_100,
             chip_ins: m.chip_ins,
             longest_chip_ins_length: m.longest_chip_ins_length
           }
@@ -101,9 +101,9 @@ module V1
             gir_percentage: m.gir_percentage,
             non_gir_percentage: m.non_gir_percentage,
             holes_of_gir: m.holes_of_gir,
-            gir_to_within_15ft: m.gir_to_within_15ft,
-            gir_to_within_15ft_percentage: m.gir_to_within_15ft_percentage,
-            holes_of_gir_to_within_15ft: m.holes_of_gir_to_within_15ft
+            gir_to_within_5: m.gir_to_within_5,
+            gir_to_within_5_percentage: m.gir_to_within_5_percentage,
+            holes_of_gir_to_within_5: m.holes_of_gir_to_within_5
           }
         end
         expose :item_07 do |m, o|

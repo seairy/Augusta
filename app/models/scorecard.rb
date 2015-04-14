@@ -19,6 +19,14 @@ class Scorecard < ActiveRecord::Base
     score - par if score and par
   end
 
+  def up_and_downs?
+    strokes.last(3)[0].instance_eval{distance_from_hole <= 100 and point_of_fall_fairway?} and strokes.last(3)[1].instance_eval{point_of_fall_green?}
+  end
+
+  def chip_ins?
+    strokes.last(2)[0].instance_eval{distance_from_hole <= 100 and point_of_fall_fairway?}
+  end
+
   def calculate!
     if player.scoring_type_professional?
       self.score = strokes.count
