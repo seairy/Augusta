@@ -21,7 +21,7 @@ class Match < ActiveRecord::Base
         player.create_statistic!
         hole_number = 1
         options[:courses].each_with_index do |course, i|
-          course.holes.order(:name).each do |hole|
+          course.holes.sort.each do |hole|
             tee_box = hole.tee_boxes.send(options[:tee_boxes][i])
             Scorecard.create!(player: player, hole: hole, number: hole_number, par: hole.par, tee_box_color: tee_box.color, distance_from_hole_to_tee_box: tee_box.distance_from_hole)
             hole_number += 1

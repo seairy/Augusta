@@ -111,6 +111,7 @@ module V1
             drive_fairways_hit: m.drive_fairways_hit,
             drive_left_roughs_hit: m.drive_left_roughs_hit,
             drive_right_roughs_hit: m.drive_right_roughs_hit,
+            drive_fairways_count: m.drive_fairways_count,
             drive_left_roughs_count: m.drive_left_roughs_count,
             drive_right_roughs_count: m.drive_right_roughs_count,
             holes_of_drive_fairways: m.holes_of_drive_fairways,
