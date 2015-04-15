@@ -91,6 +91,7 @@ class Statistic < ActiveRecord::Base
   def setup_after_initialize
     scorecards = player.scorecards.finished
     if scorecards.any?
+      strokes = scorecards.map(&:strokes)
       par_4_and_5_scorecards = scorecards.select{|scorecard| scorecard.par > 3}
       gir_scorecards = scorecards.select{|scorecard| (scorecard.score - scorecard.putts - scorecard.penalties) <= (scorecard.par - 2)}
       non_gir_scorecards = scorecards.select{|scorecard| (scorecard.score - scorecard.putts - scorecard.penalties) > (scorecard.par - 2)}
@@ -197,12 +198,17 @@ class Statistic < ActiveRecord::Base
         @good_drives = good_drives_scorecards.count
         @good_drives_percentage = "#{drive_not_in_fairway_scorecards.count.zero? ? 0 : ((@good_drives.to_f / drive_not_in_fairway_scorecards.count) * 100).round(2)}%"
         @holes_of_good_drives = good_drives_scorecards.map(&:number)
+        @club_1w = { uses: 20,
+          average_length: 160,
+          minimum_length: 30,
+          maximum_length: 210,
+          less_than_average_length: 7,
+          greater_than_average_length: 18 }
 
         @distance_0_1_from_hole_in_green = { per_round: 18, shots_to_hole: 0.9, holed_percentage: '66%', dispersion: '0.15' }
         @distance_1_2_from_hole_in_green = { per_round: 14, shots_to_hole: 1.2, holed_percentage: '80%', dispersion: '0.08' }
         @distance_2_3_from_hole_in_green = { per_round: 11, shots_to_hole: 1.6, holed_percentage: '92%', dispersion: '0.1' }
         @distance_3_5_from_hole_in_green = { per_round: 8, shots_to_hole: 1.1, holed_percentage: '98%', dispersion: '0.13' }
-        @club_1w = { uses: 20, average_length: 160, minimum_length: 30, maximum_length: 210, less_than_average_length: 7, greater_than_average_length: 18 }
         @club_3w = { uses: 1, average_length: 320, minimum_length: 320, maximum_length: 320, less_than_average_length: nil, greater_than_average_length: nil }
         @club_5w = { uses: 3, average_length: 130, minimum_length: 80, maximum_length: 190, less_than_average_length: 2, greater_than_average_length: 10 }
         @club_7w = { uses: 8, average_length: 70, minimum_length: 50, maximum_length: 135, less_than_average_length: 5, greater_than_average_length: 3 }

@@ -20,11 +20,11 @@ class Scorecard < ActiveRecord::Base
   end
 
   def up_and_downs?
-    strokes.last(3)[0].instance_eval{distance_from_hole <= 100 and point_of_fall_fairway?} and strokes.last(3)[1].instance_eval{point_of_fall_green?}
+    strokes.count >= 3 and strokes.last(3)[0].instance_eval{distance_from_hole <= 100 and point_of_fall_fairway?} and strokes.last(3)[1].instance_eval{point_of_fall_green?}
   end
 
   def chip_ins?
-    strokes.last(2)[0].instance_eval{distance_from_hole <= 100 and point_of_fall_fairway?}
+    strokes.count >= 2 and strokes.last(2)[0].instance_eval{distance_from_hole <= 100 and point_of_fall_fairway?}
   end
 
   def calculate!
