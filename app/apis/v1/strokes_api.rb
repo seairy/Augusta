@@ -35,7 +35,7 @@ module V1
           scorecard = Scorecard.find_uuid(params[:scorecard_uuid])
           raise PermissionDenied.new unless scorecard.player.user_id == @current_user.id
           raise InvalidScoringType.new if scorecard.player.scoring_type_simple?
-          present scorecard.strokes.sorted, with: Strokes::Entities::Strokes
+          present scorecard.strokes, with: Strokes::Entities::Strokes
         rescue ActiveRecord::RecordNotFound
           api_error!(10002)
         rescue PermissionDenied
