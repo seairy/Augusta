@@ -64,28 +64,9 @@ class Statistic < ActiveRecord::Base
   attr_accessor :good_drives
   attr_accessor :good_drives_percentage
   attr_accessor :holes_of_good_drives
-  attr_accessor :club_1w
-  attr_accessor :club_3w
-  attr_accessor :club_5w
-  attr_accessor :club_7w
-  attr_accessor :club_2h
-  attr_accessor :club_3h
-  attr_accessor :club_4h
-  attr_accessor :club_5h
-  attr_accessor :club_1i
-  attr_accessor :club_2i
-  attr_accessor :club_3i
-  attr_accessor :club_4i
-  attr_accessor :club_5i
-  attr_accessor :club_6i
-  attr_accessor :club_7i
-  attr_accessor :club_8i
-  attr_accessor :club_9i
-  attr_accessor :club_pw
-  attr_accessor :club_gw
-  attr_accessor :club_sw
-  attr_accessor :club_lw
-  attr_accessor :club_pt
+  attr_accessor :frequently_used_clubs
+  attr_accessor :clubs
+
   after_initialize :setup_after_initialize
 
   def setup_after_initialize
@@ -196,15 +177,17 @@ class Statistic < ActiveRecord::Base
         @good_drives = good_drives_scorecards.count
         @good_drives_percentage = "#{drive_not_in_fairway_scorecards.count.zero? ? 0 : ((@good_drives.to_f / drive_not_in_fairway_scorecards.count) * 100).round(2)}%"
         @holes_of_good_drives = good_drives_scorecards.map(&:number)
-        Stroke.clubs.keys.each do |club|
-          eval("club_#{club}_average_length = strokes.club_#{club}s.count.zero? ? 0 : (strokes.club_#{club}s.map(&:distance_from_hole).reduce(:+).to_f / strokes.club_#{club}s.count).round(2)
-            @club_#{club} = { uses: strokes.club_#{club}s.count,
-              average_length: club_#{club}_average_length,
-              minimum_length: strokes.club_#{club}s.map(&:distance_from_hole).min,
-              maximum_length: strokes.club_#{club}s.map(&:distance_from_hole).max,
-              less_than_average_length: strokes.club_#{club}s.select{|stroke| stroke.distance_from_hole < club_#{club}_average_length}.count,
-              greater_than_average_length: strokes.club_#{club}s.select{|stroke| stroke.distance_from_hole > club_#{club}_average_length}.count }")
+        @clubs = Stroke.clubs.keys.map do |club|
+          club_average_length = strokes.send("club_#{club}s").count.zero? ? 0 : (strokes.send("club_#{club}s").map(&:distance_from_hole).reduce(:+).to_f / strokes.send("club_#{club}s").count).round(2)
+          { name: club,
+            uses: strokes.send("club_#{club}s").count,
+            average_length: club_average_length,
+            minimum_length: strokes.send("club_#{club}s").map(&:distance_from_hole).min,
+            maximum_length: strokes.send("club_#{club}s").map(&:distance_from_hole).max,
+            less_than_average_length: strokes.send("club_#{club}s").select{|stroke| stroke.distance_from_hole < club_average_length}.count,
+            greater_than_average_length: strokes.send("club_#{club}s").select{|stroke| stroke.distance_from_hole > club_average_length}.count }
         end
+        @frequently_used_clubs = @clubs.sort{|x, y| y[:uses] <=> x[:uses]}[0..3]
         
         @distance_0_1_from_hole_in_green = { per_round: 18, shots_to_hole: 0.9, holed_percentage: '66%', dispersion: '0.15' }
         @distance_1_2_from_hole_in_green = { per_round: 14, shots_to_hole: 1.2, holed_percentage: '80%', dispersion: '0.08' }

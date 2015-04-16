@@ -148,7 +148,10 @@ module V1
           }
         end
         expose :item_10 do |m, o|
-          eval("{ #{Stroke.clubs.keys.map{|club| "club_#{club}: m.club_#{club}"}.join(', ')} }")
+          {
+            frequently_used_clubs: m.frequently_used_clubs,
+            clubs: m.clubs
+          }
         end
         private
           def scorecards
