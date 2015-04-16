@@ -91,14 +91,13 @@ class Statistic < ActiveRecord::Base
   def setup_after_initialize
     scorecards = player.scorecards.finished
     if scorecards.any?
-      strokes = scorecards.map(&:strokes)
+      strokes = Stroke.where(scorecard_id: scorecards.map(&:id))
       par_4_and_5_scorecards = scorecards.select{|scorecard| scorecard.par > 3}
       gir_scorecards = scorecards.select{|scorecard| (scorecard.score - scorecard.putts) <= (scorecard.par - 2)}
       non_gir_scorecards = scorecards.select{|scorecard| (scorecard.score - scorecard.putts) > (scorecard.par - 2)}
       @average_score_par_3 = score_par_3.nil? ? 0 : (score_par_3.to_f / scorecards.select{|scorecard| scorecard.par == 3}.count).round(2)
       @average_score_par_4 = score_par_4.nil? ? 0 : (score_par_4.to_f / scorecards.select{|scorecard| scorecard.par == 4}.count).round(2)
       @average_score_par_5 = score_par_5.nil? ? 0 : (score_par_5.to_f / scorecards.select{|scorecard| scorecard.par == 5}.count).round(2)
-      @average_drive_length = (par_4_and_5_scorecards.map(&:driving_distance).reduce(:+).to_f / par_4_and_5_scorecards.count).round(2)
       @scrambles = non_gir_scorecards.select{|scorecard| scorecard.score <= scorecard.par}.count || 0
       @scrambles_percentage = "#{non_gir_scorecards.count.zero? ? 0 : ((@scrambles.to_f / non_gir_scorecards.count) * 100).round(2)}%"
       @bounce = "#{((scorecards.inject(previous: nil, bounce: 0) do |result, scorecard|
@@ -128,6 +127,7 @@ class Statistic < ActiveRecord::Base
       @bogey_percentage = "#{((bogey.to_f / scorecards.count) * 100).round(2)}%"
       @double_bogey_percentage = "#{((double_bogey.to_f / scorecards.count) * 100).round(2)}%"
       if player.scoring_type_simple?
+        @average_drive_length = (par_4_and_5_scorecards.map(&:driving_distance).reduce(:+).to_f / par_4_and_5_scorecards.count).round(2)
         @longest_drive_length = par_4_and_5_scorecards.map(&:driving_distance).max
         @longest_2_drive_length = (par_4_and_5_scorecards.map(&:driving_distance).sort.last(2).reduce(:+).to_f / 2).round(2)
         @drive_fairways_hit = "#{((par_4_and_5_scorecards.select{|scorecard| scorecard.direction_pure?}.count.to_f / par_4_and_5_scorecards.count) * 100).round(2)}%"
@@ -136,10 +136,14 @@ class Statistic < ActiveRecord::Base
         @front_6_score = scorecards.select{|scorecard| scorecard.number >= 1 and scorecard.number <= 6}.map(&:score).reduce(:+) || 0
         @middle_6_score = scorecards.select{|scorecard| scorecard.number >= 7 and scorecard.number <= 12}.map(&:score).reduce(:+) || 0
         @last_6_score = scorecards.select{|scorecard| scorecard.number >= 13 and scorecard.number <= 18}.map(&:score).reduce(:+) || 0
-        @first_putt_length = scorecards.map{|scorecard| scorecard.strokes.putt.first}.compact.map(&:distance_from_hole).instance_eval{(reduce(:+) || 0) / size.to_f}
-        @first_putt_length_gir = gir_scorecards.map{|scorecard| scorecard.strokes.putt.first}.compact.map(&:distance_from_hole).instance_eval{(reduce(:+) || 0) / size.to_f}
-        @first_putt_length_non_gir = non_gir_scorecards.map{|scorecard| scorecard.strokes.putt.first}.compact.map(&:distance_from_hole).instance_eval{(reduce(:+) || 0) / size.to_f}
-        @holed_putt_length = scorecards.map{|scorecard| scorecard.strokes.putt.non_holed.last}.compact.map(&:distance_from_hole).reduce(:+)
+        @first_putt_length = scorecards.map{|scorecard| scorecard.strokes.shot.point_of_fall_greens.last.try(:distance_from_hole)}.compact.instance_eval{(reduce(:+) || 0).to_f / 18}.round(2)
+        @first_putt_length_gir = gir_scorecards.count.zero? ? 0 : gir_scorecards.map{|scorecard| scorecard.strokes.shot.point_of_fall_greens.last.try(:distance_from_hole)}.compact.instance_eval{(reduce(:+) || 0).to_f / gir_scorecards.count}.round(2)
+        @first_putt_length_non_gir = non_gir_scorecards.count.zero? ? 0 : non_gir_scorecards.map{|scorecard| scorecard.strokes.shot.point_of_fall_greens.last.try(:distance_from_hole)}.compact.instance_eval{(reduce(:+) || 0).to_f / non_gir_scorecards.count}.round(2)
+        @holed_putt_length = scorecards.map do |scorecard|
+          last_stroke = scorecard.strokes.last
+          last_stroke.previous.distance_from_hole if last_stroke.club_pt?
+        end.compact.instance_eval{(reduce(:+) || 0).to_f / 18}.round(2)
+        @average_drive_length = par_4_and_5_scorecards.count.zero? ? 0 : (par_4_and_5_scorecards.map{|scorecard| scorecard.distance_from_hole_to_tee_box - scorecard.strokes.first.distance_from_hole if scorecard.strokes.first.club_1w?}.compact.reduce(:+).to_f / par_4_and_5_scorecards.count).round(2)
         @longest_drive_length = par_4_and_5_scorecards.map{|scorecard| scorecard.distance_from_hole_to_tee_box - scorecard.strokes.first.distance_from_hole}.max
         @longest_2_drive_length = (par_4_and_5_scorecards.map{|scorecard| scorecard.distance_from_hole_to_tee_box - scorecard.strokes.first.distance_from_hole}.sort.last(2).reduce(:+).to_f / 2).round(2)
         @drive_fairways_hit = "#{par_4_and_5_scorecards.count.zero? ? 0 : ((par_4_and_5_scorecards.select{|scorecard| [:fairway, :green, :bunker].include?(scorecard.strokes.first.point_of_fall)}.count.to_f / par_4_and_5_scorecards.count) * 100).round(2)}%"
@@ -156,8 +160,8 @@ class Statistic < ActiveRecord::Base
           stroke = scorecard.strokes.distance_within_40.point_of_fall_bunkers.last
           stroke.next.holed? or (stroke.next.point_of_fall_green? and stroke.next.next.holed?) if stroke
         end.count
-        @bunker_shots = scorecards.map{|scorecard| scorecard.strokes.select{|stroke| stroke.point_of_fall_bunker?}.count}.reduce(:+)
-        @sand_saves_percentage = "#{@sand_saves.zero? ? 0 : ((@sand_saves.to_f / @bunker_shots) * 100).round(2)}%"
+        @bunker_shots = scorecards.map{|scorecard| scorecard.strokes.distance_within_40.point_of_fall_bunkers.count}.reduce(:+)
+        @sand_saves_percentage = "#{@bunker_shots.zero? ? 0 : ((@sand_saves.to_f / @bunker_shots) * 100).round(2)}%"
         [0..10, 10..20, 20..50, 50..100].each do |distance_range|
           eval("@distance_#{distance_range.begin}_#{distance_range.end}_from_hole_in_bunker = {
             per_round: scorecards.map{|scorecard| scorecard.strokes.distance(#{distance_range}).point_of_fall_bunkers.count}.reduce(:+),
@@ -182,30 +186,30 @@ class Statistic < ActiveRecord::Base
         @longest_chip_ins_length = up_and_downs_scorecards.select{|scorecard| scorecard.chip_ins?}.map{|scorecard| scorecard.strokes.last(2).first.distance_from_hole}.max
         gir_to_within_5_scorecards = gir_scorecards.select{|scorecard| scorecard.strokes.shot.last.distance_from_hole <= 5}
         @gir_to_within_5 = gir_to_within_5_scorecards.count
-        @gir_to_within_5_percentage = "#{gir_scorecards.count.zero? ? 0 : ((@gir_to_within_5.to_f / gir_scorecards.count) * 100).round(2)}%"
+        @gir_to_within_5_percentage = "#{gir_scorecards.count.zero? ? 0 : ((@gir_to_within_5.to_f / 18) * 100).round(2)}%"
         @holes_of_gir_to_within_5 = gir_to_within_5_scorecards.map(&:number)
         good_drives_scorecards = par_4_and_5_scorecards.select do |scorecard|
-          [:left_rough, :right_rought, :unplayable].include?(scorecard.strokes.first.point_of_fall) and
+          [:left_rough, :right_rought, :bunker, :unplayable].include?(scorecard.strokes.first.point_of_fall) and
           (scorecard.score - scorecard.putts - scorecard.penalties) <= (scorecard.par - 2)
         end
         drive_not_in_fairway_scorecards = par_4_and_5_scorecards.select{|scorecard| [:left_rough, :right_rought, :unplayable].include?(scorecard.strokes.first.point_of_fall)}
         @good_drives = good_drives_scorecards.count
         @good_drives_percentage = "#{drive_not_in_fairway_scorecards.count.zero? ? 0 : ((@good_drives.to_f / drive_not_in_fairway_scorecards.count) * 100).round(2)}%"
         @holes_of_good_drives = good_drives_scorecards.map(&:number)
-        @club_1w = { uses: 20,
-          average_length: 160,
-          minimum_length: 30,
-          maximum_length: 210,
-          less_than_average_length: 7,
-          greater_than_average_length: 18 }
-
+        Stroke.clubs.keys.each do |club|
+          eval("club_#{club}_average_length = strokes.club_#{club}s.count.zero? ? 0 : (strokes.club_#{club}s.map(&:distance_from_hole).reduce(:+).to_f / strokes.club_#{club}s.count).round(2)
+            @club_#{club} = { uses: strokes.club_#{club}s.count,
+              average_length: club_#{club}_average_length,
+              minimum_length: strokes.club_#{club}s.map(&:distance_from_hole).min,
+              maximum_length: strokes.club_#{club}s.map(&:distance_from_hole).max,
+              less_than_average_length: strokes.club_#{club}s.select{|stroke| stroke.distance_from_hole < club_#{club}_average_length}.count,
+              greater_than_average_length: strokes.club_#{club}s.select{|stroke| stroke.distance_from_hole > club_#{club}_average_length}.count }")
+        end
+        
         @distance_0_1_from_hole_in_green = { per_round: 18, shots_to_hole: 0.9, holed_percentage: '66%', dispersion: '0.15' }
         @distance_1_2_from_hole_in_green = { per_round: 14, shots_to_hole: 1.2, holed_percentage: '80%', dispersion: '0.08' }
         @distance_2_3_from_hole_in_green = { per_round: 11, shots_to_hole: 1.6, holed_percentage: '92%', dispersion: '0.1' }
         @distance_3_5_from_hole_in_green = { per_round: 8, shots_to_hole: 1.1, holed_percentage: '98%', dispersion: '0.13' }
-        @club_3w = { uses: 1, average_length: 320, minimum_length: 320, maximum_length: 320, less_than_average_length: nil, greater_than_average_length: nil }
-        @club_5w = { uses: 3, average_length: 130, minimum_length: 80, maximum_length: 190, less_than_average_length: 2, greater_than_average_length: 10 }
-        @club_7w = { uses: 8, average_length: 70, minimum_length: 50, maximum_length: 135, less_than_average_length: 5, greater_than_average_length: 3 }
       end
     end
   end
