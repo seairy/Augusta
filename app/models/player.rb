@@ -60,4 +60,8 @@ class Player < ActiveRecord::Base
   def penalties
 
   end
+
+  def finished?
+    scorecards.finished.count == 18
+  end
 end

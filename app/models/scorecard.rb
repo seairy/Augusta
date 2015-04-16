@@ -11,6 +11,30 @@ class Scorecard < ActiveRecord::Base
   scope :out, -> { where(number: 1..9) }
   scope :in, -> { where(number: 10..18) }
 
+  def double_eagle?
+    par - score > 2
+  end
+
+  def eagle?
+    par - score == 2
+  end
+
+  def birdie?
+    par - score == 1
+  end
+
+  def par?
+    score == par
+  end
+
+  def bogey?
+    score - par == 1
+  end
+
+  def double_bogey?
+    score - par > 1
+  end
+
   def finished?
     score
   end
@@ -20,11 +44,15 @@ class Scorecard < ActiveRecord::Base
   end
 
   def up_and_downs?
-    strokes.count >= 3 and strokes.last(3)[0].instance_eval{distance_from_hole <= 100 and point_of_fall_fairway?} and strokes.last(3)[1].instance_eval{point_of_fall_green?}
+    (strokes.count == 1 and distance_from_hole_to_tee_box <= 100) or
+    (strokes.count == 2 and strokes.last.club_pt? and distance_from_hole_to_tee_box <= 100) or
+    (strokes.count == 2 and !strokes.last.club_pt? and strokes.last.distance_from_hole <= 100) or
+    (strokes.count > 2 and strokes.last.club_pt? and !strokes.last(2).first.club_pt? and strokes.last(3)[0].distance_from_hole <= 100) or
+    (strokes.count > 2 and !strokes.last.club_pt? and strokes.last(2).first.distance_from_hole <= 100)
   end
 
   def chip_ins?
-    strokes.count >= 2 and strokes.last(2)[0].instance_eval{distance_from_hole <= 100 and point_of_fall_fairway?}
+    strokes.club_pts.count.zero?
   end
 
   def calculate!

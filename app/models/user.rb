@@ -6,6 +6,7 @@ class User < ActiveRecord::Base
   has_many :verification_codes
   has_many :tokens
   has_many :matches, foreign_key: :owner_id
+  has_many :players
   aasm column: 'state' do
     state :unactivated, initial: true
     state :activated

@@ -206,5 +206,23 @@ module V1
         end
       end
     end
+
+    resources :statistics do
+      desc '统计'
+      get '/' do
+        players = @current_user.players.select{|player| player.finished?}
+        scorecards = players.map(&:scorecards).flatten
+        entity = {
+          rank: '1,000,000+',
+          handicap: 0,
+          best_score: players.map(&:score).min,
+          finished_matches_count: players.count,
+          total_matches_count: @current_user.players.count
+        }.merge(Hash[[:double_eagle, :eagle, :birdie, :par, :bogey, :double_bogey].map do |name|
+          ["#{name}_percentage", "#{scorecards.count.zero? ? 0 : ((scorecards.select{|scorecard| scorecard.send("#{name}?")}.count.to_f / scorecards.count) * 100).round}%",]
+        end])
+        present entity
+      end
+    end
   end
 end
