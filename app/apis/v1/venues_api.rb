@@ -57,6 +57,12 @@ module V1
         venue = Venue.find_uuid(params[:uuid])
         present venue, with: Venues::Entities::Venue
       end
+
+      desc '已访问球场列表'
+      get :visited do
+        venues = @current_user.visited_venues
+        present venues, with: Venues::Entities::Venues
+      end
     end
   end
 end

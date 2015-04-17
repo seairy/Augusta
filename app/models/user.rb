@@ -35,6 +35,10 @@ class User < ActiveRecord::Base
     user.tokens.available.first.try(:expired!)
   end
 
+  def visited_venues
+    Venue.find(players.includes(:match).map{|player| player.match.venue_id}.uniq)
+  end
+
   class << self
     def sign_up_simple
       ActiveRecord::Base.transaction do
