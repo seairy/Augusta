@@ -36,7 +36,8 @@ class User < ActiveRecord::Base
   end
 
   def visited_venues
-    Venue.find(players.includes(:match).map{|player| player.match.venue_id}.uniq)
+    venues = players.includes(:match).inject({}){|result, player| result.has_key?(player.match.venue_id) ? result[player.match.venue_id] += 1 : result[player.match.venue_id] = 1; result}
+    Venue.find(venues.keys).map{|venue| venue.visited_count = venues[venue.id]; venue}
   end
 
   class << self

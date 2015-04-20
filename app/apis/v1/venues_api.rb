@@ -16,6 +16,13 @@ module V1
         expose :courses, using: Courses
       end
 
+      class VisitedVenues < Grape::Entity
+        expose :uuid
+        expose :name
+        expose :address
+        expose :visited_count
+      end
+
       class Venues < Grape::Entity
         expose :uuid
         expose :name
@@ -61,7 +68,7 @@ module V1
       desc '已访问球场列表'
       get :visited do
         venues = @current_user.visited_venues
-        present venues, with: Venues::Entities::Venues
+        present venues, with: Venues::Entities::VisitedVenues
       end
     end
   end

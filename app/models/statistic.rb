@@ -124,7 +124,16 @@ class Statistic < ActiveRecord::Base
           last_stroke = scorecard.strokes.last
           last_stroke.previous.distance_from_hole if last_stroke.club_pt?
         end.compact.instance_eval{(reduce(:+) || 0).to_f / 18}.round(2)
-        @average_drive_length = par_4_and_5_scorecards.count.zero? ? 0 : (par_4_and_5_scorecards.map{|scorecard| scorecard.distance_from_hole_to_tee_box - scorecard.strokes.first.distance_from_hole if scorecard.strokes.first.club_1w?}.compact.reduce(:+).to_f / par_4_and_5_scorecards.count).round(2)
+        [0..1, 1..2, 2..3, 3..5].each do |distance_range|
+          eval("@distance_#{distance_range.begin}_#{distance_range.end}_from_hole_in_green = {
+            per_round: strokes.point_of_fall_greens.distance(#{distance_range}).count,
+            shots_to_hole: 0,
+            holed_percentage: 0,
+            dispersion: 0,
+          }")
+        end
+        par_4_and_5_drived_scorecards = par_4_and_5_scorecards.select{|scorecard| scorecard.strokes.first.club_1w?}
+        @average_drive_length = par_4_and_5_drived_scorecards.count.zero? ? 0 : (par_4_and_5_drived_scorecards.map{|scorecard| scorecard.distance_from_hole_to_tee_box - scorecard.strokes.first.distance_from_hole}.compact.reduce(:+).to_f / par_4_and_5_drived_scorecards.count).round(2)
         @longest_drive_length = par_4_and_5_scorecards.map{|scorecard| scorecard.distance_from_hole_to_tee_box - scorecard.strokes.first.distance_from_hole if scorecard.strokes.first.club_1w?}.compact.max
         @longest_2_drive_length = (par_4_and_5_scorecards.map{|scorecard| scorecard.distance_from_hole_to_tee_box - scorecard.strokes.first.distance_from_hole if scorecard.strokes.first.club_1w?}.compact.sort.last(2).reduce(:+).to_f / 2).round(2)
         @drive_fairways_hit = "#{par_4_and_5_scorecards.count.zero? ? 0 : ((par_4_and_5_scorecards.select{|scorecard| [:fairway, :green, :bunker].include?(scorecard.strokes.first.point_of_fall)}.count.to_f / par_4_and_5_scorecards.count) * 100).round(2)}%"
@@ -188,11 +197,6 @@ class Statistic < ActiveRecord::Base
             greater_than_average_length: strokes.send("club_#{club}s").select{|stroke| stroke.distance_from_hole > club_average_length}.count }
         end
         @frequently_used_clubs = @clubs.sort{|x, y| y[:uses] <=> x[:uses]}[0..3]
-        
-        @distance_0_1_from_hole_in_green = { per_round: 18, shots_to_hole: 0.9, holed_percentage: '66%', dispersion: '0.15' }
-        @distance_1_2_from_hole_in_green = { per_round: 14, shots_to_hole: 1.2, holed_percentage: '80%', dispersion: '0.08' }
-        @distance_2_3_from_hole_in_green = { per_round: 11, shots_to_hole: 1.6, holed_percentage: '92%', dispersion: '0.1' }
-        @distance_3_5_from_hole_in_green = { per_round: 8, shots_to_hole: 1.1, holed_percentage: '98%', dispersion: '0.13' }
       end
     end
   end

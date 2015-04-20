@@ -224,6 +224,26 @@ module V1
         end])
         present entity
       end
+
+      desc '个性化统计'
+      params do
+        optional :matches_count, type: Integer, desc: '赛事标识'
+      end
+      get :customize do
+        players = @current_user.players.select{|player| player.finished?}
+        scorecards = players.map(&:scorecards).flatten
+        entity = {
+          rank: '1,000,000+',
+          handicap: 0,
+          best_score: players.map(&:score).min,
+          average_score: players.count.zero? ? nil : (players.map(&:score).reduce(:+) / players.count).round(2),
+          finished_matches_count: players.count,
+          total_matches_count: @current_user.players.count
+        }.merge(Hash[[:double_eagle, :eagle, :birdie, :par, :bogey, :double_bogey].map do |name|
+          ["#{name}", scorecards.count.zero? ? nil : (scorecards.select{|scorecard| scorecard.send("#{name}?")}.count.to_f / scorecards.count).round(2),]
+        end])
+        present entity
+      end
     end
   end
 end

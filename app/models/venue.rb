@@ -1,6 +1,7 @@
 # -*- encoding : utf-8 -*-
 class Venue < ActiveRecord::Base
   include UUID, Trashable
+  attr_accessor :visited_count
   belongs_to :city
   has_many :courses
   reverse_geocoded_by :latitude, :longitude
