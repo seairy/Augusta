@@ -227,22 +227,27 @@ module V1
 
       desc '个性化统计'
       params do
-        optional :matches_count, type: Integer, desc: '赛事标识'
+        optional :matches_count, type: String, values: ['5', '10', '30', '50', '100', 'all'], desc: '赛事数量'
+        optional :date_begin, type: Integer, desc: '开始日期'
+        optional :date_end, type: Integer, desc: '结束日期'
+        optional :venue_uuid, type: String, desc: '球会标识'
       end
-      get :customize do
-        players = @current_user.players.select{|player| player.finished?}
-        scorecards = players.map(&:scorecards).flatten
-        entity = {
-          rank: '1,000,000+',
-          handicap: 0,
-          best_score: players.map(&:score).min,
-          average_score: players.count.zero? ? nil : (players.map(&:score).reduce(:+) / players.count).round(2),
-          finished_matches_count: players.count,
-          total_matches_count: @current_user.players.count
-        }.merge(Hash[[:double_eagle, :eagle, :birdie, :par, :bogey, :double_bogey].map do |name|
-          ["#{name}", scorecards.count.zero? ? nil : (scorecards.select{|scorecard| scorecard.send("#{name}?")}.count.to_f / scorecards.count).round(2),]
-        end])
-        present entity
+      post :customize do
+        begin
+          customized_statistic = nil
+          if params[:matches_count]
+            customized_statistic = CustomizedStatistic.new(:match, matches_count: params[:matches_count])
+          elsif params[:date_begin] and params[:date_end]
+            customized_statistic = CustomizedStatistic.new
+          elsif params[:venue_uuid]
+            customized_statistic = CustomizedStatistic.new
+          else
+            raise ArgumentError.new
+          end
+          present customized_statistic
+        rescue ArgumentError
+          api_error!(20201)
+        end
       end
     end
   end
