@@ -99,8 +99,8 @@ class Statistic < ActiveRecord::Base
       @non_gir_percentage = "#{((non_gir_scorecards.count.to_f / scorecards.count) * 100).round(2)}%"
       @holes_of_gir = gir_scorecards.map(&:number)
       @average_putts = (scorecards.map(&:putts).reduce(:+).to_f / scorecards.count).round(2)
-      @putts_per_gir = (gir_scorecards.map(&:putts).reduce(:+).to_f / gir_scorecards.count).round(2)
-      @putts_per_non_gir = (non_gir_scorecards.map(&:putts).reduce(:+).to_f / non_gir_scorecards.count).round(2)
+      @putts_per_gir = gir_scorecards.count.zero? ? 0 : (gir_scorecards.map(&:putts).reduce(:+).to_f / gir_scorecards.count).round(2)
+      @putts_per_non_gir = non_gir_scorecards.count.zero? ? 0 : (non_gir_scorecards.map(&:putts).reduce(:+).to_f / non_gir_scorecards.count).round(2)
       @double_eagle_percentage = "#{((double_eagle.to_f / scorecards.count) * 100).round(2)}%"
       @eagle_percentage = "#{((eagle.to_f / scorecards.count) * 100).round(2)}%"
       @birdie_percentage = "#{((birdie.to_f / scorecards.count) * 100).round(2)}%"
