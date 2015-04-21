@@ -45,6 +45,8 @@ class CustomizedStatistic
       @putts_per_gir = 12
       @average_drive_length = 12
       @drive_fairways_hit = "#{((scorecards.select{|scorecard| scorecard.par > 3 and scorecard.direction_pure?}.count.to_f / (players.count * 14)) * 100).round(2)}%"
+      @advantage_transformation = '2%'
+      @bounce = '2%'
       @double_eagle = (scorecards.select{|scorecard| scorecard.par - scorecard.score >= 3}.count / players.count).round(2)
       @eagle = (scorecards.select{|scorecard| scorecard.par - scorecard.score == 2}.count / players.count).round(2)
       @birdie = (scorecards.select{|scorecard| scorecard.par - scorecard.score == 1}.count / players.count).round(2)
