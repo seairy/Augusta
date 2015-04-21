@@ -54,11 +54,11 @@ class Player < ActiveRecord::Base
   end
 
   def putts
-
+    scorecards.map(&:putts).compact.reduce(:+)
   end
 
   def penalties
-
+    scorecards.in.map(&:penalties).compact.reduce(:+)
   end
 
   def finished?

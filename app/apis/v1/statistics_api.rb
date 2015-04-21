@@ -236,15 +236,17 @@ module V1
         begin
           customized_statistic = nil
           if params[:matches_count]
-            customized_statistic = CustomizedStatistic.new(:match, matches_count: params[:matches_count])
+            customized_statistic = CustomizedStatistic.new(:by_match, @current_user, matches_count: params[:matches_count])
           elsif params[:date_begin] and params[:date_end]
-            customized_statistic = CustomizedStatistic.new
+            customized_statistic = CustomizedStatistic.new(:by_date, @current_user, date_begin: params[:date_begin], date_end: params[:date_end])
           elsif params[:venue_uuid]
-            customized_statistic = CustomizedStatistic.new
+            customized_statistic = CustomizedStatistic.new(:by_venue, @current_user, venue_uuid: params[:venue_uuid])
           else
             raise ArgumentError.new
           end
           present customized_statistic
+        rescue ActiveRecord::RecordNotFound
+          api_error!(10002)
         rescue ArgumentError
           api_error!(20201)
         end
