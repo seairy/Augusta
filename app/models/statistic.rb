@@ -70,7 +70,7 @@ class Statistic < ActiveRecord::Base
   after_initialize :setup_after_initialize
 
   def setup_after_initialize
-    scorecards = player.scorecards.finished
+    scorecards = player.scorecards.includes(:strokes).finished.to_a
     if scorecards.any?
       strokes = Stroke.where(scorecard_id: scorecards.map(&:id))
       par_4_and_5_scorecards = scorecards.select{|scorecard| scorecard.par > 3}

@@ -1,4 +1,5 @@
 class CustomizedStatistic
+  attr_accessor :finished_count
   attr_accessor :score_par_3
   attr_accessor :score_par_4
   attr_accessor :score_par_5
@@ -17,7 +18,6 @@ class CustomizedStatistic
   attr_accessor :par
   attr_accessor :bogey
   attr_accessor :double_bogey
-  attr_accessor :finished_count
 
   def initialize method, user, options = {}
     players = case method
@@ -28,7 +28,7 @@ class CustomizedStatistic
         user.players.order(created_at: :desc).limit(options[:matches_count].to_i)
       end
     when :by_date
-      user.players.where('created_at >= ?', Time.at(options[:date_begin]).to_date).where('created_at <= ?', Time.at(options[:date_end]).to_date)
+      user.players.where('created_at >= ?', Time.at(options[:date_begin]).utc.beginning_of_day).where('created_at <= ?', Time.at(options[:date_end]).utc.end_of_day)
     when :by_venue
       user.players.joins(:match).where(matches: { venue_id: Venue.find_uuid(options[:venue_uuid]).id })
     end.select{|player| player.finished?}
