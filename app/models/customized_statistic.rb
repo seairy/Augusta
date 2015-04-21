@@ -32,11 +32,11 @@ class CustomizedStatistic
     when :by_venue
       user.players.joins(:match).where(matches: { venue_id: Venue.find_uuid(options[:venue_uuid]).id })
     end.select{|player| player.finished?}
-    scorecards = players.map(&:scorecards).flatten
+    scorecards = Scorecard.where(player_id: players.map(&:id))
     gir_scorecards = scorecards.select{|scorecard| (scorecard.score - scorecard.putts) <= (scorecard.par - 2)}
     par_4_and_5_scorecards = scorecards.select{|scorecard| scorecard.par > 3}
+    @finished_count = players.count
     unless players.count.zero?
-      @finished_count = players.count
       @score_par_3 = (scorecards.select{|scorecard| scorecard.par == 3}.map(&:score).reduce(:+).to_f / scorecards.select{|scorecard| scorecard.par == 3}.count).round(2)
       @score_par_4 = (scorecards.select{|scorecard| scorecard.par == 4}.map(&:score).reduce(:+).to_f / scorecards.select{|scorecard| scorecard.par == 4}.count).round(2)
       @score_par_5 = (scorecards.select{|scorecard| scorecard.par == 5}.map(&:score).reduce(:+).to_f / scorecards.select{|scorecard| scorecard.par == 5}.count).round(2)

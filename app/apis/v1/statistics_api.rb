@@ -161,6 +161,28 @@ module V1
               status: formatted_scorecards_status([scorecards.out.sorted.map(&:status), object.player.out_status, scorecards.in.sorted.map(&:status), object.player.in_status, object.player.status].flatten) }
           end
       end
+
+      class CustomizedStatistic < Grape::Entity
+        expose :finished_count
+        expose :score_par_3
+        expose :score_par_4
+        expose :score_par_5
+        expose :score
+        expose :handicap
+        expose :putts
+        expose :gir
+        expose :putts_per_gir
+        expose :average_drive_length
+        expose :drive_fairways_hit
+        expose :advantage_transformation
+        expose :bounce
+        expose :double_eagle
+        expose :eagle
+        expose :birdie
+        expose :par
+        expose :bogey
+        expose :double_bogey
+      end
     end
   end
 
@@ -244,7 +266,7 @@ module V1
           else
             raise ArgumentError.new
           end
-          present customized_statistic
+          present customized_statistic, with: Statistics::Entities::CustomizedStatistic
         rescue ActiveRecord::RecordNotFound
           api_error!(10002)
         rescue ArgumentError
