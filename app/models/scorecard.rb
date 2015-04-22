@@ -44,15 +44,15 @@ class Scorecard < ActiveRecord::Base
   end
 
   def up_and_downs?
-    (strokes.count == 1 and distance_from_hole_to_tee_box <= 100) or
-    (strokes.count == 2 and strokes.last.club_pt? and distance_from_hole_to_tee_box <= 100) or
-    (strokes.count == 2 and !strokes.last.club_pt? and strokes.last.distance_from_hole <= 100) or
-    (strokes.count > 2 and strokes.last.club_pt? and !strokes.last(2).first.club_pt? and strokes.last(3)[0].distance_from_hole <= 100) or
-    (strokes.count > 2 and !strokes.last.club_pt? and strokes.last(2).first.distance_from_hole <= 100)
+    (strokes.last.sequence == 1 and distance_from_hole_to_tee_box <= 100) or
+    (strokes.last.sequence == 2 and strokes.last.club_pt? and distance_from_hole_to_tee_box <= 100) or
+    (strokes.last.sequence == 2 and !strokes.last.club_pt? and strokes.last.distance_from_hole <= 100) or
+    (strokes.last.sequence > 2 and strokes.last.club_pt? and !strokes.last(2).first.club_pt? and strokes.last(3)[0].distance_from_hole <= 100) or
+    (strokes.last.sequence > 2 and !strokes.last.club_pt? and strokes.last(2).first.distance_from_hole <= 100)
   end
 
   def chip_ins?
-    strokes.club_pts.count.zero?
+    strokes.select{|stroke| stroke.club_pt?}.count.zero?
   end
 
   def calculate!

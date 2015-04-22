@@ -38,7 +38,7 @@ class Stroke < ActiveRecord::Base
   end
 
   def shots_to_hole
-    scorecard.strokes.count - sequence
+    scorecard.strokes.last.sequence - sequence
   end
 
   protected

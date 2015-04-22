@@ -153,13 +153,6 @@ module V1
             clubs: m.clubs
           }
         end
-        private
-          def scorecards
-            scorecards = object.player.scorecards
-            { par: [scorecards.out.sorted.map(&:par), object.player.out_par, scorecards.in.sorted.map(&:par), object.player.in_par, object.player.par].flatten,
-              score: [scorecards.out.sorted.map(&:score), object.player.out_score, scorecards.in.sorted.map(&:score), object.player.in_score, object.player.score].flatten,
-              status: formatted_scorecards_status([scorecards.out.sorted.map(&:status), object.player.out_status, scorecards.in.sorted.map(&:status), object.player.in_status, object.player.status].flatten) }
-          end
       end
 
       class CustomizedStatistic < Grape::Entity
@@ -217,7 +210,6 @@ module V1
           match = Match.find_uuid(params[:match_uuid])
           raise PermissionDenied.new unless match.owner_id == @current_user.id
           raise InvalidScoringType.new unless match.default_player.scoring_type_professional?
-          match.default_player.statistic.calculate!
           present match.default_player.statistic, with: Statistics::Entities::ProfessionalStatistic
         rescue ActiveRecord::RecordNotFound
           api_error!(10002)
