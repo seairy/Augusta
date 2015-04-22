@@ -31,7 +31,7 @@ class CustomizedStatistic
       user.players.where('created_at >= ?', Time.at(options[:date_begin]).beginning_of_day.utc).where('created_at <= ?', Time.at(options[:date_end]).end_of_day.utc)
     when :by_venue
       user.players.joins(:match).where(matches: { venue_id: Venue.find_uuid(options[:venue_uuid]).id })
-    end.select{|player| player.finished? and player.match}
+    end.select{|player| player.match and player.finished?}
     scorecards = Scorecard.where(player_id: players.map(&:id))
     gir_scorecards = scorecards.select{|scorecard| (scorecard.score - scorecard.putts) <= (scorecard.par - 2)}
     par_4_and_5_scorecards = scorecards.select{|scorecard| scorecard.par > 3}

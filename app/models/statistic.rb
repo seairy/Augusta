@@ -77,7 +77,13 @@ class Statistic < ActiveRecord::Base
       par_4_and_5_scorecards = scorecards.select{|scorecard| scorecard.par > 3}
       gir_scorecards = scorecards.select{|scorecard| (scorecard.score - scorecard.putts) <= (scorecard.par - 2)}
       non_gir_scorecards = scorecards.select{|scorecard| (scorecard.score - scorecard.putts) > (scorecard.par - 2)}
-      @scorecards = { par: [scorecards[0..8].map(&:par), scorecards[0..8].map(&:par).reduce(:+), scorecards[9..17].map(&:par), scorecards[9..17].map(&:par).reduce(:+), scorecards.map(&:par).reduce(:+)].flatten,
+      @scorecards = { par: [
+        scorecards[0..8].map(&:par),
+        scorecards[0..8].map(&:par).reduce(:+),
+        scorecards[9..17].map(&:par),
+        scorecards[9..17].map(&:par).reduce(:+),
+        scorecards.map(&:par).reduce(:+)
+      ].flatten,
         score: [scorecards[0..8].map(&:score), scorecards[0..8].map(&:score).compact.reduce(:+), scorecards[9..17].map(&:score), scorecards[9..17].map(&:score).compact.reduce(:+), scorecards.map(&:score).compact.reduce(:+)].flatten,
         status: [scorecards[0..8].map(&:status), scorecards[0..8].map(&:status).compact.reduce(:+), scorecards[9..17].map(&:status), scorecards[9..17].map(&:status).compact.reduce(:+), scorecards.map(&:status).compact.reduce(:+)].flatten }
       @average_score_par_3 = score_par_3.nil? ? 0 : (score_par_3.to_f / scorecards.select{|scorecard| scorecard.par == 3}.count).round(2)

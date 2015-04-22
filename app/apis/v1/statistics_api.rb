@@ -190,7 +190,6 @@ module V1
           match = Match.find_uuid(params[:match_uuid])
           raise PermissionDenied.new unless match.owner_id == @current_user.id
           raise InvalidScoringType.new unless match.default_player.scoring_type_simple?
-          match.default_player.statistic.calculate!
           present match.default_player.statistic, with: Statistics::Entities::SimpleStatistic
         rescue ActiveRecord::RecordNotFound
           api_error!(10002)
