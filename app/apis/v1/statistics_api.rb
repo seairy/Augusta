@@ -224,7 +224,7 @@ module V1
     resources :statistics do
       desc '统计'
       get '/' do
-        players = @current_user.players.select{|player| player.finished?}
+        players = @current_user.players.select{|player| player.match and player.finished?}
         scorecards = players.map(&:scorecards).flatten
         entity = {
           rank: '1,000,000+',
