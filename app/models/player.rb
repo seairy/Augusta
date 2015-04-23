@@ -4,6 +4,7 @@ class Player < ActiveRecord::Base
   belongs_to :match
   has_one :statistic
   has_many :scorecards, -> { order(:number) }
+  scope :by_user, ->(user) { where(user_id: user.id) }
 
   def score
     scorecards.map(&:score).compact.reduce(:+) || 0

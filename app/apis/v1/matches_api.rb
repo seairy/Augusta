@@ -47,6 +47,14 @@ module V1
         end
         with_options(format_with: :timestamp){expose :started_at}
       end
+
+      class TournamentMatch < Grape::Entity
+        expose :uuid, if: lambda{|m, o| o[:included_uuid]}
+        expose :type
+        expose :scorecards, using: Scorecards do |m, o|
+          m.player_by_user(o[:user]).scorecards
+        end
+      end
     end
   end
 
@@ -105,6 +113,28 @@ module V1
           present successful_json
         rescue ActiveRecord::RecordNotFound
           api_error!(10002)
+        end
+      end
+
+      desc '创建竞技赛事'
+      params do
+        requires :name, type: String, desc: '名称'
+        requires :password, type: Integer, desc: '密码'
+        requires :rule, type: String, values: Match.rules.keys, desc: '规则'
+        requires :course_uuids, type: String, desc: '球场标识'
+        requires :tee_boxes, type: String, desc: '发球台'
+        optional :remark, type: String, desc: '备注'
+      end
+      post :tournament do
+        begin
+          courses = params[:course_uuids].split(',').map{|course_uuid| Course.find_uuid(course_uuid)}
+          tee_boxes = params[:tee_boxes].split(',')
+          match = Match.create_tournament(owner: @current_user, courses: courses, tee_boxes: tee_boxes, scoring_type: params[:scoring_type])
+          present match, with: Matches::Entities::TournamentMatch, included_uuid: true, user: @current_user
+        rescue ActiveRecord::RecordNotFound
+          api_error!(10002)
+        rescue InvalidGroups
+          api_error!(20101)
         end
       end
     end
