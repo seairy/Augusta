@@ -1,7 +1,7 @@
 class Player < ActiveRecord::Base
   as_enum :scoring_type, [:simple, :professional], prefix: true, map: :string
   belongs_to :user
-  belongs_to :match
+  belongs_to :match, counter_cache: true
   has_one :statistic
   has_many :scorecards, -> { order(:number) }
   scope :by_user, ->(user) { where(user_id: user.id) }

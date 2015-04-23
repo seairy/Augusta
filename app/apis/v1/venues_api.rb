@@ -36,6 +36,30 @@ module V1
         expose :name
         expose :venues, using: Venues
       end
+
+      class Provinces < Grape::Entity
+        expose :name
+        expose :venues, using: Venues
+      end
+
+      class User < Grape::Entity
+        expose :nickname
+        expose :portrait do |m, o|
+          oss_image(m, :portrait, :w300_h300_fl_q50)
+        end
+      end
+
+      class TournamentMatches < Grape::Entity
+        expose :uuid
+        expose :user, using: User do |m, o|
+          m.owner
+        end
+        expose :name
+        expose :rule
+        expose :password
+        expose :players_count
+        with_options(format_with: :timestamp){expose :started_at}
+      end
     end
   end
   
@@ -61,14 +85,31 @@ module V1
         requires :uuid, type: String, desc: '球会标识'
       end
       get :show do
-        venue = Venue.find_uuid(params[:uuid])
-        present venue, with: Venues::Entities::Venue
+        begin
+          venue = Venue.find_uuid(params[:uuid])
+          present venue, with: Venues::Entities::Venue
+        rescue ActiveRecord::RecordNotFound
+          api_error!(10002)
+        end
       end
 
       desc '已访问球场列表'
       get :visited do
         venues = @current_user.visited_venues
         present venues, with: Venues::Entities::VisitedVenues
+      end
+
+      desc '竞技赛列表'
+      params do
+        requires :uuid, type: String, desc: '球会标识'
+      end
+      get 'matches/tournament' do
+        begin
+          matches = Venue.find_uuid(params[:uuid]).matches.type_tournaments
+          present matches, with: Venues::Entities::TournamentMatches
+        rescue ActiveRecord::RecordNotFound
+          api_error!(10002)
+        end
       end
     end
   end

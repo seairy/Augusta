@@ -39,7 +39,7 @@ class Match < ActiveRecord::Base
     def create_tournament options = {}
       ActiveRecord::Base.transaction do
         raise InvalidGroups.new unless options[:courses].map(&:holes_count).reduce(:+) == 18
-        match = create!(owner: options[:owner], venue: options[:courses].first.venue, type: :tournament, name: options[:name], password: options[:password], remark: options[:remark], started_at: Time.now)
+        match = create!(owner: options[:owner], venue: options[:courses].first.venue, type: :tournament, name: options[:name], password: options[:password], rule: options[:rule], remark: options[:remark], started_at: Time.now)
         player = match.players.create(user: options[:owner], scoring_type: :simple)
         player.create_statistic!
         hole_number = 1

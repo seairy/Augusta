@@ -4,6 +4,7 @@ class Venue < ActiveRecord::Base
   attr_accessor :visited_count
   belongs_to :city
   has_many :courses
+  has_many :matches
   reverse_geocoded_by :latitude, :longitude
   scope :alphabetic, -> { order('CONVERT(venues.name USING GBK) asc') }
   scope :nearest, ->(latitude, longitude) {

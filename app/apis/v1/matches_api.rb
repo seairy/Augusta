@@ -66,7 +66,7 @@ module V1
         optional :page, type: String, desc: '页数'
       end
       get :practice do
-        matches = Match.by_owner(@current_user).joins(:players).where(players: { scoring_type_cd: params[:scoring_type]}).includes(:venue).includes(:players).page(params[:page]).per(10)
+        matches = Match.type_practices.by_owner(@current_user).joins(:players).where(players: { scoring_type_cd: params[:scoring_type]}).includes(:venue).includes(:players).page(params[:page]).per(10)
         present matches, with: Matches::Entities::PracticeMatches, latitude: params[:latitude], longitude: params[:longitude]
       end
 
@@ -129,7 +129,7 @@ module V1
         begin
           courses = params[:course_uuids].split(',').map{|course_uuid| Course.find_uuid(course_uuid)}
           tee_boxes = params[:tee_boxes].split(',')
-          match = Match.create_tournament(owner: @current_user, courses: courses, tee_boxes: tee_boxes, scoring_type: params[:scoring_type])
+          match = Match.create_tournament(owner: @current_user, courses: courses, tee_boxes: tee_boxes, rule: params[:rule], name: params[:name], password: params[:password], remark: params[:remark])
           present match, with: Matches::Entities::TournamentMatch, included_uuid: true, user: @current_user
         rescue ActiveRecord::RecordNotFound
           api_error!(10002)
