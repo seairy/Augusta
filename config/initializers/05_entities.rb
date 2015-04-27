@@ -15,20 +15,6 @@ module V1
       float.try(:to_f)
     end
 
-    def formatted_scorecards_status scorecards_status
-      scorecards_status.map do |scorecard_status|
-        if scorecard_status.nil?
-          nil
-        elsif scorecard_status < 0
-          "#{scorecard_status}"
-        elsif scorecard_status == 0
-          'E'
-        else
-          "+#{scorecard_status}"
-        end
-      end
-    end
-
     def oss_image object, asset_name, version
       object ? (object.send("#{asset_name}?") ? object.send(asset_name).send(version) : nil) : nil
     end

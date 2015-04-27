@@ -105,7 +105,7 @@ module V1
       end
       get 'matches/tournament' do
         begin
-          matches = Venue.find_uuid(params[:uuid]).matches.type_tournaments
+          matches = Venue.find_uuid(params[:uuid]).matches.type_tournaments.latest
           present matches, with: Venues::Entities::TournamentMatches
         rescue ActiveRecord::RecordNotFound
           api_error!(10002)

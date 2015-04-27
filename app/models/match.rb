@@ -1,13 +1,21 @@
 # -*- encoding : utf-8 -*-
 class Match < ActiveRecord::Base
-  include UUID, Trashable
+  include UUID, Trashable, AASM
   attr_accessor :groups
   as_enum :type, [:practice, :tournament], prefix: true, map: :string
   as_enum :rule, [:stroke_play, :match_play], prefix: true, map: :string
   belongs_to :owner, class_name: 'User'
   belongs_to :venue
   has_many :players
+  aasm column: 'state' do
+    state :progressing, initial: true
+    state :finished
+    event :finish do
+      transitions from: :progressing, to: :finished
+    end
+  end
   scope :by_owner, ->(user) { where(owner_id: user.id) }
+  scope :latest, -> { order(started_at: :desc) }
 
   def default_player
     players.first if type_practice?
@@ -15,6 +23,23 @@ class Match < ActiveRecord::Base
 
   def player_by_user user
     players.by_user(user).first if type_tournament?
+  end
+
+  def participate options = {}
+    raise InvalidMatchType.new unless type_tournament?
+    raise InvalidPassword.new unless password == options[:password]
+    raise DuplicatedParticipant.new if players.map(&:user_id).include?(options[:user].id)
+    raise InvalidState.new if finished?
+    player = players.create(user: options[:owner], scoring_type: options[:scoring_type])
+    player.create_statistic!
+    hole_number = 1
+    options[:courses].each_with_index do |course, i|
+      course.holes.sort.each do |hole|
+        tee_box = hole.tee_boxes.send(options[:tee_boxes][i])
+        Scorecard.create!(player: player, hole: hole, number: hole_number, par: hole.par, tee_box_color: tee_box.color, distance_from_hole_to_tee_box: tee_box.distance_from_hole)
+        hole_number += 1
+      end
+    end
   end
 
   class << self

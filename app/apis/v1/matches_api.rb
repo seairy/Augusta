@@ -48,9 +48,26 @@ module V1
         with_options(format_with: :timestamp){expose :started_at}
       end
 
+      class User < Grape::Entity
+        expose :nickname
+        expose :portrait do |m, o|
+          oss_image(m, :portrait, :w300_h300_fl_q50)
+        end
+      end
+
+      class Player < Grape::Entity
+        expose :user, using: User
+        expose :position
+        expose :score
+        expose :status
+      end
+
       class TournamentMatch < Grape::Entity
         expose :uuid, if: lambda{|m, o| o[:included_uuid]}
         expose :type
+        expose :player, using: Player do |m, o|
+          m.player_by_user(o[:user])
+        end
         expose :scorecards, using: Scorecards do |m, o|
           m.player_by_user(o[:user]).scorecards
         end
@@ -76,7 +93,7 @@ module V1
       end
       get '/practice/show' do
         begin
-          match = @current_user.matches.find_uuid(params[:uuid])
+          match = @current_user.matches.type_practices.find_uuid(params[:uuid])
           present match, with: Matches::Entities::PracticeMatch
         rescue ActiveRecord::RecordNotFound
           api_error!(10002)
@@ -116,6 +133,19 @@ module V1
         end
       end
 
+      desc '竞技赛事信息'
+      params do
+        requires :uuid, type: String, desc: '赛事标识'
+      end
+      get '/tournament/show' do
+        begin
+          match = @current_user.matches.type_tournaments.find_uuid(params[:uuid])
+          present match, with: Matches::Entities::TournamentMatch, user: @current_user
+        rescue ActiveRecord::RecordNotFound
+          api_error!(10002)
+        end
+      end
+
       desc '创建竞技赛事'
       params do
         requires :name, type: String, desc: '名称'
@@ -130,11 +160,34 @@ module V1
           courses = params[:course_uuids].split(',').map{|course_uuid| Course.find_uuid(course_uuid)}
           tee_boxes = params[:tee_boxes].split(',')
           match = Match.create_tournament(owner: @current_user, courses: courses, tee_boxes: tee_boxes, rule: params[:rule], name: params[:name], password: params[:password], remark: params[:remark])
-          present match, with: Matches::Entities::TournamentMatch, included_uuid: true, user: @current_user
+          present uuid: match.uuid
         rescue ActiveRecord::RecordNotFound
           api_error!(10002)
         rescue InvalidGroups
           api_error!(20101)
+        end
+      end
+
+      desc '加入竞技赛事'
+      params do
+        requires :uuid, type: String, desc: '赛事标识'
+        requires :password, type: Integer, desc: '密码'
+        requires :tee_boxes, type: String, desc: '发球台'
+      end
+      post 'tournament/participate' do
+        begin
+          Match.find_uuid(params[:uuid]).participate(user: @current_user, password: params[:password].to_s, tee_boxes: params[:tee_boxes].split(','))
+          present match, with: Matches::Entities::TournamentMatch, user: @current_user
+        rescue ActiveRecord::RecordNotFound
+          api_error!(10002)
+        rescue InvalidMatchType
+          api_error!(20105)
+        rescue InvalidPassword
+          api_error!(20106)
+        rescue DuplicatedParticipant
+          api_error!(20107)
+        rescue InvalidState
+          api_error!(20108)
         end
       end
     end
