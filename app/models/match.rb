@@ -21,8 +21,16 @@ class Match < ActiveRecord::Base
     players.first if type_practice?
   end
 
+  def owned_player
+    players.where(user_id: owner_id).first
+  end
+
   def player_by_user user
     players.by_user(user).first if type_tournament?
+  end
+
+  def courses
+    owned_player.scorecards.where(number: [1, 10]).map{|scorecard| scorecard.hole.course}.uniq
   end
 
   def participate options = {}

@@ -58,6 +58,8 @@ module V1
         expose :rule
         expose :password
         expose :players_count
+        expose :remark
+        expose :courses, using: Courses
         with_options(format_with: :timestamp){expose :started_at}
       end
     end
