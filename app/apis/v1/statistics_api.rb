@@ -25,13 +25,6 @@ module V1
         expose :par
         expose :bogey
         expose :double_bogey
-        private
-          def scorecards
-            scorecards = object.player.scorecards
-            { par: [scorecards.out.sorted.map(&:par), object.player.out_par, scorecards.in.sorted.map(&:par), object.player.in_par, object.player.par].flatten,
-              score: [scorecards.out.sorted.map(&:score), object.player.out_score, scorecards.in.sorted.map(&:score), object.player.in_score, object.player.score].flatten,
-              status: formatted_scorecards_status([scorecards.out.sorted.map(&:status), object.player.out_status, scorecards.in.sorted.map(&:status), object.player.in_status, object.player.status].flatten) }
-          end
       end
 
       class ProfessionalStatistic < Grape::Entity
