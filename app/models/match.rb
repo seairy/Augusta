@@ -30,7 +30,7 @@ class Match < ActiveRecord::Base
   end
 
   def courses
-    owned_player.scorecards.where(number: [1, 10]).map{|scorecard| scorecard.hole.course}.uniq
+    owned_player.scorecards.where(number: [1, 10]).map{|scorecard| scorecard.hole.course}.instance_eval{ count == 36 ? uniq : self }
   end
 
   def participate options = {}
