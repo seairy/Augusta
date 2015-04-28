@@ -38,10 +38,10 @@ class Match < ActiveRecord::Base
     raise InvalidPassword.new unless password == options[:password]
     raise DuplicatedParticipant.new if players.map(&:user_id).include?(options[:user].id)
     raise InvalidState.new if finished?
-    player = players.create(user: options[:owner], scoring_type: options[:scoring_type])
+    player = players.create(user: options[:user], scoring_type: :simple)
     player.create_statistic!
     hole_number = 1
-    options[:courses].each_with_index do |course, i|
+    courses.each_with_index do |course, i|
       course.holes.sort.each do |hole|
         tee_box = hole.tee_boxes.send(options[:tee_boxes][i])
         Scorecard.create!(player: player, hole: hole, number: hole_number, par: hole.par, tee_box_color: tee_box.color, distance_from_hole_to_tee_box: tee_box.distance_from_hole)

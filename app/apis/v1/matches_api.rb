@@ -177,7 +177,7 @@ module V1
       post 'tournament/participate' do
         begin
           Match.find_uuid(params[:uuid]).participate(user: @current_user, password: params[:password].to_s, tee_boxes: params[:tee_boxes].split(','))
-          present match, with: Matches::Entities::TournamentMatch, user: @current_user
+          present successful_json
         rescue ActiveRecord::RecordNotFound
           api_error!(10002)
         rescue InvalidMatchType
