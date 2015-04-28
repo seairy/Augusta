@@ -87,6 +87,15 @@ module V1
         present matches, with: Matches::Entities::PracticeMatches, latitude: params[:latitude], longitude: params[:longitude]
       end
 
+      desc '历史竞技赛事列表'
+      params do
+        optional :page, type: String, desc: '页数'
+      end
+      get :tournament do
+        matches = Match.type_tournaments.by_owner(@current_user).includes(:venue).includes(:players).page(params[:page]).per(10)
+        present matches, with: Matches::Entities::PracticeMatches, latitude: params[:latitude], longitude: params[:longitude]
+      end
+
       desc '练习赛事信息'
       params do
         requires :uuid, type: String, desc: '赛事标识'

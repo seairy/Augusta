@@ -88,7 +88,7 @@ class Statistic < ActiveRecord::Base
             'E'
           elsif status > 0
             "+#{status}"
-          end
+          end if status
         end }
       @average_score_par_3 = score_par_3.nil? ? 0 : (score_par_3.to_f / scorecards.select{|scorecard| scorecard.par == 3}.count).round(2)
       @average_score_par_4 = score_par_4.nil? ? 0 : (score_par_4.to_f / scorecards.select{|scorecard| scorecard.par == 4}.count).round(2)
