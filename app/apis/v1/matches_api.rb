@@ -139,10 +139,13 @@ module V1
       end
       get '/tournament/show' do
         begin
-          match = @current_user.matches.type_tournaments.find_uuid(params[:uuid])
+          match = Match.type_tournaments.find_uuid(params[:uuid])
+          raise PlayerNotFound.new unless match.participated?(@current_user) 
           present match, with: Matches::Entities::TournamentMatch, user: @current_user
         rescue ActiveRecord::RecordNotFound
           api_error!(10002)
+        rescue PlayerNotFound
+          api_error!(20109)
         end
       end
 
@@ -176,7 +179,7 @@ module V1
       end
       post 'tournament/participate' do
         begin
-          Match.find_uuid(params[:uuid]).participate(user: @current_user, password: params[:password].to_s, tee_boxes: params[:tee_boxes].split(','))
+          Match.type_tournaments.find_uuid(params[:uuid]).participate(user: @current_user, password: params[:password].to_s, tee_boxes: params[:tee_boxes].split(','))
           present successful_json
         rescue ActiveRecord::RecordNotFound
           api_error!(10002)

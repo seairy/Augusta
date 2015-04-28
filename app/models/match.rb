@@ -50,6 +50,10 @@ class Match < ActiveRecord::Base
     end
   end
 
+  def participated? user
+    players.map(&:user_id).include?(user.id)
+  end
+
   class << self
     def create_practice options = {}
       ActiveRecord::Base.transaction do

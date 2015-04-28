@@ -13,5 +13,6 @@ exceptions = %w(
   DuplicatedParticipant
   InvalidState
   InvalidMatchType
+  PlayerNotFound
 )
 exceptions.each{|e| Object.const_set(e, Class.new(StandardError))} 
