@@ -72,6 +72,17 @@ module V1
           m.player_by_user(o[:user]).scorecards
         end
       end
+
+      class TournamentMatches < Grape::Entity
+        expose :uuid, if: lambda{|m, o| o[:included_uuid]}
+        expose :type
+        expose :venue, using: Venue
+        expose :score do |m, o|
+          m.owned_player.score
+        end
+        expose :players_count
+        with_options(format_with: :timestamp){expose :started_at}
+      end
     end
   end
 
@@ -84,7 +95,7 @@ module V1
       end
       get :practice do
         matches = Match.type_practices.by_owner(@current_user).joins(:players).where(players: { scoring_type_cd: params[:scoring_type]}).includes(:venue).includes(:players).page(params[:page]).per(10)
-        present matches, with: Matches::Entities::PracticeMatches, latitude: params[:latitude], longitude: params[:longitude]
+        present matches, with: Matches::Entities::PracticeMatches
       end
 
       desc '历史竞技赛事列表'
@@ -92,8 +103,8 @@ module V1
         optional :page, type: String, desc: '页数'
       end
       get :tournament do
-        matches = Match.type_tournaments.by_owner(@current_user).includes(:venue).includes(:players).page(params[:page]).per(10)
-        present matches, with: Matches::Entities::PracticeMatches, latitude: params[:latitude], longitude: params[:longitude]
+        matches = Match.type_tournaments.participated(@current_user).includes(:venue).includes(:players).page(params[:page]).per(10)
+        present matches, with: Matches::Entities::TournamentMatches
       end
 
       desc '练习赛事信息'
