@@ -74,11 +74,14 @@ module V1
       end
 
       class TournamentMatches < Grape::Entity
-        expose :uuid, if: lambda{|m, o| o[:included_uuid]}
+        expose :uuid
         expose :type
         expose :venue, using: Venue
         expose :score do |m, o|
-          m.owned_player.score
+          m.player_by_user(o[:user]).score
+        end
+        expose :recorded_scorecards_count do |m, o|
+          m.player_by_user(o[:user]).recorded_scorecards_count
         end
         expose :players_count
         with_options(format_with: :timestamp){expose :started_at}
@@ -104,7 +107,7 @@ module V1
       end
       get :tournament do
         matches = Match.type_tournaments.participated(@current_user).includes(:venue).includes(:players).page(params[:page]).per(10)
-        present matches, with: Matches::Entities::TournamentMatches
+        present matches, with: Matches::Entities::TournamentMatches, user: @current_user
       end
 
       desc '练习赛事信息'
