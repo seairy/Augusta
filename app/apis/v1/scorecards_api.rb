@@ -34,7 +34,6 @@ module V1
         requires :strokes, type: Array, desc: '击球记录'
       end
       put :professional do
-        Rails.logger.info "******* strokes: #{params[:strokes]}"
         begin
           scorecard = Scorecard.find_uuid(params[:uuid])
           raise PermissionDenied.new unless scorecard.player.user_id == @current_user.id

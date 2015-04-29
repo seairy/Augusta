@@ -32,7 +32,7 @@ class User < ActiveRecord::Base
   end
 
   def sign_out options = {}
-    user.tokens.available.first.try(:expired!)
+    tokens.available.first.try(:expired!)
   end
 
   def visited_venues
