@@ -1,7 +1,7 @@
 # -*- encoding : utf-8 -*-
 class VerificationCode < ActiveRecord::Base
   belongs_to :user
-  as_enum :type, [:sign_up, :forgot_password], prefix: true, map: :string
+  as_enum :type, [:sign_up, :forgot_password, :upgrade], prefix: true, map: :string
   scope :available, -> { where(available: true) }
 
   def expired!

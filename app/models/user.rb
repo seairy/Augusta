@@ -35,8 +35,12 @@ class User < ActiveRecord::Base
     tokens.available.first.try(:expired!)
   end
 
+  def upgrade options = {}
+
+  end
+
   def visited_venues
-    venues = players.includes(:match).inject({}){|result, player| result.has_key?(player.match.venue_id) ? result[player.match.venue_id] += 1 : result[player.match.venue_id] = 1; result}
+    venues = players.includes(:match).inject(Hash.new(0)){|result, player| result[player.match.venue_id] += 1; result}
     Venue.find(venues.keys).map{|venue| venue.visited_count = venues[venue.id]; venue}
   end
 
