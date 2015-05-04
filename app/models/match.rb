@@ -63,7 +63,6 @@ class Match < ActiveRecord::Base
         raise InvalidGroups.new unless options[:courses].map(&:holes_count).reduce(:+) == 18
         match = create!(owner: options[:owner], venue: options[:courses].first.venue, type: :practice, started_at: Time.now)
         player = match.players.create(user: options[:owner], scoring_type: options[:scoring_type])
-        player.create_statistic!
         hole_number = 1
         options[:courses].each_with_index do |course, i|
           course.holes.sort.each do |hole|
@@ -72,6 +71,7 @@ class Match < ActiveRecord::Base
             hole_number += 1
           end
         end
+        player.create_statistic!
         match
       end
     end
@@ -81,7 +81,6 @@ class Match < ActiveRecord::Base
         raise InvalidGroups.new unless options[:courses].map(&:holes_count).reduce(:+) == 18
         match = create!(owner: options[:owner], venue: options[:courses].first.venue, type: :tournament, name: options[:name], password: options[:password], rule: options[:rule], remark: options[:remark], started_at: Time.now)
         player = match.players.create(user: options[:owner], scoring_type: :simple)
-        player.create_statistic!
         hole_number = 1
         options[:courses].each_with_index do |course, i|
           course.holes.sort.each do |hole|
@@ -90,6 +89,7 @@ class Match < ActiveRecord::Base
             hole_number += 1
           end
         end
+        player.create_statistic!
         match
       end
     end
