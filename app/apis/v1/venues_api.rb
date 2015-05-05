@@ -68,13 +68,13 @@ module V1
   
   class VenuesAPI < Grape::API
     resources :venues do
-      desc '距离最近的球会列表'
+      desc '附近的球会列表'
       params do
         requires :latitude, type: String, desc: '纬度'
         requires :longitude, type: String, desc: '经度'
         optional :page, type: Integer, desc: '页数'
       end
-      get :nearest do
+      get :nearby do
         venues = Venue.nearest(params[:latitude], params[:longitude]).page(params[:page]).per(20)
         present venues, with: Venues::Entities::Venues, latitude: params[:latitude], longitude: params[:longitude]
       end
