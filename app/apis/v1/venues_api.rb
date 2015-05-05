@@ -79,6 +79,17 @@ module V1
         present venues, with: Venues::Entities::Venues, latitude: params[:latitude], longitude: params[:longitude]
       end
 
+      desc '最近的球会信息'
+      params do
+        requires :latitude, type: String, desc: '纬度'
+        requires :longitude, type: String, desc: '经度'
+        optional :page, type: Integer, desc: '页数'
+      end
+      get :nearest do
+        venue = Venue.nearest(params[:latitude], params[:longitude]).first
+        present venue, with: Venues::Entities::Venue
+      end
+
       desc '按省份划分的球会列表'
       get :sectionalized_by_province do
         present Province.alphabetic, with: Venues::Entities::Provinces
