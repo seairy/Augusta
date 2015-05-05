@@ -59,16 +59,18 @@ class Scorecard < ActiveRecord::Base
     ActiveRecord::Base.transaction do
       strokes.map(&:destroy!)
       new_strokes = options[:strokes].map do |stroke_params|
-        strokes.new(distance_from_hole: stroke_params[:distance_from_hole], point_of_fall: stroke_params[:point_of_fall], penalties: stroke_params[:penalties], club: stroke_params[:club])
+        Stroke.new(scorecard: self, distance_from_hole: stroke_params[:distance_from_hole], point_of_fall: stroke_params[:point_of_fall], penalties: stroke_params[:penalties], club: stroke_params[:club])
       end
-      raise HoledStrokeNotFound.new unless strokes.last.distance_from_hole.zero?
+      raise HoledStrokeNotFound.new unless new_strokes.last.distance_from_hole.zero?
       new_strokes.map(&:save!)
     end
+    self.calculate!
+    self
   end
 
   def calculate!
     if player.scoring_type_professional?
-      self.putts = strokes.select{|stroke| stroke.club_pt?}.count
+      self.putts = strokes.reload.select{|stroke| stroke.club_pt?}.count
       self.penalties = (strokes.map{|stroke| stroke.penalties}.compact.reduce(:+) || 0)
       self.score = strokes.count + self.penalties
       self.driving_distance = (distance_from_hole_to_tee_box - strokes.first.distance_from_hole) if strokes.first

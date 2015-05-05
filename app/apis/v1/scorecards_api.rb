@@ -1,5 +1,15 @@
 # -*- encoding : utf-8 -*-
 module V1
+  module Scorecards
+    module Entities
+      class Scorecard < Grape::Entity
+        expose :score
+        expose :putts
+        expose :penalties
+      end
+    end
+  end
+
   class ScorecardsAPI < Grape::API
     resources :scorecards do
       desc '修改简单记分卡'
@@ -41,9 +51,9 @@ module V1
           strokes = params[:strokes].map do |stroke_as_string|
             Hash[stroke_as_string.split(', ').map{|stroke_params| stroke_params.split('=')}].symbolize_keys
           end
-          scorecard.update_professional(strokes: strokes)
+          scorecard = scorecard.update_professional(strokes: strokes)
           scorecard.player.statistic.calculate!
-          present successful_json
+          present scorecard, with: Scorecards::Entities::Scorecard
         rescue ActiveRecord::RecordNotFound
           api_error!(10002)
         rescue PermissionDenied
