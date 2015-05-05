@@ -55,6 +55,17 @@ class Scorecard < ActiveRecord::Base
     strokes.select{|stroke| stroke.club_pt?}.count.zero?
   end
 
+  def update_professional options = {}
+    ActiveRecord::Base.transaction do
+      strokes.map(&:destroy!)
+      new_strokes = options[:strokes].map do |stroke_params|
+        strokes.new(distance_from_hole: stroke_params[:distance_from_hole], point_of_fall: stroke_params[:point_of_fall], penalties: stroke_params[:penalties], club: stroke_params[:club])
+      end
+      raise HoledStrokeNotFound.new unless strokes.last.distance_from_hole.zero?
+      new_strokes.map(&:save!)
+    end
+  end
+
   def calculate!
     if player.scoring_type_professional?
       self.putts = strokes.select{|stroke| stroke.club_pt?}.count

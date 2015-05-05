@@ -11,7 +11,7 @@ module V1
         requires :driving_distance, type: Integer, desc: '开球距离'
         requires :direction, type: String, values: Scorecard.directions.keys, desc: '开球方向'
       end
-      put '/' do
+      put :simple do
         begin
           scorecard = Scorecard.find_uuid(params[:uuid])
           raise PermissionDenied.new unless scorecard.player.user_id == @current_user.id
@@ -24,7 +24,7 @@ module V1
         rescue PermissionDenied
           api_error!(10003)
         rescue InvalidScoringType
-          api_error!(20102)
+          api_error!(20104)
         end
       end
 
@@ -37,8 +37,11 @@ module V1
         begin
           scorecard = Scorecard.find_uuid(params[:uuid])
           raise PermissionDenied.new unless scorecard.player.user_id == @current_user.id
-          raise InvalidScoringType.new if scorecard.player.scoring_type_professional?
-          scorecard.update!(score: params[:score], putts: params[:putts], penalties: params[:penalties], driving_distance: params[:driving_distance], direction: params[:direction])
+          raise InvalidScoringType.new if scorecard.player.scoring_type_simple?
+          strokes = params[:strokes].map do |stroke_as_string|
+            Hash[stroke_as_string.split(', ').map{|stroke_params| stroke_params.split('=')}].symbolize_keys
+          end
+          scorecard.update_professional(strokes: strokes)
           scorecard.player.statistic.calculate!
           present successful_json
         rescue ActiveRecord::RecordNotFound
@@ -46,7 +49,9 @@ module V1
         rescue PermissionDenied
           api_error!(10003)
         rescue InvalidScoringType
-          api_error!(20102)
+          api_error!(20104)
+        rescue HoledStrokeNotFound
+          api_error!(20110)
         end
       end
     end

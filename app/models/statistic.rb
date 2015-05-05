@@ -75,15 +75,7 @@ class Statistic < ActiveRecord::Base
     scorecards = all_scorecards.select{|scorecard| scorecard.score}
     @scorecards = { par: [all_scorecards[0..8].map(&:par), all_scorecards[0..8].map(&:par).reduce(:+), all_scorecards[9..17].map(&:par), all_scorecards[9..17].map(&:par).reduce(:+), all_scorecards.map(&:par).reduce(:+)].flatten,
       score: [all_scorecards[0..8].map(&:score), all_scorecards[0..8].map(&:score).compact.reduce(:+), all_scorecards[9..17].map(&:score), all_scorecards[9..17].map(&:score).compact.reduce(:+), all_scorecards.map(&:score).compact.reduce(:+)].flatten,
-      status: [all_scorecards[0..8].map(&:status), all_scorecards[0..8].map(&:status).compact.reduce(:+), all_scorecards[9..17].map(&:status), all_scorecards[9..17].map(&:status).compact.reduce(:+), all_scorecards.map(&:status).compact.reduce(:+)].flatten.map do|status|
-        if status < 0
-          "#{status}"
-        elsif status.zero?
-          'E'
-        elsif status > 0
-          "+#{status}"
-        end if status
-      end }
+      status: [all_scorecards[0..8].map(&:status), all_scorecards[0..8].map(&:status).compact.reduce(:+), all_scorecards[9..17].map(&:status), all_scorecards[9..17].map(&:status).compact.reduce(:+), all_scorecards.map(&:status).compact.reduce(:+)].flatten.map{|scorecard| ApplicationController.helpers.formatted_status(scorecard)} }
     if scorecards.any?
       scorecards = player.scorecards.includes(:strokes).finished.to_a
       strokes = scorecards.map(&:strokes).flatten
