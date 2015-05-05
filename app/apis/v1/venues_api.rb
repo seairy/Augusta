@@ -27,6 +27,7 @@ module V1
         expose :uuid
         expose :name
         expose :address
+        expose :holes_count
         expose :distance, if: lambda{|m, o| o[:latitude] and o[:longitude]} do |m, o|
           m.distance_to([o[:latitude], o[:longitude]]).round(2)
         end
@@ -71,15 +72,16 @@ module V1
       params do
         requires :latitude, type: String, desc: '纬度'
         requires :longitude, type: String, desc: '经度'
+        optional :page, type: Integer, desc: '页数'
       end
       get :nearest do
-        venues = Venue.nearest(params[:latitude], params[:longitude])
+        venues = Venue.nearest(params[:latitude], params[:longitude]).page(params[:page]).per(20)
         present venues, with: Venues::Entities::Venues, latitude: params[:latitude], longitude: params[:longitude]
       end
 
       desc '按省份划分的球会列表'
       get :sectionalized_by_province do
-        present Province.alphabetic.includes(:venues), with: Venues::Entities::Provinces
+        present Province.alphabetic, with: Venues::Entities::Provinces
       end
 
       desc '球会信息'

@@ -62,6 +62,7 @@ class Scorecard < ActiveRecord::Base
         Stroke.new(scorecard: self, distance_from_hole: stroke_params[:distance_from_hole], point_of_fall: stroke_params[:point_of_fall], penalties: stroke_params[:penalties], club: stroke_params[:club])
       end
       raise HoledStrokeNotFound.new unless new_strokes.last.distance_from_hole.zero?
+      raise DuplicatedHoledStroke.new if new_strokes.select{|stroke| stroke.distance_from_hole.zero?}.count > 1
       new_strokes.map(&:save!)
     end
     self.calculate!

@@ -62,6 +62,8 @@ module V1
           api_error!(20104)
         rescue HoledStrokeNotFound
           api_error!(20110)
+        rescue DuplicatedHoledStroke
+          api_error!(20111)
         end
       end
     end

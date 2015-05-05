@@ -3,5 +3,5 @@ class Province < ActiveRecord::Base
   include UUID
   has_many :cities
   has_many :venues, through: :cities
-  scope :alphabetic, -> { order('CONVERT(provinces.name USING GBK) asc') }
+  scope :alphabetic, -> { all.includes(:venues).sort_by{|province| PinYin.sentence(province.name)} }
 end
