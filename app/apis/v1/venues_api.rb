@@ -65,6 +65,12 @@ module V1
   end
   
   class VenuesAPI < Grape::API
+    helpers do
+      def preload_courses_by_venues venues
+        Course.where(venue_id: venues.map(&:id)).inject(Hash.new(0)){|result, course| result[course.venue_id] += course.holes_count; result}
+      end
+    end
+
     resources :venues do
       desc '附近的球会列表'
       params do
@@ -74,7 +80,8 @@ module V1
       end
       get :nearby do
         venues = Venue.nearest(params[:latitude], params[:longitude]).page(params[:page]).per(20)
-        present venues, with: Venues::Entities::Venues, latitude: params[:latitude], longitude: params[:longitude]
+        courses = preload_courses_by_venues(venues)
+        present venues, with: Venues::Entities::Venues, latitude: params[:latitude], longitude: params[:longitude], courses: courses
       end
 
       desc '最近的球会信息'
@@ -91,7 +98,7 @@ module V1
       desc '按省份划分的球会列表'
       get :sectionalized_by_province do
         provinces = Province.alphabetic
-        courses = Course.where(venue_id: provinces.map(&:venues).flatten.map(&:id)).inject(Hash.new(0)){|result, course| result[course.venue_id] += course.holes_count; result}
+        courses = preload_courses_by_venues(provinces.map(&:venues).flatten)
         present provinces, with: Venues::Entities::Provinces, courses: courses
       end
 
