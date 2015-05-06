@@ -51,7 +51,6 @@ module V1
         with_options(format_with: :timestamp){expose :started_at}
       end
 
-      # ** DEPRECATED **
       class User < Grape::Entity
         expose :nickname
         expose :portrait do |m, o|
@@ -98,26 +97,36 @@ module V1
         expose :uuid do |m, o|
           m.match.uuid
         end
-        expose :scoring_type
         expose :venue do |m, o|
           { name: m.match.venue.name }
         end
-        expose :total
+        expose :player do |m, o|
+          {
+            scoring_type: m.scoring_type,
+            total: m.total,
+            recorded_scorecards_count: m.recorded_scorecards_count
+          }
+        end
         expose :players_count do |m, o|
           m.match.players_count
         end
-        expose :recorded_scorecards_count
         expose :started_at do |m, o|
           m.match.started_at.to_i
         end
       end
 
       class Match < Grape::Entity
-        expose :user do |m, o|
-          
-        end
-        expose :leaderboard do |m, o|
-          
+        expose :player do |m, o|
+          {
+            user: {
+              nickname: o[:player].user.nickname,
+              portrait: oss_image(o[:player].user, :portrait, :w300_h300_fl_q50)
+            },
+            position: o[:player].position,
+            recorded_scorecards_count: o[:player].recorded_scorecards_count,
+            strokes: o[:player].strokes,
+            total: o[:player].total
+          }
         end
         expose :scoring_type do |m, o|
           o[:player].scoring_type
@@ -154,6 +163,25 @@ module V1
           api_error!(10002)
         rescue PlayerNotFound
           api_error!(20109)
+        end
+      end
+
+      desc '创建比赛'
+      params do
+        requires :course_uuids, type: String, desc: '球场标识'
+        requires :tee_boxes, type: String, desc: '发球台'
+        requires :scoring_type, type: String, values: Player.scoring_types.keys, desc: '记分类型'
+      end
+      post '/' do
+        begin
+          courses = params[:course_uuids].split(',').map{|course_uuid| Course.find_uuid(course_uuid)}
+          tee_boxes = params[:tee_boxes].split(',')
+          match = Match.create_practice(owner: @current_user, courses: courses, tee_boxes: tee_boxes, scoring_type: params[:scoring_type])
+          present uuid: match.uuid
+        rescue ActiveRecord::RecordNotFound
+          api_error!(10002)
+        rescue InvalidGroups
+          api_error!(20101)
         end
       end
 
