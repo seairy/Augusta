@@ -14,6 +14,7 @@ class Match < ActiveRecord::Base
       transitions from: :progressing, to: :finished
     end
   end
+  default_scope { includes(:venue) }
   scope :by_owner, ->(user) { where(owner_id: user.id) }
   scope :latest, -> { order(started_at: :desc) }
   scope :participated, ->(user) { joins(:players).where(players: { user_id: user.id }) }

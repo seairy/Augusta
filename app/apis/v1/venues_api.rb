@@ -26,16 +26,14 @@ module V1
       class Venues < Grape::Entity
         expose :uuid
         expose :name
+        # deprecated
         expose :address
-        expose :holes_count
+        expose :holes_count do |m, o|
+          o[:courses][m.id]
+        end
         expose :distance, if: lambda{|m, o| o[:latitude] and o[:longitude]} do |m, o|
           m.distance_to([o[:latitude], o[:longitude]]).round(2)
         end
-      end
-
-      class Provinces < Grape::Entity
-        expose :name
-        expose :venues, using: Venues
       end
 
       class Provinces < Grape::Entity
@@ -92,7 +90,9 @@ module V1
 
       desc '按省份划分的球会列表'
       get :sectionalized_by_province do
-        present Province.alphabetic, with: Venues::Entities::Provinces
+        provinces = Province.alphabetic
+        courses = Course.where(venue_id: provinces.map(&:venues).flatten.map(&:id)).inject(Hash.new(0)){|result, course| result[course.venue_id] += course.holes_count; result}
+        present provinces, with: Venues::Entities::Provinces, courses: courses
       end
 
       desc '球会信息'

@@ -2,6 +2,7 @@
 module V1
   module Matches
     module Entities
+      # ** DEPRECATED **
       class Venue < Grape::Entity
         expose :uuid
         expose :name
@@ -21,6 +22,7 @@ module V1
         expose :direction
       end
 
+      # ** DEPRECATED **
       class PracticeMatch < Grape::Entity
         expose :uuid, if: lambda{|m, o| o[:included_uuid]}
         expose :type
@@ -32,6 +34,7 @@ module V1
         end
       end
 
+      # ** DEPRECATED **
       class PracticeMatches < Grape::Entity
         expose :uuid
         expose :type
@@ -48,6 +51,7 @@ module V1
         with_options(format_with: :timestamp){expose :started_at}
       end
 
+      # ** DEPRECATED **
       class User < Grape::Entity
         expose :nickname
         expose :portrait do |m, o|
@@ -55,6 +59,7 @@ module V1
         end
       end
 
+      # ** DEPRECATED **
       class Player < Grape::Entity
         expose :user, using: User
         expose :position
@@ -62,6 +67,7 @@ module V1
         expose :status
       end
 
+      # ** DEPRECATED **
       class TournamentMatch < Grape::Entity
         expose :uuid, if: lambda{|m, o| o[:included_uuid]}
         expose :type
@@ -73,6 +79,7 @@ module V1
         end
       end
 
+      # ** DEPRECATED **
       class TournamentMatches < Grape::Entity
         expose :uuid
         expose :type
@@ -86,30 +93,71 @@ module V1
         expose :players_count
         with_options(format_with: :timestamp){expose :started_at}
       end
+
+      class Matches < Grape::Entity
+        expose :uuid do |m, o|
+          m.match.uuid
+        end
+        expose :scoring_type
+        expose :venue do |m, o|
+          { name: m.match.venue.name }
+        end
+        expose :total
+        expose :players_count do |m, o|
+          m.match.players_count
+        end
+        expose :recorded_scorecards_count
+        expose :started_at do |m, o|
+          m.match.started_at.to_i
+        end
+      end
+
+      class Match < Grape::Entity
+        expose :user do |m, o|
+          
+        end
+        expose :leaderboard do |m, o|
+          
+        end
+        expose :scoring_type do |m, o|
+          o[:player].scoring_type
+        end
+        expose :scorecards, using: Scorecards do |m, o|
+          o[:player].scorecards
+        end
+      end
     end
   end
 
   class MatchesAPI < Grape::API
     resources :matches do
-      desc '历史练习赛事列表'
-      params do
-        optional :scoring_type, type: String, values: Player.scoring_types.keys, default: 'simple', desc: '记分类型'
-        optional :page, type: String, desc: '页数'
-      end
-      get :practice do
-        matches = Match.type_practices.by_owner(@current_user).joins(:players).where(players: { scoring_type_cd: params[:scoring_type]}).includes(:venue).includes(:players).page(params[:page]).per(10)
-        present matches, with: Matches::Entities::PracticeMatches
-      end
-
-      desc '历史竞技赛事列表'
+      desc '历史比赛列表'
       params do
         optional :page, type: String, desc: '页数'
       end
-      get :tournament do
-        matches = Match.type_tournaments.participated(@current_user).includes(:venue).includes(:players).page(params[:page]).per(10)
-        present matches, with: Matches::Entities::TournamentMatches, user: @current_user
+      get :history do
+        players = Player.by_user(@current_user).latest.includes(:match).includes(:scorecards).page(params[:page]).per(20)
+        present players, with: Matches::Entities::Matches
       end
 
+      desc '比赛信息'
+      params do
+        requires :uuid, type: String, desc: '赛事标识'
+      end
+      get :show do
+        begin
+          match = Match.find_uuid(params[:uuid])
+          player = match.players.by_user(@current_user).first
+          raise PlayerNotFound.new unless player
+          present match, with: Matches::Entities::Match, player: player
+        rescue ActiveRecord::RecordNotFound
+          api_error!(10002)
+        rescue PlayerNotFound
+          api_error!(20109)
+        end
+      end
+
+      # ** DEPRECATED **
       desc '练习赛事信息'
       params do
         requires :uuid, type: String, desc: '赛事标识'
@@ -123,6 +171,7 @@ module V1
         end
       end
 
+      # ** DEPRECATED **
       desc '创建练习赛事'
       params do
         requires :course_uuids, type: String, desc: '球场标识'
@@ -142,6 +191,7 @@ module V1
         end
       end
 
+      # ** DEPRECATED **
       desc '删除练习赛事'
       params do
         requires :uuid, type: String, desc: '赛事标识'
@@ -156,6 +206,7 @@ module V1
         end
       end
 
+      # ** DEPRECATED **
       desc '竞技赛事信息'
       params do
         requires :uuid, type: String, desc: '赛事标识'
@@ -172,6 +223,7 @@ module V1
         end
       end
 
+      # ** DEPRECATED **
       desc '创建竞技赛事'
       params do
         requires :name, type: String, desc: '名称'
@@ -194,6 +246,7 @@ module V1
         end
       end
 
+      # ** DEPRECATED **
       desc '加入竞技赛事'
       params do
         requires :uuid, type: String, desc: '赛事标识'
@@ -215,6 +268,27 @@ module V1
         rescue InvalidState
           api_error!(20108)
         end
+      end
+
+      # ** DEPRECATED **
+      desc '历史练习赛事列表'
+      params do
+        optional :scoring_type, type: String, values: Player.scoring_types.keys, default: 'simple', desc: '记分类型'
+        optional :page, type: String, desc: '页数'
+      end
+      get :practice do
+        matches = Match.type_practices.by_owner(@current_user).joins(:players).where(players: { scoring_type_cd: params[:scoring_type]}).includes(:venue).includes(:players).page(params[:page]).per(10)
+        present matches, with: Matches::Entities::PracticeMatches
+      end
+
+      # ** DEPRECATED **
+      desc '历史竞技赛事列表'
+      params do
+        optional :page, type: String, desc: '页数'
+      end
+      get :tournament do
+        matches = Match.type_tournaments.participated(@current_user).includes(:venue).includes(:players).page(params[:page]).per(10)
+        present matches, with: Matches::Entities::TournamentMatches, user: @current_user
       end
     end
   end

@@ -5,13 +5,14 @@ class Player < ActiveRecord::Base
   has_one :statistic
   has_many :scorecards, -> { order(:number) }
   scope :by_user, ->(user) { where(user_id: user.id) }
+  scope :latest, -> { order(created_at: :desc) }
 
-  def score
-    scorecards.map(&:score).compact.reduce(:+) || 0
+  def total
+    scorecards.map(&:score).compact.reduce(:+) if finished?
   end
 
   def recorded_scorecards_count
-    scorecards.select{|s| s.score}.count
+    scorecards.select(&:score).count
   end
 
   def par
@@ -27,7 +28,7 @@ class Player < ActiveRecord::Base
   end
 
   def score
-    scorecards.map(&:score).compact.reduce(:+)
+    scorecards.map(&:score).compact.reduce(:+) || 0
   end
 
   def out_score
@@ -63,6 +64,6 @@ class Player < ActiveRecord::Base
   end
 
   def finished?
-    scorecards.finished.count == 18
+    scorecards.select(&:score).count == 18
   end
 end

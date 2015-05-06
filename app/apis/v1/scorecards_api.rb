@@ -26,7 +26,7 @@ module V1
           scorecard = Scorecard.find_uuid(params[:uuid])
           raise PermissionDenied.new unless scorecard.player.user_id == @current_user.id
           raise InvalidScoringType.new if scorecard.player.scoring_type_professional?
-          scorecard.update!(score: params[:score], putts: params[:putts], penalties: params[:penalties], driving_distance: params[:driving_distance], direction: params[:direction])
+          scorecard.update!(declared(params))
           scorecard.player.statistic.calculate!
           present successful_json
         rescue ActiveRecord::RecordNotFound
