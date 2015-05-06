@@ -6,6 +6,8 @@ module V1
         expose :score
         expose :putts
         expose :penalties
+        expose :driving_distance
+        expose :direction
       end
     end
   end

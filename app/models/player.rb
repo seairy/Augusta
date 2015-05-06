@@ -7,10 +7,6 @@ class Player < ActiveRecord::Base
   scope :by_user, ->(user) { where(user_id: user.id) }
   scope :latest, -> { order(created_at: :desc) }
 
-  def total
-    scorecards.map(&:score).compact.reduce(:+) if finished?
-  end
-
   def recorded_scorecards_count
     scorecards.select(&:score).count
   end

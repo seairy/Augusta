@@ -122,14 +122,12 @@ module V1
               nickname: o[:player].user.nickname,
               portrait: oss_image(o[:player].user, :portrait, :w300_h300_fl_q50)
             },
+            scoring_type: o[:player].scoring_type,
             position: o[:player].position,
             recorded_scorecards_count: o[:player].recorded_scorecards_count,
             strokes: o[:player].strokes,
             total: o[:player].total
           }
-        end
-        expose :scoring_type do |m, o|
-          o[:player].scoring_type
         end
         expose :scorecards, using: Scorecards do |m, o|
           o[:player].scorecards
@@ -186,7 +184,7 @@ module V1
       end
 
       # ** DEPRECATED **
-      desc '练习赛事信息'
+      desc '练习赛事信息（作废）'
       params do
         requires :uuid, type: String, desc: '赛事标识'
       end
@@ -200,7 +198,7 @@ module V1
       end
 
       # ** DEPRECATED **
-      desc '创建练习赛事'
+      desc '创建练习赛事（作废）'
       params do
         requires :course_uuids, type: String, desc: '球场标识'
         requires :tee_boxes, type: String, desc: '发球台'
@@ -220,7 +218,7 @@ module V1
       end
 
       # ** DEPRECATED **
-      desc '删除练习赛事'
+      desc '删除练习赛事（作废）'
       params do
         requires :uuid, type: String, desc: '赛事标识'
       end
@@ -235,7 +233,7 @@ module V1
       end
 
       # ** DEPRECATED **
-      desc '竞技赛事信息'
+      desc '竞技赛事信息（作废）'
       params do
         requires :uuid, type: String, desc: '赛事标识'
       end
@@ -252,7 +250,7 @@ module V1
       end
 
       # ** DEPRECATED **
-      desc '创建竞技赛事'
+      desc '创建竞技赛事（作废）'
       params do
         requires :name, type: String, desc: '名称'
         requires :password, type: Integer, desc: '密码'
@@ -275,7 +273,7 @@ module V1
       end
 
       # ** DEPRECATED **
-      desc '加入竞技赛事'
+      desc '加入竞技赛事（作废）'
       params do
         requires :uuid, type: String, desc: '赛事标识'
         requires :password, type: Integer, desc: '密码'
@@ -299,7 +297,7 @@ module V1
       end
 
       # ** DEPRECATED **
-      desc '历史练习赛事列表'
+      desc '历史练习赛事列表（作废）'
       params do
         optional :scoring_type, type: String, values: Player.scoring_types.keys, default: 'simple', desc: '记分类型'
         optional :page, type: String, desc: '页数'
@@ -310,7 +308,7 @@ module V1
       end
 
       # ** DEPRECATED **
-      desc '历史竞技赛事列表'
+      desc '历史竞技赛事列表（作废）'
       params do
         optional :page, type: String, desc: '页数'
       end

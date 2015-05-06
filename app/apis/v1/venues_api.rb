@@ -115,13 +115,15 @@ module V1
         end
       end
 
-      desc '已访问球场列表'
+      # ** DEPRECATED **
+      desc '已访问球场列表（作废）'
       get :visited do
         venues = @current_user.visited_venues
         present venues, with: Venues::Entities::VisitedVenues
       end
 
-      desc '竞技赛列表'
+      # ** DEPRECATED **
+      desc '竞技赛列表（作废）'
       params do
         requires :uuid, type: String, desc: '球会标识'
       end
