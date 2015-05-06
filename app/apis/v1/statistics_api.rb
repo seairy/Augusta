@@ -174,7 +174,8 @@ module V1
 
   class StatisticsAPI < Grape::API
     resources :matches do
-      desc '练习赛事简单记分统计'
+      # ** DEPRECATED **
+      desc '练习赛事简单记分统计（作废）'
       params do
         requires :match_uuid, type: String, desc: '赛事标识'
       end
@@ -193,7 +194,8 @@ module V1
         end
       end
 
-      desc '练习赛事专业记分统计'
+      # ** DEPRECATED **
+      desc '练习赛事专业记分统计（作废）'
       params do
         requires :match_uuid, type: String, desc: '赛事标识'
       end
