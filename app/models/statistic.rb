@@ -205,7 +205,7 @@ class Statistic < ActiveRecord::Base
             less_than_average_length: strokes.select{|stroke| stroke.send("club_#{club}?")}.select{|stroke| stroke.distance_from_hole < club_average_length}.count,
             greater_than_average_length: strokes.select{|stroke| stroke.send("club_#{club}?")}.select{|stroke| stroke.distance_from_hole > club_average_length}.count }
         end
-        @frequently_used_clubs = @clubs.sort{|x, y| y[:uses] <=> x[:uses]}[0..3]
+        @frequently_used_clubs = @clubs.sort{|x, y| y[:uses] <=> x[:uses]}[0..3] || []
       end
     end
   end

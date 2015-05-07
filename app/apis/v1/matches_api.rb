@@ -129,8 +129,26 @@ module V1
             total: o[:player].total
           }
         end
-        expose :scorecards, using: Scorecards do |m, o|
-          o[:player].scorecards
+        expose :scorecards do |m, o|
+          o[:player].scorecards.map do |scorecard|
+            {
+              uuid: scorecard.uuid,
+              number: scorecard.number,
+              par: scorecard.par,
+              tee_boxes: scorecard.hole.tee_boxes.map do |tee_box|
+                {
+                  color: tee_box.color,
+                  distance_from_hole: tee_box.distance_from_hole,
+                  used: tee_box.color == scorecard.tee_box_color
+                }
+              end,
+              score: scorecard.score,
+              putts: scorecard.putts,
+              penalties: scorecard.penalties,
+              driving_distance: scorecard.driving_distance,
+              direction: scorecard.direction
+            }
+          end
         end
       end
     end
@@ -143,7 +161,7 @@ module V1
         optional :page, type: String, desc: '页数'
       end
       get :history do
-        players = Player.by_user(@current_user).latest.includes(:match).includes(:scorecards).page(params[:page]).per(20)
+        players = Player.by_user(@current_user).latest.includes(:match).page(params[:page]).per(20)
         present players, with: Matches::Entities::Matches
       end
 
@@ -154,7 +172,7 @@ module V1
       get :show do
         begin
           match = Match.find_uuid(params[:uuid])
-          player = match.players.by_user(@current_user).first
+          player = match.player_by_user(@current_user)
           raise PlayerNotFound.new unless player
           present match, with: Matches::Entities::Match, player: player
         rescue ActiveRecord::RecordNotFound
@@ -174,7 +192,7 @@ module V1
         begin
           courses = params[:course_uuids].split(',').map{|course_uuid| Course.find_uuid(course_uuid)}
           tee_boxes = params[:tee_boxes].split(',')
-          match = Match.create_practice(owner: @current_user, courses: courses, tee_boxes: tee_boxes, scoring_type: params[:scoring_type])
+          match = Match.create_with_player(owner: @current_user, courses: courses, tee_boxes: tee_boxes, scoring_type: params[:scoring_type])
           present uuid: match.uuid
         rescue ActiveRecord::RecordNotFound
           api_error!(10002)

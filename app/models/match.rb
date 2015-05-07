@@ -28,7 +28,7 @@ class Match < ActiveRecord::Base
   end
 
   def player_by_user user
-    players.by_user(user).first if type_tournament?
+    players.by_user(user).first
   end
 
   def courses
@@ -59,7 +59,7 @@ class Match < ActiveRecord::Base
   end
 
   class << self
-    def create options = {}
+    def create_with_player options = {}
       ActiveRecord::Base.transaction do
         raise InvalidGroups.new unless options[:courses].map(&:holes_count).reduce(:+) == 18
         # ** DEPRECATED **
