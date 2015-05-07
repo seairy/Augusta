@@ -2,7 +2,8 @@
 module V1
   module Leaderboards
     module Entities
-      class Leaderboards < Grape::Entity
+      class Players < Grape::Entity
+        expose :uuid
         expose :position
         expose :user do |m, o|
           {
@@ -26,7 +27,7 @@ module V1
         begin
           match = Match.find_uuid(params[:match_uuid])
           leaderboards = match.players.count > 1 ? match.players : []
-          present leaderboards, with: Leaderboards::Entities::Leaderboards
+          present leaderboards, with: Leaderboards::Entities::Players
         rescue ActiveRecord::RecordNotFound
           api_error!(10002)
         end

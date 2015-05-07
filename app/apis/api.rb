@@ -52,6 +52,7 @@ class API < Grape::API
     mount V1::ScorecardsAPI
     mount V1::StrokesAPI
     mount V1::StatisticsAPI
+    mount V1::FeedbacksAPI
   end
 
   namespace :doc do

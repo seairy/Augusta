@@ -74,7 +74,7 @@ class Scorecard < ActiveRecord::Base
       self.putts = strokes.reload.select{|stroke| stroke.club_pt?}.count
       self.penalties = (strokes.map{|stroke| stroke.penalties}.compact.reduce(:+) || 0)
       self.score = strokes.count + self.penalties
-      self.driving_distance = (distance_from_hole_to_tee_box - strokes.first.distance_from_hole) if strokes.first
+      self.driving_distance = (distance_from_hole_to_tee_box - strokes.first.distance_from_hole).abs if strokes.first
       self.direction = (if strokes.first.point_of_fall_left_rough?
           :hook
         elsif strokes.first.point_of_fall_right_rough?

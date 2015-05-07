@@ -37,12 +37,9 @@ class Match < ActiveRecord::Base
 
   def participate options = {}
     ActiveRecord::Base.transaction do
-      raise InvalidMatchType.new unless type_tournament?
-      raise InvalidPassword.new unless password == options[:password]
-      raise DuplicatedParticipant.new if players.map(&:user_id).include?(options[:user].id)
-      raise InvalidState.new if finished?
+      raise DuplicatedParticipant.new if participated?(options[:user])
+      raise InvalidMatchState.new if finished?
       player = players.create(user: options[:user], scoring_type: :simple)
-      player.create_statistic!
       hole_number = 1
       courses.each_with_index do |course, i|
         course.holes.sort.each do |hole|
@@ -51,6 +48,7 @@ class Match < ActiveRecord::Base
           hole_number += 1
         end
       end
+      player.create_statistic!
     end
   end
 
@@ -58,7 +56,34 @@ class Match < ActiveRecord::Base
     players.map(&:user_id).include?(user.id)
   end
 
+  def generate_password
+    raise InvalidMatchState.new if finished?
+    Match.clean_expired_password!
+    reload
+    exist_passwords = Match.where.not(password: nil).pluck(:password)
+    raise NotEnoughPassword.new if exist_passwords.count > 2000
+    if password
+      password
+    else
+      new_password = nil
+      loop do 
+        new_password = rand(9999).to_s.rjust(4, '0')
+        break if !exist_passwords.include?(new_password) and new_password.split('').uniq.count > 2
+      end
+      update!(password: new_password, password_expired_at: Time.now + 30.minutes)
+      new_password
+    end
+  end
+
   class << self
+    def clean_expired_password!
+      where('password_expired_at < ?', Time.now).update_all(password: nil, password_expired_at: nil)
+    end
+
+    def verify password
+      where(password: password).where('password_expired_at >= ?', Time.now).first || raise(InvalidPassword)
+    end
+
     def create_with_player options = {}
       ActiveRecord::Base.transaction do
         raise InvalidGroups.new unless options[:courses].map(&:holes_count).reduce(:+) == 18

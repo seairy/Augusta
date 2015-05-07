@@ -22,6 +22,13 @@ module V1
         expose :direction
       end
 
+      class Password < Grape::Entity
+        expose :password
+        expose :expired_at do |m, o|
+          m.password_expired_at.to_i
+        end
+      end
+
       # ** DEPRECATED **
       class PracticeMatch < Grape::Entity
         expose :uuid, if: lambda{|m, o| o[:included_uuid]}
@@ -151,6 +158,29 @@ module V1
           end
         end
       end
+
+      class MatchSummary < Grape::Entity
+        expose :venue do |m, o|
+          {
+            name: m.venue.name,
+            courses: m.courses.map do |course|
+              {
+                uuid: course.uuid,
+                name: course.name,
+                holes_count: course.holes_count,
+                tee_boxes: [:red, :white, :blue, :black, :gold]
+              }
+            end
+          }
+        end
+        expose :owner do |m, o|
+          {
+            nickname: m.owner.nickname,
+            portrait: oss_image(m.owner, :portrait, :w300_h300_fl_q50)
+          }
+        end
+        with_options(format_with: :timestamp){expose :started_at}
+      end
     end
   end
 
@@ -198,6 +228,82 @@ module V1
           api_error!(10002)
         rescue InvalidGroups
           api_error!(20101)
+        end
+      end
+
+      desc '获取比赛口令'
+      params do
+        requires :uuid, type: String, desc: '比赛标识'
+      end
+      get :password do
+        begin
+          match = Match.find_uuid(params[:uuid])
+          raise PermissionDenied.new unless match.owner.id == @current_user.id
+          match.generate_password
+          match.reload
+          present match, with: Matches::Entities::Password
+        rescue ActiveRecord::RecordNotFound
+          api_error!(10002)
+        rescue PermissionDenied
+          api_error!(10003)
+        rescue InvalidMatchState
+          api_error!(20108)
+        rescue NotEnoughPassword
+          api_error!(20112)
+        end
+      end
+
+      desc '验证比赛口令'
+      params do
+        requires :password, type: String, desc: '比赛口令'
+      end
+      post :verify do
+        begin
+          match = Match.verify(params[:password])
+          raise InvalidMatchState.new if match.finished?
+          raise DuplicatedParticipant.new if match.participated?(@current_user)
+          present uuid: match.uuid
+        rescue InvalidPassword
+          api_error!(20113)
+        rescue InvalidMatchState
+          api_error!(20108)
+        rescue DuplicatedParticipant
+          api_error!(20107)
+        end
+      end
+
+      desc '比赛摘要信息'
+      params do
+        requires :uuid, type: String, desc: '比赛标识'
+      end
+      get :summary do
+        begin
+          match = Match.find_uuid(params[:uuid])
+          present match, with: Matches::Entities::MatchSummary
+        rescue ActiveRecord::RecordNotFound
+          api_error!(10002)
+        rescue InvalidGroups
+          api_error!(20101)
+        end
+      end
+
+      desc '加入比赛'
+      params do
+        requires :uuid, type: String, desc: '比赛标识'
+        requires :tee_boxes, type: String, desc: '发球台'
+        requires :scoring_type, type: String, values: Player.scoring_types.keys, desc: '记分类型'
+      end
+      post :participate do
+        begin
+          match = Match.find_uuid(params[:uuid])
+          match.participate(user: @current_user, tee_boxes: params[:tee_boxes].split(','), scoring_type: params[:scoring_type])
+          present uuid: match.uuid
+        rescue ActiveRecord::RecordNotFound
+          api_error!(10002)
+        rescue InvalidMatchState
+          api_error!(20108)
+        rescue DuplicatedParticipant
+          api_error!(20107)
         end
       end
 

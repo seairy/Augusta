@@ -1,4 +1,5 @@
 class Player < ActiveRecord::Base
+  include UUID
   as_enum :scoring_type, [:simple, :professional], prefix: true, map: :string
   belongs_to :user
   belongs_to :match, counter_cache: true

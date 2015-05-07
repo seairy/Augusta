@@ -188,6 +188,21 @@ module V1
           api_error!(20313)
         end
       end
+
+      desc '更新头像、昵称及性别'
+      params do
+        requires :portrait, desc: '头像'
+        requires :nickname, type: String, desc: '昵称'
+        requires :gender, type: Integer, values: [1, 2], desc: '性别'
+      end
+      put :update_portrait_and_nickname_and_gender do
+        authenticate!
+        if @current_user.update(declared(params))
+          present successful_json
+        else
+          api_error!(20314)
+        end
+      end
     end
   end
 end
