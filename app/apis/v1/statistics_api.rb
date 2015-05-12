@@ -173,6 +173,50 @@ module V1
   end
 
   class StatisticsAPI < Grape::API
+    resources :statistics do
+      desc '简单记分统计'
+      params do
+        requires :match_uuid, type: String, desc: '赛事标识'
+      end
+      get :simple do
+        begin
+          match = Match.find_uuid(params[:match_uuid])
+          player = match.player_by_user(@current_user)
+          raise PlayerNotFound.new unless player
+          raise InvalidScoringType.new unless player.scoring_type_simple?
+          present player.statistic, with: Statistics::Entities::SimpleStatistic
+        rescue ActiveRecord::RecordNotFound
+          api_error!(10002)
+        rescue PlayerNotFound
+          api_error!(20109)
+        rescue InvalidScoringType
+          api_error!(20104)
+        end
+      end
+    end
+
+    resources :statistics do
+      desc '专业记分统计'
+      params do
+        requires :match_uuid, type: String, desc: '赛事标识'
+      end
+      get :professional do
+        begin
+          match = Match.find_uuid(params[:match_uuid])
+          player = match.player_by_user(@current_user)
+          raise PlayerNotFound.new unless player
+          raise InvalidScoringType.new unless player.scoring_type_professional?
+          present player.statistic, with: Statistics::Entities::ProfessionalStatistic
+        rescue ActiveRecord::RecordNotFound
+          api_error!(10002)
+        rescue PlayerNotFound
+          api_error!(20109)
+        rescue InvalidScoringType
+          api_error!(20104)
+        end
+      end
+    end
+
     resources :matches do
       # ** DEPRECATED **
       desc '练习赛事简单记分统计（作废）'
