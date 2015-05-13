@@ -297,7 +297,7 @@ module V1
         begin
           match = Match.find_uuid(params[:uuid])
           match.participate(user: @current_user, tee_boxes: params[:tee_boxes].split(','), scoring_type: params[:scoring_type])
-          present uuid: match.uuid
+          present successful_json
         rescue ActiveRecord::RecordNotFound
           api_error!(10002)
         rescue InvalidMatchState
