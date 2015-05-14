@@ -110,7 +110,7 @@ module V1
         expose :player do |m, o|
           {
             scoring_type: m.scoring_type,
-            total: m.total,
+            strokes: nil,
             recorded_scorecards_count: m.recorded_scorecards_count
           }
         end
