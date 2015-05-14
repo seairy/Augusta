@@ -63,4 +63,8 @@ class Player < ActiveRecord::Base
   def finished?
     scorecards.select(&:score).count == 18
   end
+
+  def owned?
+    user_id == match.owner_id
+  end
 end

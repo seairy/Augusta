@@ -134,7 +134,7 @@ module V1
             recorded_scorecards_count: o[:player].recorded_scorecards_count,
             strokes: o[:player].strokes,
             total: o[:player].total,
-            owned: false
+            owned: o[:player].owned?
           }
         end
         expose :scorecards do |m, o|
