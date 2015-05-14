@@ -16,7 +16,15 @@ module V1
     end
 
     def oss_image object, asset_name, version
-      object ? (object.send("#{asset_name}?") ? object.send(asset_name).send(version) : nil) : nil
+      if object
+        if object.send("#{asset_name}?")
+          { url: object.send(asset_name).send(version).url }
+        else
+          nil
+        end
+      else
+        nil
+      end
     end
   end
 end
