@@ -133,7 +133,8 @@ module V1
             position: o[:player].position,
             recorded_scorecards_count: o[:player].recorded_scorecards_count,
             strokes: o[:player].strokes,
-            total: o[:player].total
+            total: o[:player].total,
+            owned: false
           }
         end
         expose :scorecards do |m, o|
