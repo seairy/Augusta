@@ -13,6 +13,9 @@ module V1
         end
         expose :recorded_scorecards_count
         expose :total
+        expose :self do |m, o|
+          m.user_id == o[:user].id
+        end
       end
     end
   end
@@ -27,7 +30,7 @@ module V1
         begin
           match = Match.find_uuid(params[:match_uuid])
           leaderboards = match.players.count > 1 ? match.players : []
-          present leaderboards, with: Leaderboards::Entities::Players
+          present leaderboards, with: Leaderboards::Entities::Players, user: @current_user
         rescue ActiveRecord::RecordNotFound
           api_error!(10002)
         end
