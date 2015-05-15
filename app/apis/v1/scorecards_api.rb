@@ -55,7 +55,7 @@ module V1
           end
           scorecard = scorecard.update_professional(strokes: strokes)
           scorecard.player.statistic.calculate!
-          present scorecard, with: Scorecards::Entities::Scorecard
+          present successful_json
         rescue ActiveRecord::RecordNotFound
           api_error!(10002)
         rescue PermissionDenied
