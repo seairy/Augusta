@@ -51,6 +51,7 @@ class API < Grape::API
     mount V1::LeaderboardsAPI
     mount V1::ScorecardsAPI
     mount V1::StrokesAPI
+    mount V1::PlayersAPI
     mount V1::StatisticsAPI
     mount V1::FeedbacksAPI
   end
