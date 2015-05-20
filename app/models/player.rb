@@ -73,6 +73,9 @@ class Player < ActiveRecord::Base
   def calculate!
     strokes = scorecards.map(&:score).compact.reduce(:+)
     par = scorecards.map(&:par).reduce(:+)
+    total = scorecards.map do |scorecard|
+      scorecard.score - scorecard.par if scorecard.score
+    end.compact.reduce(:+)
     self.update!(strokes: strokes,
       total: ApplicationController.helpers.formatted_status(strokes - par))
   end
