@@ -28,8 +28,7 @@ module V1
           scorecard = Scorecard.find_uuid(params[:uuid])
           raise PermissionDenied.new unless scorecard.player.user_id == @current_user.id
           raise InvalidScoringType.new if scorecard.player.scoring_type_professional?
-          scorecard.update!(declared(params))
-          scorecard.player.statistic.calculate!
+          scorecard.update_simple(declared(params))
           present successful_json
         rescue ActiveRecord::RecordNotFound
           api_error!(10002)
@@ -53,8 +52,7 @@ module V1
           strokes = params[:strokes].map do |stroke_as_string|
             Hash[stroke_as_string.split(', ').map{|stroke_params| stroke_params.split('=')}].symbolize_keys
           end
-          scorecard = scorecard.update_professional(strokes: strokes)
-          scorecard.player.statistic.calculate!
+          scorecard.update_professional(strokes: strokes)
           present successful_json
         rescue ActiveRecord::RecordNotFound
           api_error!(10002)

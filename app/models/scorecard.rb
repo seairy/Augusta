@@ -55,6 +55,12 @@ class Scorecard < ActiveRecord::Base
     strokes.select{|stroke| stroke.club_pt?}.count.zero?
   end
 
+  def update_simple options = {}
+    update!(options)
+    player.statistic.calculate!
+    player.match.calculate_leaderboard!
+  end
+
   def update_professional options = {}
     ActiveRecord::Base.transaction do
       strokes.map(&:destroy!)
@@ -64,13 +70,6 @@ class Scorecard < ActiveRecord::Base
       raise HoledStrokeNotFound.new unless new_strokes.last.distance_from_hole.zero?
       raise DuplicatedHoledStroke.new if new_strokes.select{|stroke| stroke.distance_from_hole.zero?}.count > 1
       new_strokes.map(&:save!)
-    end
-    self.calculate!
-    self
-  end
-
-  def calculate!
-    if player.scoring_type_professional?
       self.putts = strokes.reload.select{|stroke| stroke.club_pt?}.count
       self.penalties = (strokes.map{|stroke| stroke.penalties}.compact.reduce(:+) || 0)
       self.score = strokes.count + self.penalties
@@ -84,5 +83,8 @@ class Scorecard < ActiveRecord::Base
         end) if strokes.first
       save!
     end
+    player.statistic.calculate!
+    player.match.calculate_leaderboard!
+    self
   end
 end

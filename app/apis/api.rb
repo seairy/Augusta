@@ -1,5 +1,4 @@
 # -*- encoding : utf-8 -*-
-
 module DocFormatter
   def self.call object, env
     object.to_json
