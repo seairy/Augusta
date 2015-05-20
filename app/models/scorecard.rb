@@ -57,8 +57,7 @@ class Scorecard < ActiveRecord::Base
 
   def update_simple options = {}
     update!(options)
-    player.statistic.calculate!
-    player.match.calculate_leaderboard!
+    calculate_player_and_statistic_and_leaderboard!
   end
 
   def update_professional options = {}
@@ -83,8 +82,12 @@ class Scorecard < ActiveRecord::Base
         end) if strokes.first
       save!
     end
+    calculate_player_and_statistic_and_leaderboard!
+  end
+
+  def calculate_player_and_statistic_and_leaderboard!
+    player.calculate!
     player.statistic.calculate!
     player.match.calculate_leaderboard!
-    self
   end
 end

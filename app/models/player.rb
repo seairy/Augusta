@@ -27,7 +27,7 @@ class Player < ActiveRecord::Base
   end
 
   def score
-    scorecards.map(&:score).compact.reduce(:+) || 0
+    scorecards.map(&:score).compact.reduce(:+)
   end
 
   def out_score
@@ -68,5 +68,12 @@ class Player < ActiveRecord::Base
 
   def owned?
     user_id == match.owner_id
+  end
+
+  def calculate!
+    strokes = scorecards.map(&:score).compact.reduce(:+)
+    par = scorecards.map(&:par).reduce(:+)
+    self.update!(strokes: strokes,
+      total: ApplicationController.helpers.formatted_status(strokes - par))
   end
 end
