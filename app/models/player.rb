@@ -6,7 +6,7 @@ class Player < ActiveRecord::Base
   has_one :statistic
   has_many :scorecards, -> { order(:number) }
   scope :by_user, ->(user) { where(user_id: user.id) }
-  scope :started, -> { where.not(:strokes) }
+  scope :started, -> { where.not(strokes: nil) }
   scope :latest, -> { order(created_at: :desc) }
   scope :ranked, -> { order(:strokes) }
 

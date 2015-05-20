@@ -76,8 +76,8 @@ class Match < ActiveRecord::Base
   end
 
   def calculate_leaderboard!
-    players = self.players.started.ranked.latest
-    players.length.times.each_with_index do |i|
+    players = self.players.started.ranked.latest.to_a
+    players.length.times do |i|
       if i.zero?
         if players.length > 1 and players[i].score == players[i + 1].score
           players[i].update!(position: 'T1')
