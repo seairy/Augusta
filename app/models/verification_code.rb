@@ -35,7 +35,7 @@ class VerificationCode < ActiveRecord::Base
       request = Net::HTTP::Post.new(uri.request_uri)
       request.basic_auth 'api', "key-#{Setting.key[:luosimao_sms][:api_key]}"
       request.set_form_data(mobile: options[:phone], message: "您的验证码为#{verification_code.content}，请于15分钟内使用。【我爱高尔夫】")
-      http.request(request)
+      http.request(request) if Rails.env == 'production'
     end
   end
 end

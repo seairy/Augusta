@@ -5,6 +5,7 @@ module V1
       class User < Grape::Entity
         expose :uuid
         expose :type
+        expose :phone
         expose :nickname
         expose :token do |m, o|
           m.available_token
@@ -49,7 +50,7 @@ module V1
         begin
           raise InvalidPasswordConfirmation.new unless params[:password] == params[:password_confirmation]
           user = User.sign_up(phone: params[:phone], password: params[:password], verification_code: params[:verification_code])
-          present user, with: Users::Entities::User
+          present user, with: Users::Entities::User, include_phone: true
         rescue InvalidPasswordConfirmation
           api_error!(20309)
         rescue PhoneNotFound

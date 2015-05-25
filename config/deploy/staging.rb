@@ -8,4 +8,4 @@ set :deploy_user, 'deploy'
 server '123.57.210.52', user: 'deploy', roles: %w{web app db}
 
 set :deploy_to, "/srv/www/Augusta"
-set :rails_env, :production
+set :rails_env, :development
