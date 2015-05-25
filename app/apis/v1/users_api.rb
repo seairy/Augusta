@@ -93,10 +93,11 @@ module V1
         requires :password_confirmation, type: String, desc: '确认密码'
         requires :verification_code, type: String, regexp: /^\d{4}$/, desc: '验证码'
       end
-      post :upgrade do
+      put :upgrade do
+        authenticate!
         begin
           raise InvalidPasswordConfirmation.new unless params[:password] == params[:password_confirmation]
-          user = User.upgrade(phone: params[:phone], password: params[:password], verification_code: params[:verification_code])
+          user = User.upgrade(user: @current_user, phone: params[:phone], password: params[:password], verification_code: params[:verification_code])
           present user, with: Users::Entities::User
         rescue InvalidPasswordConfirmation
           api_error!(20309)

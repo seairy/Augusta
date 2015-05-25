@@ -59,7 +59,7 @@ class User < ActiveRecord::Base
         user = where(phone: options[:phone]).first || raise(PhoneNotFound.new)
         raise DuplicatedPhone.new if !user.unactivated? or !user.member?
         verification_code = user.verification_codes.available.type_sign_ups.first
-        raise InvalidVerificationCode.new if options[:verification_code] != '8888'
+        raise InvalidVerificationCode.new if options[:verification_code] != verification_code
         verification_code.expired!
         Token.generate!(user)
         user.active!
@@ -74,6 +74,20 @@ class User < ActiveRecord::Base
         raise InvalidStatus.new unless user.activated?
         raise InvalidPassword.new unless user.hashed_password == Digest::MD5.hexdigest(options[:password])
         Token.generate!(user)
+        user
+      end
+    end
+
+    def upgrade options = {}
+      ActiveRecord::Base.transaction do
+        raise InvalidUserType.new unless options[:user].guest?
+        options[:user].verification_codes.available.type_upgrades.first.tap do |verification_code|
+          raise InvalidVerificationCode.new if options[:verification_code] != verification_code
+          verification_code.expired!
+        end
+        Token.generate!(user)
+        user.active!
+        user.update!(nickname: "会员#{user.id}", hashed_password: Digest::MD5.hexdigest(options[:password]))
         user
       end
     end

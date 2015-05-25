@@ -21,9 +21,10 @@ class VerificationCode < ActiveRecord::Base
     def upgrade options = {}
       raise FrequentRequest.new if Time.now - (options[:user].verification_codes.type_sign_ups.order(generated_at: :desc).first.try(:generated_at) || Time.now - 1.hour) < 1.minute
       raise TooManyRequest.new if options[:user].verification_codes.where('generated_at >= ?', Time.now.beginning_of_day).where('generated_at <= ?', Time.now.end_of_day).count >= 15
-      raise InvalidUserType.new unless user.guest?
-      user.verification_codes.type_upgrades.update_all(available: false)
-      user.verification_codes.generate_and_send(phone: options[:phone], type: :upgrade)
+      raise InvalidUserType.new unless options[:user].guest?
+      raise DuplicatedPhone.new if User.where(phone: options[:phone]).first
+      options[:user].verification_codes.type_upgrades.update_all(available: false)
+      options[:user].verification_codes.generate_and_send(phone: options[:phone], type: :upgrade)
     end
 
     def generate_and_send options = {}

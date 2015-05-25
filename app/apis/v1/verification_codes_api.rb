@@ -28,10 +28,10 @@ module V1
           present successful_json
         rescue FrequentRequest
           api_error!(20301)
-        rescue DuplicatedPhone
-          api_error!(20303)
         rescue TooManyRequest
           api_error!(20315)
+        rescue DuplicatedPhone
+          api_error!(20303)
         end
       end
 
@@ -46,8 +46,12 @@ module V1
           present successful_json
         rescue FrequentRequest
           api_error!(20301)
+        rescue TooManyRequest
+          api_error!(20315)
         rescue DuplicatedPhone
           api_error!(20303)
+        rescue InvalidUserType
+          api_error!(20316)
         end
       end
     end
