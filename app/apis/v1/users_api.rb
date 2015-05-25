@@ -99,8 +99,7 @@ module V1
         begin
           raise InvalidPasswordConfirmation.new unless params[:password] == params[:password_confirmation]
           @current_user.upgrade(user: @current_user, phone: params[:phone], password: params[:password], verification_code: params[:verification_code])
-          @current_user.reload
-          present @current_user, with: Users::Entities::User
+          present successful_json
         rescue InvalidPasswordConfirmation
           api_error!(20309)
         rescue PhoneNotFound
