@@ -2,7 +2,7 @@
 class VerificationCode < ActiveRecord::Base
   belongs_to :user
   as_enum :type, [:sign_up, :forgot_password, :upgrade], prefix: true, map: :string
-  scope :available, -> { where(available: true) }
+  scope :available, -> { where(available: true).where('generated_at > ?', Time.now - 15.minutes) }
 
   def expired!
     update!(available: false)
