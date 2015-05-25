@@ -98,6 +98,7 @@ module V1
         begin
           raise InvalidPasswordConfirmation.new unless params[:password] == params[:password_confirmation]
           user = User.upgrade(user: @current_user, phone: params[:phone], password: params[:password], verification_code: params[:verification_code])
+          user.reload!
           present user, with: Users::Entities::User
         rescue InvalidPasswordConfirmation
           api_error!(20309)
@@ -107,6 +108,8 @@ module V1
           api_error!(20303)
         rescue InvalidVerificationCode
           api_error!(20304)
+        rescue InvalidUserType
+          api_error!(20316)
         end
       end
 

@@ -19,7 +19,7 @@ class VerificationCode < ActiveRecord::Base
     end
 
     def upgrade options = {}
-      raise FrequentRequest.new if Time.now - (options[:user].verification_codes.type_sign_ups.order(generated_at: :desc).first.try(:generated_at) || Time.now - 1.hour) < 1.minute
+      raise FrequentRequest.new if Time.now - (options[:user].verification_codes.type_upgrades.order(generated_at: :desc).first.try(:generated_at) || Time.now - 1.hour) < 1.minute
       raise TooManyRequest.new if options[:user].verification_codes.where('generated_at >= ?', Time.now.beginning_of_day).where('generated_at <= ?', Time.now.end_of_day).count >= 15
       raise InvalidUserType.new unless options[:user].guest?
       raise DuplicatedPhone.new if User.where(phone: options[:phone]).first
@@ -35,7 +35,7 @@ class VerificationCode < ActiveRecord::Base
       request = Net::HTTP::Post.new(uri.request_uri)
       request.basic_auth 'api', "key-#{Setting.key[:luosimao_sms][:api_key]}"
       request.set_form_data(mobile: options[:phone], message: "您的验证码为#{verification_code.content}，请于15分钟内使用。【我爱高尔夫】")
-      response = http.request(request)
+      http.request(request)
     end
   end
 end
