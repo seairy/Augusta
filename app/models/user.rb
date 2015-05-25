@@ -35,13 +35,25 @@ class User < ActiveRecord::Base
     tokens.available.first.try(:expired!)
   end
 
-  def upgrade options = {}
-
-  end
-
   def visited_venues
     venues = players.includes(:match).inject(Hash.new(0)){|result, player| result[player.match.venue_id] += 1; result}
     Venue.find(venues.keys).map{|venue| venue.visited_count = venues[venue.id]; venue}
+  end
+
+  def upgrade options = {}
+    ActiveRecord::Base.transaction do
+      raise InvalidUserType.new unless options[:user].guest?
+      options[:user].verification_codes.available.type_upgrades.first.tap do |verification_code|
+        if Rails.env == 'development'
+          raise InvalidVerificationCode.new if options[:verification_code] != '8888'
+        elsif Rails.env == 'production'
+          raise InvalidVerificationCode.new if options[:verification_code] != verification_code.content
+        end
+        verification_code.expired!
+      end
+      options[:user].update!(type_cd: :member, phone: options[:phone], nickname: "会员#{options[:user].id}", hashed_password: Digest::MD5.hexdigest(options[:password]))
+      options[:user].active!
+    end
   end
 
   class << self
@@ -80,22 +92,6 @@ class User < ActiveRecord::Base
         raise InvalidPassword.new unless user.hashed_password == Digest::MD5.hexdigest(options[:password])
         Token.generate!(user)
         user
-      end
-    end
-
-    def upgrade options = {}
-      ActiveRecord::Base.transaction do
-        raise InvalidUserType.new unless options[:user].guest?
-        options[:user].verification_codes.available.type_upgrades.first.tap do |verification_code|
-          if Rails.env == 'development'
-            raise InvalidVerificationCode.new if options[:verification_code] != '8888'
-          elsif Rails.env == 'production'
-            raise InvalidVerificationCode.new if options[:verification_code] != verification_code.content
-          end
-          verification_code.expired!
-        end
-        options[:user].update!(type_cd: :member, nickname: "会员#{options[:user].id}", hashed_password: Digest::MD5.hexdigest(options[:password]))
-        options[:user].active!
       end
     end
 
