@@ -38,6 +38,7 @@ class APIError
     20312 => { message: '无效的签名' },
     20313 => { message: '无效的出生日期' },
     20314 => { message: '无效的基本信息' },
+    20315 => { message: '请求验证码次数过多' },
   }
 
   class << self

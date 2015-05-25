@@ -86,6 +86,29 @@ module V1
         present successful_json
       end
 
+      desc '用户升级'
+      params do
+        requires :phone, type: String, regexp: /^1\d{10}$/, desc: '手机号码'
+        requires :password, type: String, desc: '密码'
+        requires :password_confirmation, type: String, desc: '确认密码'
+        requires :verification_code, type: String, regexp: /^\d{4}$/, desc: '验证码'
+      end
+      post :upgrade do
+        begin
+          raise InvalidPasswordConfirmation.new unless params[:password] == params[:password_confirmation]
+          user = User.upgrade(phone: params[:phone], password: params[:password], verification_code: params[:verification_code])
+          present user, with: Users::Entities::User
+        rescue InvalidPasswordConfirmation
+          api_error!(20309)
+        rescue PhoneNotFound
+          api_error!(20302)
+        rescue DuplicatedPhone
+          api_error!(20303)
+        rescue InvalidVerificationCode
+          api_error!(20304)
+        end
+      end
+
       desc '用户头像'
       get :portrait do
         authenticate!
