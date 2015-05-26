@@ -44,9 +44,10 @@ class User < ActiveRecord::Base
     ActiveRecord::Base.transaction do
       raise InvalidUserType.new unless options[:user].guest?
       options[:user].verification_codes.available.type_upgrades.first.tap do |verification_code|
+        raise InvalidVerificationCode.new unless verification_code
         if Rails.env == 'development'
           raise InvalidVerificationCode.new if options[:verification_code] != '8888'
-        elsif Rails.env == 'production'
+        else
           raise InvalidVerificationCode.new if options[:verification_code] != verification_code.content
         end
         verification_code.expired!
@@ -71,9 +72,10 @@ class User < ActiveRecord::Base
         user = where(phone: options[:phone]).first || raise(PhoneNotFound.new)
         raise DuplicatedPhone.new if !user.unactivated? or !user.member?
         user.verification_codes.available.type_sign_ups.first.tap do |verification_code|
+          raise InvalidVerificationCode.new unless verification_code
           if Rails.env == 'development'
             raise InvalidVerificationCode.new if options[:verification_code] != '8888'
-          elsif Rails.env == 'production'
+          else
             raise InvalidVerificationCode.new if options[:verification_code] != verification_code.content
           end
           verification_code.expired!
