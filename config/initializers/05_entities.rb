@@ -33,7 +33,7 @@ module V1
       elsif total.zero?
         'E'
       elsif total > 0
-        "+#{status}"
+        "+#{total}"
       end if total
     end
   end

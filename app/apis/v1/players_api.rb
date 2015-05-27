@@ -13,7 +13,9 @@ module V1
         expose :position
         expose :recorded_scorecards_count
         expose :strokes
-        expose :total
+        expose :total do |m, o|
+          formatted_total(m.total)
+        end
         expose :scorecards do |m, o|
           m.statistic.scorecards
         end
