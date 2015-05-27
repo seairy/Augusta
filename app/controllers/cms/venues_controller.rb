@@ -2,7 +2,7 @@
 class Cms::VenuesController < Cms::BaseController
   
   def index
-    @venues = Venue.page(params[:page])
+    @venues = Venue.includes(:city).page(params[:page])
   end
   
   def show
