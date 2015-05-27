@@ -29,7 +29,7 @@ module V1
       get '/' do
         begin
           match = Match.find_uuid(params[:match_uuid])
-          leaderboards = match.players.ranked # match.players.count > 1 ? match.players.ranked : []
+          leaderboards = match.players.count > 1 ? match.players.ranked : []
           present leaderboards, with: Leaderboards::Entities::Players, user: @current_user
         rescue ActiveRecord::RecordNotFound
           api_error!(10002)
