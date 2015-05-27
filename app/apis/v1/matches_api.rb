@@ -133,7 +133,7 @@ module V1
             position: o[:player].position,
             recorded_scorecards_count: o[:player].recorded_scorecards_count,
             strokes: o[:player].strokes,
-            total: o[:player].total,
+            total: formatted_total(o[:player].total),
             owned: o[:player].owned?
           }
         end

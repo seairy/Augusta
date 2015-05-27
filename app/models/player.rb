@@ -77,6 +77,6 @@ class Player < ActiveRecord::Base
       scorecard.score - scorecard.par if scorecard.score
     end.compact.reduce(:+)
     self.update!(strokes: strokes,
-      total: ApplicationController.helpers.formatted_status(total))
+      total: total)
   end
 end

@@ -26,5 +26,15 @@ module V1
         nil
       end
     end
+
+    def formatted_total total
+      if total < 0
+        "#{total}"
+      elsif total.zero?
+        'E'
+      elsif total > 0
+        "+#{status}"
+      end if total
+    end
   end
 end

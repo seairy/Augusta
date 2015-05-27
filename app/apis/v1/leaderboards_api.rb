@@ -12,7 +12,9 @@ module V1
           }
         end
         expose :recorded_scorecards_count
-        expose :total
+        expose :total do |m, o|
+          formatted_total(m.total)
+        end
         expose :self do |m, o|
           m.user_id == o[:user].id
         end
