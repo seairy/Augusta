@@ -8,7 +8,7 @@ class Player < ActiveRecord::Base
   scope :by_user, ->(user) { where(user_id: user.id) }
   scope :started, -> { where.not(strokes: nil) }
   scope :latest, -> { order(created_at: :desc) }
-  scope :ranked, -> { order(:strokes) }
+  scope :ranked, -> { order('-strokes DESC') }
 
   def recorded_scorecards_count
     scorecards.select(&:score).count
