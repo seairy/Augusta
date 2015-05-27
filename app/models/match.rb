@@ -92,7 +92,7 @@ class Match < ActiveRecord::Base
         end
       else
         if players[i].total == players[i - 1].total
-          players[i].update!(players[i - 1].position)
+          players[i].update!(position: players[i - 1].position)
         else
           if players[i].total == players[i + 1].total
             players[i].update!(position: "T#{i + 1}")
