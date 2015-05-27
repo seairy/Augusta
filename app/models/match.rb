@@ -79,22 +79,22 @@ class Match < ActiveRecord::Base
     players = self.players.started.ranked.latest.to_a
     players.length.times do |i|
       if i.zero?
-        if players.length > 1 and players[i].score == players[i + 1].score
+        if players.length > 1 and players[i].total == players[i + 1].total
           players[i].update!(position: 'T1')
         else
           players[i].update!(position: i + 1)
         end
       elsif i == players.length - 1
-        if players[i].score == players[i - 1].score
+        if players[i].total == players[i - 1].total
           players[i].update!(position: players[i - 1].position)
         else
           players[i].update!(position: i + 1)
         end
       else
-        if players[i].score == players[i - 1].score
+        if players[i].total == players[i - 1].total
           players[i].update!(players[i - 1].position)
         else
-          if players[i].score == players[i + 1].score
+          if players[i].total == players[i + 1].total
             players[i].update!(position: "T#{i + 1}")
           else
             players[i].update!(position: i + 1)
