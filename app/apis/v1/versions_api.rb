@@ -5,6 +5,7 @@ module V1
       class Version < Grape::Entity
         expose :code
         expose :name
+        expose :file
         expose :description
       end
     end
