@@ -2,6 +2,7 @@
 class Venue < ActiveRecord::Base
   include UUID, Trashable
   attr_accessor :visited_count
+  attr_accessor :played_count
   belongs_to :city
   has_many :courses
   has_many :matches
@@ -10,7 +11,7 @@ class Venue < ActiveRecord::Base
   scope :nearest, ->(latitude, longitude) {
     near([latitude, longitude], 5000, unit: :km)
   }
-  scope :visited_by_user, ->(user) { includes(:players).where(players: { user_id: user.id }) }
+  scope :played_by_user, ->(user) { includes(:players).where(players: { user_id: user.id }) }
   validates :city_id, presence: true
   validates :name, presence: true, length: { maximum: 50 }
   validates :address, length: { maximum: 500 }

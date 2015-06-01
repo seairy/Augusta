@@ -40,6 +40,11 @@ class User < ActiveRecord::Base
     Venue.find(venues.keys).map{|venue| venue.visited_count = venues[venue.id]; venue}
   end
 
+  def played_venues
+    venues = players.includes(:match).inject(Hash.new(0)){|result, player| result[player.match.venue_id] += 1; result}
+    Venue.find(venues.keys).map{|venue| venue.played_count = venues[venue.id]; venue}
+  end
+
   def upgrade options = {}
     ActiveRecord::Base.transaction do
       raise InvalidUserType.new unless options[:user].guest?

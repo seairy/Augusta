@@ -1,12 +1,13 @@
 # -*- encoding : utf-8 -*-
 class APIError
   @contents = {
-    # 10001 ~ 19999: 通用
+    # 10001 ~ 19999: 系统
     10001 => { status: 401, message: 'Token失效' },
     10002 => { status: 404, message: '数据未找到' },
     10003 => { status: 403, message: '访问非当前用户数据' },
     10004 => { status: 404, message: 'API不存在' },
     10005 => { status: 408, message: '请求超时' },
+    10006 => { status: 404, message: '没有任何版本' },
     # 20101 ~ 20199: 比赛
     20101 => { message: '无效的球场' },
     20102 => { message: '专业记分方式无法修改记分卡' },

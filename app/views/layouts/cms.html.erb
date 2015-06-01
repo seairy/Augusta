@@ -30,6 +30,12 @@
                 <li><%= link_to raw("<i class=\"fa fa-caret-right\"></i> 创建新球会"), new_cms_venue_path %></li>
               </ul>
             </li>
+            <li class="nav-parent"><a href=""><i class="fa fa-compass"></i> <span>版本管理</span></a>
+              <ul class="children">
+                <li><%= link_to raw("<i class=\"fa fa-caret-right\"></i> 版本列表"), cms_versions_path %></li>
+                <li><%= link_to raw("<i class=\"fa fa-caret-right\"></i> 创建新版本"), new_cms_version_path %></li>
+              </ul>
+            </li>
           </ul>
           <!--div class="infosummary">
             <h5 class="sidebartitle">Information Summary</h5>    

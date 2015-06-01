@@ -40,6 +40,7 @@ class API < Grape::API
 
   mount V1::UsersAPI
   mount V1::VerificationCodesAPI
+  mount V1::VersionsAPI
   
   namespace do
     before do

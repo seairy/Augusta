@@ -16,6 +16,13 @@ module V1
         expose :courses, using: Courses
       end
 
+      class PlayedVenues < Grape::Entity
+        expose :uuid
+        expose :name
+        expose :address
+        expose :played_count
+      end
+
       class VisitedVenues < Grape::Entity
         expose :uuid
         expose :name
@@ -113,6 +120,12 @@ module V1
         rescue ActiveRecord::RecordNotFound
           api_error!(10002)
         end
+      end
+
+      desc '比赛球会列表'
+      get :visited do
+        venues = @current_user.played_venues
+        present venues, with: Venues::Entities::PlayedVenues
       end
 
       # ** DEPRECATED **

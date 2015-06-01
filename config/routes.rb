@@ -15,12 +15,18 @@ Rails.application.routes.draw do
     resources :holes do
       resources :tee_boxes
       member do
-        put 'update_par'
+        put :update_par
       end
     end
     resources :tee_boxes do
       member do
-        put 'update_distance_from_hole'
+        put :update_distance_from_hole
+      end
+    end
+    resources :versions do
+      member do
+        put :publish
+        put :cancel
       end
     end
     resources :administrators
