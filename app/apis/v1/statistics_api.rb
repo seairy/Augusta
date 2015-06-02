@@ -28,6 +28,9 @@ module V1
       end
 
       class ProfessionalStatistic < Grape::Entity
+        expose :match do |m, o|
+          { venue: { name: m.player.match.venue.name }, played_at: m.player.match.created_at.to_i }
+        end
         expose :scorecards
         expose :item_01 do |m, o|
           {
