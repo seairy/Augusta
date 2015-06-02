@@ -3,6 +3,9 @@ module V1
   module Statistics
     module Entities
       class SimpleStatistic < Grape::Entity
+        expose :match do |m, o|
+          { venue: { name: m.player.match.venue.name }, played_at: m.player.match.created_at.to_i }
+        end
         expose :scorecards
         expose :score
         expose :net
