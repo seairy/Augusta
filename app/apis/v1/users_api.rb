@@ -116,6 +116,29 @@ module V1
         end
       end
 
+      desc '重置密码'
+      params do
+        requires :phone, type: String, regexp: /^1\d{10}$/, desc: '手机号码'
+        requires :password, type: String, desc: '密码'
+        requires :password_confirmation, type: String, desc: '确认密码'
+        requires :verification_code, type: String, regexp: /^\d{4}$/, desc: '验证码'
+      end
+      put :reset_password do
+        begin
+          raise InvalidPasswordConfirmation.new unless params[:password] == params[:password_confirmation]
+          User.reset_password(phone: params[:phone], password: params[:password], verification_code: params[:verification_code])
+          present successful_json
+        rescue InvalidPasswordConfirmation
+          api_error!(20309)
+        rescue PhoneNotFound
+          api_error!(20302)
+        rescue InvalidVerificationCode
+          api_error!(20304)
+        rescue InvalidUserType
+          api_error!(20316)
+        end
+      end
+
       desc '用户头像'
       get :portrait do
         authenticate!

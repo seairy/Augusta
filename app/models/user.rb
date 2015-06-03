@@ -102,6 +102,22 @@ class User < ActiveRecord::Base
       end
     end
 
+    def reset_password options = {}
+      user = User.where(phone: options[:phone]).first
+      raise PhoneNotFound.new unless user
+      raise InvalidUserType.new unless user.member?
+      user.verification_codes.available.type_reset_passwords.first.tap do |verification_code|
+        raise InvalidVerificationCode.new unless verification_code
+        if Rails.env == 'development'
+          raise InvalidVerificationCode.new if options[:verification_code] != '8888'
+        else
+          raise InvalidVerificationCode.new if options[:verification_code] != verification_code.content
+        end
+        verification_code.expired!
+      end
+      user.update!(hashed_password: Digest::MD5.hexdigest(options[:password]))
+    end
+
     def find_or_create options = {}
       where(phone: options[:phone]).first || create!(phone: options[:phone], type: :member, signed_up_at: Time.now)
     end
