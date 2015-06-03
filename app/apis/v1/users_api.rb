@@ -7,6 +7,9 @@ module V1
         expose :type
         expose :phone
         expose :nickname
+        expose :portrait do |m, o|
+          oss_image(m, :portrait, :w300_h300_fl_q50)
+        end
         expose :token do |m, o|
           m.available_token
         end
