@@ -45,6 +45,9 @@ class Statistic < ActiveRecord::Base
   attr_accessor :distance_1_2_from_hole_in_green
   attr_accessor :distance_2_3_from_hole_in_green
   attr_accessor :distance_3_5_from_hole_in_green
+  attr_accessor :distance_5_8_from_hole_in_green
+  attr_accessor :distance_8_13_from_hole_in_green
+  attr_accessor :distance_13_33_from_hole_in_green
   attr_accessor :sand_saves
   attr_accessor :bunker_shots
   attr_accessor :sand_saves_percentage
