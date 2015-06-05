@@ -1,7 +1,7 @@
 # -*- encoding : utf-8 -*-
 class VerificationCode < ActiveRecord::Base
   belongs_to :user
-  as_enum :type, [:sign_up, :reset_password, :upgrade, :update_phone], prefix: true, map: :string
+  as_enum :type, [:sign_up, :reset_password, :upgrade, :unbind_phone, :rebind_phone], prefix: true, map: :string
   scope :available, -> { where(available: true).where('generated_at > ?', Time.now - 15.minutes) }
 
   def expired!
@@ -37,8 +37,8 @@ class VerificationCode < ActiveRecord::Base
       user.verification_codes.generate_and_send(phone: options[:phone], type: :reset_password)
     end
 
-    def update_phone options = {}
-      raise FrequentRequest.new if Time.now - (options[:user].verification_codes.type_update_phones.order(generated_at: :desc).first.try(:generated_at) || Time.now - 1.hour) < 1.minute
+    def unbind_phone options = {}
+      raise FrequentRequest.new if Time.now - (options[:user].verification_codes.type_unbind_phones.order(generated_at: :desc).first.try(:generated_at) || Time.now - 1.hour) < 1.minute
       raise TooManyRequest.new if options[:user].verification_codes.where('generated_at >= ?', Time.now.beginning_of_day).where('generated_at <= ?', Time.now.end_of_day).count >= 15
       raise InvalidUserType.new unless options[:user].member?
       raise DuplicatedPhone.new if User.where(phone: options[:phone]).first

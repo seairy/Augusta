@@ -20,7 +20,7 @@ module V1
         requires :score, type: Integer, desc: '杆数'
         requires :putts, type: Integer, desc: '推杆数'
         requires :penalties, type: Integer, desc: '罚杆数'
-        requires :driving_distance, type: Integer, desc: '开球距离'
+        requires :distance_from_hole, type: Integer, desc: '距球洞码数'
         requires :direction, type: String, values: Scorecard.directions.keys, desc: '开球方向'
       end
       put :simple do
