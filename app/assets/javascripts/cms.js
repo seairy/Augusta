@@ -23,5 +23,4 @@
 //= require cms/jquery.maskedinput.min
 //= require cms/chosen.jquery.min
 //= require cms/select2
-//= require cms/select2.locale
 //= require cms/bracket
