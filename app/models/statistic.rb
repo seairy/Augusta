@@ -130,7 +130,7 @@ class Statistic < ActiveRecord::Base
           last_stroke = scorecard.strokes.last
           scorecard.strokes[last_stroke.sequence - 2].distance_from_hole if last_stroke.club_pt?
         end.compact.instance_eval{(reduce(:+) || 0).to_f / 18}.round(2)
-        [0..1, 1..2, 2..3, 3..5].each do |distance_range|
+        [0..1, 1..2, 2..3, 3..5, 5..8, 8..13, 13..33].each do |distance_range|
           eval("@distance_#{distance_range.begin}_#{distance_range.end}_from_hole_in_green = {
             per_round: strokes.select{|stroke| stroke.point_of_fall_green? and stroke.distance_from_hole > distance_range.begin and stroke.distance_from_hole <= distance_range.end}.count,
             shots_to_hole: 0,
