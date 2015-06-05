@@ -69,7 +69,10 @@ module V1
             distance_0_1_from_hole_in_green: m.distance_0_1_from_hole_in_green,
             distance_1_2_from_hole_in_green: m.distance_1_2_from_hole_in_green,
             distance_2_3_from_hole_in_green: m.distance_2_3_from_hole_in_green,
-            distance_3_5_from_hole_in_green: m.distance_3_5_from_hole_in_green
+            distance_3_5_from_hole_in_green: m.distance_3_5_from_hole_in_green,
+            distance_5_8_from_hole_in_green: m.distance_5_8_from_hole_in_green,
+            distance_8_13_from_hole_in_green: m.distance_8_13_from_hole_in_green,
+            distance_13_33_from_hole_in_green: m.distance_13_33_from_hole_in_green,
           }
         end
         expose :item_04 do |m, o|
