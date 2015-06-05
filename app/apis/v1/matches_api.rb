@@ -154,6 +154,7 @@ module V1
               putts: scorecard.putts,
               penalties: scorecard.penalties,
               driving_distance: scorecard.driving_distance,
+              distance_from_hole: scorecard.distance_from_hole,
               direction: scorecard.direction
             }
           end

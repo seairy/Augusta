@@ -43,6 +43,10 @@ class Scorecard < ActiveRecord::Base
     score - par if score and par
   end
 
+  def distance_from_hole
+    distance_from_hole_to_tee_box - driving_distance if driving_distance
+  end
+
   def up_and_downs?
     (strokes.last.sequence == 1 and distance_from_hole_to_tee_box <= 100) or
     (strokes.last.sequence == 2 and strokes.last.club_pt? and distance_from_hole_to_tee_box <= 100) or
