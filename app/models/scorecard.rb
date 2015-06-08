@@ -60,7 +60,7 @@ class Scorecard < ActiveRecord::Base
   end
 
   def update_simple options = {}
-    options[:driving_distance] = distance_from_hole_to_tee_box - options.delete(:distance_from_hole)
+    options[:driving_distance] = (distance_from_hole_to_tee_box - options.delete(:distance_from_hole)).abs
     update!(options)
     calculate_player_and_statistic_and_leaderboard!
   end
