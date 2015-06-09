@@ -7,7 +7,7 @@ module V1
         expose :name
         expose :holes_count
         expose :tee_boxes do |m, o|
-          [:red, :white, :blue, :black, :gold]
+          m.available_tee_boxes
         end
       end
 

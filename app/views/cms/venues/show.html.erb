@@ -102,7 +102,13 @@
               <td><%= hole.name %></td>
               <td><%= content_tag 'a', "#{hole.par}", name: 'updateHolePar', data: { type: 'text', pk: hole.id, url: "/cms/holes/#{hole.id}/update_par", title: '请输入标准杆' } %></td>
               <% [:red, :white, :blue, :black, :gold].each do |color| %>
-              <td><%= content_tag 'a', "#{hole.tee_boxes.send(color).distance_from_hole}", name: 'updateTeeBoxDistanceFromHole', data: { type: 'text', pk: hole.tee_boxes.send(color).id, url: "/cms/tee_boxes/#{hole.tee_boxes.send(color).id}/update_distance_from_hole", title: '请输入码数' } %></td>
+              <td>
+                <% if hole.tee_boxes.send(color) %>
+                <%= content_tag 'a', "#{hole.tee_boxes.send(color).distance_from_hole}", name: 'updateTeeBoxDistanceFromHole', data: { type: 'text', pk: hole.tee_boxes.send(color).id, url: "/cms/tee_boxes/#{hole.tee_boxes.send(color).id}/update_distance_from_hole", title: '请输入码数' } %>
+                <% else %>
+
+                <% end %>
+              </td>
               <% end %>
               <td class="table-action">
                 <%= link_to raw('<i class="fa fa-pencil"></i>'), edit_cms_hole_path(hole) %>

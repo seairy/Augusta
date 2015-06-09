@@ -170,7 +170,7 @@ module V1
                 uuid: course.uuid,
                 name: course.name,
                 holes_count: course.holes_count,
-                tee_boxes: [:red, :white, :blue, :black, :gold]
+                tee_boxes: course.available_tee_boxes
               }
             end
           }

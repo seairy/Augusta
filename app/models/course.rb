@@ -12,4 +12,8 @@ class Course < ActiveRecord::Base
       end
     end
   end
+
+  def available_tee_boxes
+    holes.map{|hole| hole.tee_boxes.map{|tee_boxes| tee_boxes.color}}.flatten.uniq
+  end
 end
