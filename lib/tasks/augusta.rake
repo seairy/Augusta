@@ -76,6 +76,20 @@ namespace :data do
     p "finished in #{bench.real} second(s)"
   end
 
+  desc 'Import data at Jun 9, 2015.'
+  task :import_150609 => :environment do
+    bench = Benchmark.measure do
+      DB = Sequel.connect(adapter: 'mysql2', host: 'localhost', user: 'root', password: '', database: 'augusta_hanban')
+      count = 0
+      DB[:tee_boxes].filter('distance_from_hole <> 999').each do |tee_box|
+        if origin_tee_box = TeeBox.where(hole_id: tee_box[:hole_id], color_cd: tee_box[:color_cd]).first
+          origin_tee_box.update!(distance_from_hole: tee_box[:distance_from_hole]) if origin_tee_box.distance_from_hole == 999
+        end
+      end
+    end
+    p "finished in #{bench.real} second(s)"
+  end
+
   namespace :populate do
     desc 'Populate some user\'s matches and scorecards data.'
     task :matches_and_scorecards => :environment do

@@ -39,7 +39,7 @@ class Match < ActiveRecord::Base
     ActiveRecord::Base.transaction do
       raise DuplicatedParticipant.new if participated?(options[:user])
       raise InvalidMatchState.new if finished?
-      player = players.create(user: options[:user], scoring_type: :simple)
+      player = players.create(user: options[:user], scoring_type: options[:scoring_type])
       hole_number = 1
       courses.each_with_index do |course, i|
         course.holes.sort.each do |hole|
