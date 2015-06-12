@@ -21,5 +21,7 @@ exceptions = %w(
   TooManyRequest
   InvalidUserType
   VersionNotFound
+  InvalidDistance
+  InvalidPointOfFall
 )
 exceptions.each{|e| Object.const_set(e, Class.new(StandardError))} 

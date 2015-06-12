@@ -60,6 +60,10 @@ module V1
           api_error!(10003)
         rescue InvalidScoringType
           api_error!(20104)
+        rescue InvalidDistance
+          api_error!(20114)
+        rescue InvalidPointOfFall
+          api_error!(20115)
         rescue HoledStrokeNotFound
           api_error!(20110)
         rescue DuplicatedHoledStroke

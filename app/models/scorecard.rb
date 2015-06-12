@@ -69,7 +69,9 @@ class Scorecard < ActiveRecord::Base
     ActiveRecord::Base.transaction do
       strokes.map(&:destroy!)
       new_strokes = options[:strokes].map do |stroke_params|
-        Stroke.new(scorecard: self, distance_from_hole: stroke_params[:distance_from_hole], point_of_fall: stroke_params[:point_of_fall], penalties: stroke_params[:penalties], club: stroke_params[:club])
+        raise InvalidDistance.new unless stroke_params[:distance_from_hole]
+        raise InvalidPointOfFall.new unless Stroke.point_of_falls.keys.include?(stroke_params[:point_of_fall])
+        Stroke.new(scorecard: self, distance_from_hole: stroke_params[:distance_from_hole].to_i, point_of_fall: stroke_params[:point_of_fall], penalties: stroke_params[:penalties], club: stroke_params[:club])
       end
       raise HoledStrokeNotFound.new unless new_strokes.last.distance_from_hole.zero?
       raise DuplicatedHoledStroke.new if new_strokes.select{|stroke| stroke.distance_from_hole.zero?}.count > 1

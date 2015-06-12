@@ -70,7 +70,7 @@ class Match < ActiveRecord::Base
         new_password = rand(9999).to_s.rjust(4, '0')
         break if !exist_passwords.include?(new_password) and new_password.split('').uniq.count > 2
       end
-      update!(password: new_password, password_expired_at: Time.now + 30.minutes)
+      update!(password: new_password, password_expired_at: Time.now + 2.hours)
       new_password
     end
   end
