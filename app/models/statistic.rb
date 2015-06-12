@@ -136,9 +136,9 @@ class Statistic < ActiveRecord::Base
         [0..1, 1..2, 2..3, 3..5, 5..8, 8..13, 13..33].each do |distance_range|
           eval("@distance_#{distance_range.begin}_#{distance_range.end}_from_hole_in_green = {
             per_round: strokes.select{|stroke| stroke.point_of_fall_green? and stroke.distance_from_hole > distance_range.begin and stroke.distance_from_hole <= distance_range.end}.count,
-            shots_to_hole: scorecards.map{|scorecard| scorecard.strokes.select{|stroke| stroke.distance_from_hole > distance_range.begin and stroke.distance_from_hole <= distance_range.end and stroke.point_of_fall_green?}}.flatten.map{|stroke| stroke.shots_to_hole}.instance_eval{(reduce(:+) || 0) / size.to_f},
-            holed_percentage: ((scorecards.select{|scorecard| scorecard.strokes.select{|stroke| stroke.distance_from_hole > distance_range.begin and stroke.distance_from_hole <= distance_range.end and stroke.point_of_fall_green? and scorecard.strokes[stroke.sequence + 1] and scorecard.strokes[stroke.sequence + 1].holed?}.count > 0}.count.to_f / scorecards.count) * 100).round(2),
-            dispersion: scorecards.map{|scorecard| scorecard.strokes.select{|stroke| stroke.distance_from_hole > distance_range.begin and stroke.distance_from_hole <= distance_range.end and stroke.point_of_fall_green?}}.flatten.map{|stroke| strokes.select{|s| stroke.scorecard_id == s.scorecard_id}[stroke.sequence].distance_from_hole}.instance_eval{(reduce(:+) || 0) / size.to_f},
+            shots_to_hole: scorecards.map{|scorecard| scorecard.strokes.select{|stroke| stroke.distance_from_hole > distance_range.begin and stroke.distance_from_hole <= distance_range.end and stroke.point_of_fall_green?}}.flatten.map{|stroke| stroke.shots_to_hole}.instance_eval{(reduce(:+) || 0) / size.to_f}.round(2),
+            holed_percentage: ((scorecards.select{|scorecard| scorecard.strokes.select{|stroke| stroke.distance_from_hole > distance_range.begin and stroke.distance_from_hole <= distance_range.end and stroke.point_of_fall_green? and scorecard.strokes[stroke.sequence + 1] and scorecard.strokes[stroke.sequence + 1].holed?}.count > 0}.count.to_f / scorecards.count) * 100).round(2).to_s + '%',
+            dispersion: scorecards.map{|scorecard| scorecard.strokes.select{|stroke| stroke.distance_from_hole > distance_range.begin and stroke.distance_from_hole <= distance_range.end and stroke.point_of_fall_green?}}.flatten.map{|stroke| strokes.select{|s| stroke.scorecard_id == s.scorecard_id}[stroke.sequence].distance_from_hole}.instance_eval{(reduce(:+) || 0) / size.to_f}.round(2),
           }")
         end
         par_4_and_5_drived_scorecards = par_4_and_5_scorecards.select{|scorecard| scorecard.strokes.first.club_1w?}
@@ -164,8 +164,8 @@ class Statistic < ActiveRecord::Base
         [0..10, 10..20, 20..50, 50..100].each do |distance_range|
           eval("@distance_#{distance_range.begin}_#{distance_range.end}_from_hole_in_bunker = {
             per_round: scorecards.map{|scorecard| scorecard.strokes.select{|stroke| stroke.distance_from_hole > distance_range.begin and stroke.distance_from_hole <= distance_range.end and stroke.point_of_fall_bunker?}.count}.reduce(:+),
-            shots_to_hole: scorecards.map{|scorecard| scorecard.strokes.select{|stroke| stroke.distance_from_hole > distance_range.begin and stroke.distance_from_hole <= distance_range.end and stroke.point_of_fall_bunker?}}.flatten.map{|stroke| stroke.shots_to_hole}.instance_eval{(reduce(:+) || 0) / size.to_f},
-            dispersion: scorecards.map{|scorecard| scorecard.strokes.select{|stroke| stroke.distance_from_hole > distance_range.begin and stroke.distance_from_hole <= distance_range.end and stroke.point_of_fall_bunker?}}.flatten.map{|stroke| strokes.select{|s| stroke.scorecard_id == s.scorecard_id}[stroke.sequence].distance_from_hole}.instance_eval{(reduce(:+) || 0) / size.to_f}
+            shots_to_hole: scorecards.map{|scorecard| scorecard.strokes.select{|stroke| stroke.distance_from_hole > distance_range.begin and stroke.distance_from_hole <= distance_range.end and stroke.point_of_fall_bunker?}}.flatten.map{|stroke| stroke.shots_to_hole}.instance_eval{(reduce(:+) || 0) / size.to_f}.round(2),
+            dispersion: scorecards.map{|scorecard| scorecard.strokes.select{|stroke| stroke.distance_from_hole > distance_range.begin and stroke.distance_from_hole <= distance_range.end and stroke.point_of_fall_bunker?}}.flatten.map{|stroke| strokes.select{|s| stroke.scorecard_id == s.scorecard_id}[stroke.sequence].distance_from_hole}.instance_eval{(reduce(:+) || 0) / size.to_f}.round(2)
           }")
         end
         up_and_downs_scorecards = scorecards.select{|scorecard| scorecard.up_and_downs?}
