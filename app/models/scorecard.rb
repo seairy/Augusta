@@ -71,6 +71,7 @@ class Scorecard < ActiveRecord::Base
       new_strokes = options[:strokes].map do |stroke_params|
         raise InvalidDistance.new unless stroke_params[:distance_from_hole]
         raise InvalidPointOfFall.new unless Stroke.point_of_falls.keys.include?(stroke_params[:point_of_fall])
+        raise InvalidClub.new unless Stroke.clubs.keys.include?(stroke_params[:club])
         Stroke.new(scorecard: self, distance_from_hole: stroke_params[:distance_from_hole].to_i, point_of_fall: stroke_params[:point_of_fall], penalties: stroke_params[:penalties], club: stroke_params[:club])
       end
       raise HoledStrokeNotFound.new unless new_strokes.last.distance_from_hole.zero?

@@ -64,6 +64,8 @@ module V1
           api_error!(20114)
         rescue InvalidPointOfFall
           api_error!(20115)
+        rescue InvalidClub
+          api_error!(20116)
         rescue HoledStrokeNotFound
           api_error!(20110)
         rescue DuplicatedHoledStroke
