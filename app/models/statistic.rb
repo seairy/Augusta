@@ -136,9 +136,9 @@ class Statistic < ActiveRecord::Base
         [0..1, 1..2, 2..3, 3..5, 5..8, 8..13, 13..33].each do |distance_range|
           eval("@distance_#{distance_range.begin}_#{distance_range.end}_from_hole_in_green = {
             per_round: strokes.select{|stroke| stroke.point_of_fall_green? and stroke.distance_from_hole > distance_range.begin and stroke.distance_from_hole <= distance_range.end}.count,
-            shots_to_hole: 0,
-            holed_percentage: 0,
-            dispersion: 0,
+            shots_to_hole: scorecards.map{|scorecard| scorecard.strokes.select{|stroke| stroke.distance_from_hole > distance_range.begin and stroke.distance_from_hole <= distance_range.end and stroke.point_of_fall_green?}}.flatten.map{|stroke| stroke.shots_to_hole}.instance_eval{(reduce(:+) || 0) / size.to_f},
+            holed_percentage: scorecards.map{|scorecard| scorecard.strokes.select{|stroke| stroke.distance_from_hole > distance_range.begin and stroke.distance_from_hole <= distance_range.end and stroke.point_of_fall_green? and scorecard.strokes[stroke.sequence + 1] and scorecard.strokes[stroke.sequence + 1].holed?}}.instance_eval{(reduce(:+) || 0) / size.to_f},
+            dispersion: scorecards.map{|scorecard| scorecard.strokes.select{|stroke| stroke.distance_from_hole > distance_range.begin and stroke.distance_from_hole <= distance_range.end and stroke.point_of_fall_green?}}.flatten.map{|stroke| strokes.select{|s| stroke.scorecard_id == s.scorecard_id}[stroke.sequence].distance_from_hole}.instance_eval{(reduce(:+) || 0) / size.to_f},
           }")
         end
         par_4_and_5_drived_scorecards = par_4_and_5_scorecards.select{|scorecard| scorecard.strokes.first.club_1w?}
