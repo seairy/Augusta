@@ -256,6 +256,22 @@ module V1
           api_error!(20314)
         end
       end
+
+      desc '更新信息'
+      params do
+        requires :nickname, type: String, desc: '昵称'
+        optional :gender, type: Integer, values: [1, 2], desc: '性别'
+        optional :birthday, desc: '出生日期'
+        optional :description, type: String, desc: '签名'
+      end
+      put :update_profile do
+        authenticate!
+        if @current_user.update(declared(params))
+          present successful_json
+        else
+          api_error!(20317)
+        end
+      end
     end
   end
 end

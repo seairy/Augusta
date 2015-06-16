@@ -44,6 +44,7 @@ class APIError
     20314 => { message: '无效的基本信息' },
     20315 => { message: '请求验证码次数过多' },
     20316 => { message: '非游客用户无法升级' },
+    20317 => { message: '无效的个人信息' },
   }
 
   class << self
