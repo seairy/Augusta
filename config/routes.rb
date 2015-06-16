@@ -41,4 +41,19 @@ Rails.application.routes.draw do
     resources :errors
     get '*not_found', to: 'errors#error_404'
   end
+  namespace :caddie do
+    root 'dashboard#index'
+    get 'dashboard', to: 'dashboard#index', as: :dashboard
+    resources :verification_codes do
+      collection do
+        post :sign_up
+      end
+    end
+    resources :caddies
+    get 'signin', to: 'sessions#new', as: :signin
+    post 'signin', to: 'sessions#create'
+    get 'signup', to: 'caddies#new', as: :signup
+    post 'signup', to: 'caddies#create'
+    get 'signout', to: 'sessions#destroy', as: :signout
+  end
 end

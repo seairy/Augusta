@@ -1,6 +1,7 @@
 # -*- encoding : utf-8 -*-
 class VerificationCode < ActiveRecord::Base
   belongs_to :user
+  belongs_to :caddie
   as_enum :type, [:sign_up, :reset_password, :upgrade, :unbind_phone, :rebind_phone], prefix: true, map: :string
   scope :available, -> { where(available: true).where('generated_at > ?', Time.now - 15.minutes) }
 
@@ -44,6 +45,15 @@ class VerificationCode < ActiveRecord::Base
       raise DuplicatedPhone.new if User.where(phone: options[:phone]).first
       options[:user].verification_codes.type_update_phones.update_all(available: false)
       options[:user].verification_codes.generate_and_send(phone: options[:phone], type: :update_phone)
+    end
+
+    def caddie_sign_up options = {}
+      caddie = Caddie.find_or_create(phone: options[:phone])
+      raise FrequentRequest.new if Time.now - (caddie.verification_codes.type_sign_ups.order(generated_at: :desc).first.try(:generated_at) || Time.now - 1.hour) < 1.minute
+      raise TooManyRequest.new if caddie.verification_codes.where('generated_at >= ?', Time.now.beginning_of_day).where('generated_at <= ?', Time.now.end_of_day).count >= 10
+      raise DuplicatedPhone.new if caddie.activated?
+      caddie.verification_codes.type_sign_ups.update_all(available: false)
+      caddie.verification_codes.generate_and_send(phone: options[:phone], type: :sign_up)
     end
 
     def generate_and_send options = {}

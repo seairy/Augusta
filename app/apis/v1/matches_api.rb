@@ -109,6 +109,7 @@ module V1
         end
         expose :player do |m, o|
           {
+            owned: m.owned?
             scoring_type: m.scoring_type,
             strokes: m.recorded_scorecards_count == 18 ? m.strokes : nil,
             recorded_scorecards_count: m.recorded_scorecards_count
