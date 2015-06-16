@@ -266,7 +266,7 @@ module V1
       end
       put :update_profile do
         authenticate!
-        params[:birthday] = Time.at(params[:birthday]).to_i if params[:birthday]
+        params[:birthday] = Time.at(params[:birthday].to_i) if params[:birthday]
         if @current_user.update(declared(params))
           present successful_json
         else
