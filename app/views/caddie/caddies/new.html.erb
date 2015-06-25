@@ -7,7 +7,7 @@
       <%= text_field :caddie, :phone, placeholder: '手机', class: 'signup-phone' %>
       <%= password_field :caddie, :password, placeholder: '密码', class: 'signup-password' %>
       <%= text_field_tag :verification_code, nil, placeholder: '验证码', class: 'signup-verification-code' %>
-      <a href="javascript: verificationCode()" class="signup-send">获取验证码</a>
+      <a id="verification_code_btn" href="javascript: verificationCode()" class="signup-send">获取验证码</a>
       <div class="one-half">
         <%= link_to '注册', caddie_signin_path, class: 'button button-green full-button' %>
       </div>
@@ -34,10 +34,13 @@
         contentType: "application/json; charset=utf-8",
         dataType: "json",   
         method: 'POST',
-        complete: function(data) {
-          alert(data.message);
+        success: function(data) {
+          $('#notice').html(data.message);
           curCount = 60;
-          $("#verification_code").html("发送中... (60)");
+          $('#verification_code_btn').text("发送中... (60)");
+          $('#verification_code_btn').click(function (e) {
+              e.preventDefault();
+          });
           interValObj = window.setInterval(setRemainTime, 1000);
         }
       });
@@ -47,12 +50,13 @@
   function setRemainTime() {
     if (curCount == 0) {                
       window.clearInterval(interValObj);
-      $("#verification_code").removeAttr("disabled");
-      $("#verification_code").html("重新发送");
+      $("#verification_code_btn").text("重新发送");
+      $('#verification_code_btn').click(function (e) {
+      });
     }
     else {
       curCount--;
-      $("#verification_code").html("发送中... (" + curCount + ")");
+      $("#verification_code_btn").text("发送中... (" + curCount + ")");
     }
   }
   </script>
