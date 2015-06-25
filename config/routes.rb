@@ -41,6 +41,9 @@ Rails.application.routes.draw do
     resources :errors
     get '*not_found', to: 'errors#error_404'
   end
+  namespace :wechat do
+    root 'base#verify'
+  end
   namespace :caddie do
     root 'dashboard#index'
     get 'dashboard', to: 'dashboard#index', as: :dashboard
