@@ -222,9 +222,9 @@ class Statistic < ActiveRecord::Base
     self.net = scorecards.map(&:score).reduce(:+)
     self.putts = scorecards.map(&:putts).reduce(:+)
     self.penalties = scorecards.map(&:penalties).reduce(:+)
-    self.score_par_3 = scorecards.select{|scorecard| scorecard.par == 3}.map(&:score).instance_eval{(reduce(:+) || 0) / size.to_f}.round(2)
-    self.score_par_4 = scorecards.select{|scorecard| scorecard.par == 4}.map(&:score).instance_eval{(reduce(:+) || 0) / size.to_f}.round(2)
-    self.score_par_5 = scorecards.select{|scorecard| scorecard.par == 5}.map(&:score).instance_eval{(reduce(:+) || 0) / size.to_f}.round(2)
+    self.score_par_3 = scorecards.select{|scorecard| scorecard.par == 3}.map(&:score).instance_eval{reduce(:+) / size.to_f}.round(2) if scorecards.select{|scorecard| scorecard.par == 3}.count > 0
+    self.score_par_4 = scorecards.select{|scorecard| scorecard.par == 4}.map(&:score).instance_eval{reduce(:+) / size.to_f}.round(2) if scorecards.select{|scorecard| scorecard.par == 4}.count > 0
+    self.score_par_5 = scorecards.select{|scorecard| scorecard.par == 5}.map(&:score).instance_eval{reduce(:+) / size.to_f}.round(2) if scorecards.select{|scorecard| scorecard.par == 5}.count > 0
     self.double_eagle = scorecards.select{|scorecard| scorecard.par - scorecard.score >= 3}.count
     self.eagle = scorecards.select{|scorecard| scorecard.par - scorecard.score == 2}.count
     self.birdie = scorecards.select{|scorecard| scorecard.par - scorecard.score == 1}.count
