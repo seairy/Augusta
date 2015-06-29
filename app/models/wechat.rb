@@ -21,7 +21,7 @@ class Wechat < ActiveRecord::Base
       request = Net::HTTP::Post.new(uri.request_uri)
       response = http.request(request)
       json = JSON.parse(response.body)
-      first ? first.update!(access_token: json[:access_token], expired_at: Time.now + json[:expires_in].seconds) : create!(access_token: json[:access_token], expired_at: Time.now + json[:expires_in].seconds)
+      first ? first.update!(access_token: json['access_token'], expired_at: Time.now + json['expires_in'].seconds) : create!(access_token: json[:access_token], expired_at: Time.now + json[:expires_in].seconds)
     end
   end
 end
