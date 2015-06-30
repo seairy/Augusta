@@ -28,12 +28,12 @@ class Wechat < ActiveRecord::Base
 
     def temporary_qr_code
       uri = URI("https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token=#{Wechat.access_token}")
-      reqquest = Net::HTTP::Post.new(uri)
-      reqquest.body = { expire_seconds: 604800, action_name: 'QR_SCENE', action_info: { scene: { scene_id: 123 } } }.to_json
+      request = Net::HTTP::Post.new(uri)
+      request.body = { expire_seconds: 604800, action_name: 'QR_SCENE', action_info: { scene: { scene_id: 123 } } }.to_json
       response = Net::HTTP.start(uri.host, uri.port, use_ssl: true) do |http|
         http.verify_mode = OpenSSL::SSL::VERIFY_NONE
         http.ssl_version = :SSLv3
-        http.request(reqquest)
+        http.request(request)
       end
     end
   end

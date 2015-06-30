@@ -4,7 +4,7 @@ class Wechat::BaseController < ApplicationController
   layout false
 
   def verify
-    puts "*********** params[:xml]: [#{params[:xml]}]"
+    puts "********* #{request.methods}"
     if params[:signature] and params[:timestamp] and params[:nonce] and Digest::SHA1.hexdigest([params[:timestamp], params[:nonce], Setting.key[:wechat][:token]].sort.join) == params[:signature]
       render text: params[:echostr]
     else
