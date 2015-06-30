@@ -25,6 +25,7 @@ gem 'grape', '~> 0.10.1'
 gem 'grape-entity', '~> 0.4.4'
 gem 'grape-swagger', '~> 0.9.0'
 gem 'grape-swagger-ui', '~> 0.0.9'
+gem 'multi_xml', '~> 0.5.5'
 
 group :development, :test do
   gem 'byebug', '~> 3.5.1'

@@ -307,6 +307,7 @@ DEPENDENCIES
   kaminari (~> 0.16.2)
   kaminari-bootstrap (~> 3.0.1)
   mini_magick (~> 4.0.4)
+  multi_xml (~> 0.5.5)
   mysql2 (~> 0.3.17)
   quiet_assets (~> 1.1.0)
   rack-cors (~> 0.3.1)
