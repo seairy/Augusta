@@ -35,7 +35,6 @@ class Wechat < ActiveRecord::Base
         http.ssl_version = :SSLv3
         http.request(reqquest)
       end
-      puts "******* #{response.body}"
     end
   end
 end
