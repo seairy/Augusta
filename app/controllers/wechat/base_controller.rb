@@ -8,6 +8,12 @@ class Wechat::BaseController < ApplicationController
       puts "*** return: #{params[:echostr]}"
       render text: params[:echostr]
     else
+      puts "******* params[:signature]: #{params[:signature]}"
+      puts "******* params[:echostr]: #{params[:echostr]}"
+      puts "******* params[:timestamp]: #{params[:timestamp]}"
+      puts "******* params[:nonce]: #{params[:nonce]}"
+      puts "******* params.sort.join: #{[params[:timestamp], params[:nonce], Setting.key[:wechat][:token]].sort.join}"
+      puts "******* sha1: #{Digest::SHA1.hexdigest([params[:timestamp], params[:nonce], Setting.key[:wechat][:token]].sort.join)}"
       puts "*** return: failure"
       render text: 'failure'
     end
