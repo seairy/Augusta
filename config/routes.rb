@@ -42,7 +42,7 @@ Rails.application.routes.draw do
     get '*not_found', to: 'errors#error_404'
   end
   namespace :wechat do
-    root 'base#verify'
+    root 'base#verify', via: [:get, :post]
   end
   namespace :caddie do
     root 'dashboard#index'

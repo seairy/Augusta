@@ -2,7 +2,7 @@ class Wechat < ActiveRecord::Base
   self.table_name = 'wechat'
 
   def expired?
-    self.expired_at > Time.now
+    self.expired_at < Time.now
   end
 
   class << self
@@ -12,7 +12,7 @@ class Wechat < ActiveRecord::Base
         request_access_token
       else
         current_access_token
-      end
+      end.access_token
     end
 
     def request_access_token
@@ -24,6 +24,18 @@ class Wechat < ActiveRecord::Base
       json = JSON.parse(response.body)
       first ? update_all(access_token: json['access_token'], expired_at: Time.now + json['expires_in'].seconds) : create!(access_token: json['access_token'], expired_at: Time.now + json['expires_in'].seconds)
       first
+    end
+
+    def temporary_qr_code
+      uri = URI("https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token=#{Wechat.access_token}")
+      reqquest = Net::HTTP::Post.new(uri)
+      reqquest.body = { expire_seconds: 604800, action_name: 'QR_SCENE', action_info: { scene: { scene_id: 123 } } }.to_json
+      response = Net::HTTP.start(uri.host, uri.port, use_ssl: true) do |http|
+        http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+        http.ssl_version = :SSLv3
+        http.request(reqquest)
+      end
+      puts "******* #{response.body}"
     end
   end
 end
