@@ -17,7 +17,8 @@ class Wechat < ActiveRecord::Base
 
     def request_access_token
       uri = URI.parse("https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=#{Setting.key[:wechat][:appid]}&secret=#{Setting.key[:wechat][:secret]}")
-      http = Net::HTTP.new(uri.host)
+      http = Net::HTTP.new(uri.host, 443)
+      http.use_ssl = true
       request = Net::HTTP::Post.new(uri.request_uri)
       response = http.request(request)
       json = JSON.parse(response.body)
