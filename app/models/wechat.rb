@@ -19,10 +19,11 @@ class Wechat < ActiveRecord::Base
       uri = URI.parse("https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=#{Setting.key[:wechat][:appid]}&secret=#{Setting.key[:wechat][:secret]}")
       http = Net::HTTP.new(uri.host, 443)
       http.use_ssl = true
-      request = Net::HTTP::Post.new(uri.request_uri)
+      request = Net::HTTP::Get.new(uri.request_uri)
       response = http.request(request)
       json = JSON.parse(response.body)
-      first ? first.update!(access_token: json['access_token'], expired_at: Time.now + json['expires_in'].seconds) : create!(access_token: json[:access_token], expired_at: Time.now + json[:expires_in].seconds)
+      first ? update_all(access_token: json['access_token'], expired_at: Time.now + json['expires_in'].seconds) : create!(access_token: json['access_token'], expired_at: Time.now + json['expires_in'].seconds)
+      first
     end
   end
 end
