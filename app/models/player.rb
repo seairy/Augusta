@@ -76,7 +76,12 @@ class Player < ActiveRecord::Base
     total = scorecards.map do |scorecard|
       scorecard.score - scorecard.par if scorecard.score
     end.compact.reduce(:+)
-    self.update!(strokes: strokes,
-      total: total)
+    self.update!(strokes: strokes, total: total)
+  end
+
+  def invite_caddie
+    raise InvalidMatchState.new unless self.progressing?
+    result = Wechat.temporary_qr_code(Wechat::SENCE[:invite_caddie][:id])
+    
   end
 end

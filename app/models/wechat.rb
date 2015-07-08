@@ -1,5 +1,8 @@
 class Wechat < ActiveRecord::Base
   self.table_name = 'wechat'
+  SENCE = {
+    invite_caddie: { id: 100001, comment: '邀请球僮记分' },
+  }
 
   def expired?
     self.expired_at < Time.now
@@ -26,10 +29,10 @@ class Wechat < ActiveRecord::Base
       first
     end
 
-    def temporary_qr_code
+    def temporary_qr_code scene_id
       uri = URI("https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token=#{Wechat.access_token}")
       request = Net::HTTP::Post.new(uri)
-      request.body = { expire_seconds: 604800, action_name: 'QR_SCENE', action_info: { scene: { scene_id: 123 } } }.to_json
+      request.body = { expire_seconds: 604800, action_name: 'QR_SCENE', action_info: { scene: { scene_id: scene_id } } }.to_json
       response = Net::HTTP.start(uri.host, uri.port, use_ssl: true) do |http|
         http.verify_mode = OpenSSL::SSL::VERIFY_NONE
         http.ssl_version = :SSLv3

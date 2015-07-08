@@ -40,6 +40,25 @@ module V1
           api_error!(20109)
         end
       end
+
+      desc '邀请球僮记分'
+      params do
+        requires :uuid, type: String, desc: '参赛者标识'
+      end
+      put :invite_caddie do
+        begin
+          player = Player.find_uuid(params[:uuid])
+          raise PermissionDenied.new unless player.user.id == @current_user.id
+          player.invite_caddie
+          present successful_json
+        rescue ActiveRecord::RecordNotFound
+          api_error!(10002)
+        rescue PermissionDenied
+          api_error!(10003)
+        rescue InvalidMatchState
+          api_error!(20108)
+        end
+      end
     end
   end
 end

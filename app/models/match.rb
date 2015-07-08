@@ -131,43 +131,5 @@ class Match < ActiveRecord::Base
         match
       end
     end
-
-    # ** DEPRECATED **
-    def create_practice options = {}
-      ActiveRecord::Base.transaction do
-        raise InvalidGroups.new unless options[:courses].map(&:holes_count).reduce(:+) == 18
-        match = create!(owner: options[:owner], venue: options[:courses].first.venue, type: :practice, started_at: Time.now)
-        player = match.players.create(user: options[:owner], scoring_type: options[:scoring_type])
-        hole_number = 1
-        options[:courses].each_with_index do |course, i|
-          course.holes.sort.each do |hole|
-            tee_box = hole.tee_boxes.send(options[:tee_boxes][i])
-            Scorecard.create!(player: player, hole: hole, number: hole_number, par: hole.par, tee_box_color: tee_box.color, distance_from_hole_to_tee_box: tee_box.distance_from_hole)
-            hole_number += 1
-          end
-        end
-        player.create_statistic!
-        match
-      end
-    end
-
-    # ** DEPRECATED **
-    def create_tournament options = {}
-      ActiveRecord::Base.transaction do
-        raise InvalidGroups.new unless options[:courses].map(&:holes_count).reduce(:+) == 18
-        match = create!(owner: options[:owner], venue: options[:courses].first.venue, type: :tournament, name: options[:name], password: options[:password], rule: options[:rule], remark: options[:remark], started_at: Time.now)
-        player = match.players.create(user: options[:owner], scoring_type: :simple)
-        hole_number = 1
-        options[:courses].each_with_index do |course, i|
-          course.holes.sort.each do |hole|
-            tee_box = hole.tee_boxes.send(options[:tee_boxes][i])
-            Scorecard.create!(player: player, hole: hole, number: hole_number, par: hole.par, tee_box_color: tee_box.color, distance_from_hole_to_tee_box: tee_box.distance_from_hole)
-            hole_number += 1
-          end
-        end
-        player.create_statistic!
-        match
-      end
-    end
   end
 end

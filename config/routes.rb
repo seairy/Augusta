@@ -2,6 +2,7 @@
 Rails.application.routes.draw do
   mount API => '/api'
   root 'frontend/home#index'
+  get 'app', to: 'frontend/home#get'
   namespace :cms do
     root 'dashboard#index'
     get 'dashboard', to: 'dashboard#index', as: :dashboard
