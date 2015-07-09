@@ -83,7 +83,7 @@ class Player < ActiveRecord::Base
   def invite_caddie
     raise InvalidMatchState.new unless self.match.progressing?
     raise AlreadyInvited.new if self.caddie
-    result = Wechat.temporary_qr_code(Wechat::SENCE[:invite_caddie][:id])
+    result = Wechat.temporary_qr_code(Wechat::Sence[:invite_caddie][:id])
     raise InvalidResponse.new unless result['ticket']
     self.update!(invite_caddie_ticket: result['ticket'])
     result['url']

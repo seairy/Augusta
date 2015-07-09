@@ -25,9 +25,9 @@ $(document).ready(function(){
       document.location = "http://a.app.qq.com/o/simple.jsp?pkgname=cn.com.zcty.ILovegolf.activity";
     }
   } else if (ua.indexOf('iphone') > -1) {
-    document.location = "http://a.app.qq.com/o/simple.jsp?pkgname=cn.com.zcty.ILovegolf.activity";
+    document.location = "https://itunes.apple.com/cn/app/wo-ai-gao-er-fu/id985903890";
   } else if (ua.indexOf('ipad') > -1) {
-    document.location = "http://a.app.qq.com/o/simple.jsp?pkgname=cn.com.zcty.ILovegolf.activity";
+    document.location = "https://itunes.apple.com/cn/app/wo-ai-gao-er-fu/id985903890";
   } else {
     document.location = "http://ilovegolfclub.com";
   }

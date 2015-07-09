@@ -17,9 +17,19 @@ class Wechat::BaseController < ApplicationController
         when 'link'
           
         when 'event'
-          puts "***** notification: #{notification}"
-          qr_scene_id = notification['EventKey'].scan(/^(qrscene_)?(\d{6})$/)[0][1] if notification['EventKey']
-          puts "***** qr_scene_id: [#{qr_scene_id}]"
+          qr_scene_id = notification['EventKey'] ? notification['EventKey'].scan(/^(qrscene_)?(\d{6})$/)[0][1].to_i : -1
+          case notification['Event']
+          when 'SCAN'
+            case qr_scene_id
+            when Wechat::Scene[:invite_caddie][:id]
+              
+            end
+          when 'subscribe'
+            case qr_scene_id
+            when Wechat::Scene[:invite_caddie][:id]
+              
+            end
+          end
         when 'voice'
           
         when 'video'

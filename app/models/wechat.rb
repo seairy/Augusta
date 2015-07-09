@@ -1,6 +1,6 @@
 class Wechat < ActiveRecord::Base
   self.table_name = 'wechat'
-  SENCE = {
+  Scene = {
     invite_caddie: { id: 100001, comment: '邀请球僮记分' },
   }
 
