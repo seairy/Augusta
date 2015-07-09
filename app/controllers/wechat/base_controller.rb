@@ -18,7 +18,7 @@ class Wechat::BaseController < ApplicationController
           
         when 'event'
           puts "***** notification: #{notification}"
-          qr_scene_id = notification['EventKey'].scan(/^(qrscene_)?(\d{6})$/)[0][1]
+          qr_scene_id = notification['EventKey'].scan(/^(qrscene_)?(\d{6})$/)[0][1] if notification['EventKey']
           puts "***** qr_scene_id: [#{qr_scene_id}]"
         when 'voice'
           
