@@ -20,7 +20,8 @@ $(document).ready(function(){
   var ua = navigator.userAgent.toLowerCase();
   if (ua.indexOf('android') > -1) {
     if (ua.match(/MicroMessenger/i) == "micromessenger") {
-      $("#weixin").show();
+      document.location = "http://a.app.qq.com/o/simple.jsp?pkgname=cn.com.zcty.ILovegolf.activity";
+      //$("#weixin").show();
     } else {
       document.location = "http://a.app.qq.com/o/simple.jsp?pkgname=cn.com.zcty.ILovegolf.activity";
     }
