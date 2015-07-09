@@ -37,7 +37,7 @@ class Wechat < ActiveRecord::Base
         http.verify_mode = OpenSSL::SSL::VERIFY_NONE
         http.ssl_version = :SSLv3
         http.request(request)
-      end
+      end.body
     end
   end
 end

@@ -3,6 +3,7 @@ class Player < ActiveRecord::Base
   as_enum :scoring_type, [:simple, :professional], prefix: true, map: :string
   belongs_to :user
   belongs_to :match, counter_cache: true
+  belongs_to :caddie
   has_one :statistic
   has_many :scorecards, -> { order(:number) }
   scope :by_user, ->(user) { where(user_id: user.id) }
@@ -80,8 +81,11 @@ class Player < ActiveRecord::Base
   end
 
   def invite_caddie
-    raise InvalidMatchState.new unless self.progressing?
+    raise InvalidMatchState.new unless self.match.progressing?
+    raise AlreadyInvited.new if self.caddie
     result = Wechat.temporary_qr_code(Wechat::SENCE[:invite_caddie][:id])
-    
+    raise InvalidResponse.new unless result['ticket']
+    self.update!(invite_caddie_ticket: result['ticket'])
+    result['url']
   end
 end

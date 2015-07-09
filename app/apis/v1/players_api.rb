@@ -20,6 +20,12 @@ module V1
           m.statistic.scorecards
         end
       end
+
+      class QRUrl < Grape::Entity
+        expose :url do |m, o|
+          m
+        end
+      end
     end
   end
   
@@ -49,14 +55,17 @@ module V1
         begin
           player = Player.find_uuid(params[:uuid])
           raise PermissionDenied.new unless player.user.id == @current_user.id
-          player.invite_caddie
-          present successful_json
+          present player.invite_caddie, with: Players::Entities::QRUrl
         rescue ActiveRecord::RecordNotFound
           api_error!(10002)
         rescue PermissionDenied
           api_error!(10003)
         rescue InvalidMatchState
           api_error!(20108)
+        rescue AlreadyInvited
+          api_error!(20117)
+        rescue InvalidResponse
+          api_error!(10007)
         end
       end
     end
