@@ -7,7 +7,6 @@ class Wechat::BaseController < ApplicationController
     if params[:signature] and params[:timestamp] and params[:nonce] and Digest::SHA1.hexdigest([params[:timestamp], params[:nonce], Setting.key[:wechat][:token]].sort.join) == params[:signature]
       if request.post?
         notification = MultiXml.parse(request.raw_post)['xml']
-        Rails.logger.info("****** notification: #{notification}")
         case notification['MsgType']
         when 'text'
           
@@ -18,7 +17,11 @@ class Wechat::BaseController < ApplicationController
         when 'link'
           
         when 'event'
-          qr_scene_id = (notification and notification['EventKey']) ? notification['EventKey'].scan(/^(qrscene_)?(\d{6})$/)[0][1].to_i : -1
+          qr_scene_id = begin
+            notification['EventKey'] ? notification['EventKey'].scan(/^(qrscene_)?(\d{6})$/)[0][1].to_i : -1
+          rescue
+            -1
+          end
           case notification['Event']
           when 'SCAN'
             case qr_scene_id
