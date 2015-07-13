@@ -49,12 +49,13 @@ module V1
 
       desc '邀请球僮记分'
       params do
-        requires :uuid, type: String, desc: '参赛者标识'
+        requires :match_uuid, type: String, desc: '比赛标识'
       end
       put :invite_caddie do
         begin
-          player = Player.find_uuid(params[:uuid])
-          raise PermissionDenied.new unless player.user.id == @current_user.id
+          match = Match.find_uuid(params[:match_uuid])
+          player = match.players.by_user(@current_user).first
+          raise PermissionDenied.new unless player
           present player.invite_caddie, with: Players::Entities::QRUrl
         rescue ActiveRecord::RecordNotFound
           api_error!(10002)
