@@ -54,10 +54,7 @@ Rails.application.routes.draw do
       end
     end
     resources :caddies
-    get 'signin', to: 'sessions#new', as: :signin
-    post 'signin', to: 'sessions#create'
-    get 'signup', to: 'caddies#new', as: :signup
-    post 'signup', to: 'caddies#create'
-    get 'signout', to: 'sessions#destroy', as: :signout
+    get 'signin_with_open_id', to: 'sessions#create_with_open_id', as: :signin_with_open_id
+    get 'oauth2', to: 'sessions#oauth2', as: :oauth2
   end
 end

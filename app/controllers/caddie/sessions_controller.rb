@@ -2,22 +2,11 @@
 class Caddie::SessionsController < Caddie::BaseController
   skip_before_filter :authenticate
 
-  def create
-    begin
-      caddie = Caddie.sign_in(phone: params[:phone], password: params[:password])
-      session[:caddie] = { id: caddie.id, name: caddie.name, last_signined_at: caddie.last_signined_at }
-      redirect_to caddie_dashboard_path
-    rescue PhoneNotFound
-      redirect_to caddie_signin_path, alert: '账号不存在，请检查后重试'
-    rescue InvalidStatus
-      redirect_to caddie_signin_path, alert: '账号被禁用，无法登录'
-    rescue InvalidPassword
-      redirect_to cms_signin_path, alert: '密码错误，请检查后重试'
-    end
+  def oauth2
+    redirect_to 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx17c92cbd610540b7&redirect_uri=http%3A%2F%2Filovegolfclub.com%2Fcaddie%2Fsignin_with_open_id&response_type=code&scope=snsapi_base&state=caddiesignin#wechat_redirect'
   end
 
-  def destroy
-    session[:caddie] = nil
-    redirect_to caddie_signin_path
+  def create_with_open_id
+
   end
 end

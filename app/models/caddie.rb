@@ -35,8 +35,14 @@ class Caddie < ActiveRecord::Base
       end
     end
 
-    def find_or_create options = {}
-      where(open_id: options[:open_id]).first || create!(open_id: options[:open_id], signed_up_at: Time.now)
+    def find_or_create open_id
+      where(open_id: open_id).first || create!(open_id: open_id, signed_up_at: Time.now)
+    end
+
+    def scoring_for_player options = {}
+      caddie = self.find_or_create(open_id: options[:open_id])
+      player = Player.where(invite_caddie_ticket: options[:ticket]).first
+      player.update!(caddie_id: caddie.id) if player and player.caddie.nil?
     end
   end
 end

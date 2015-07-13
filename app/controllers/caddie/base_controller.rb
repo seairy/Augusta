@@ -5,6 +5,6 @@ class Caddie::BaseController < ApplicationController
   before_action :authenticate
   
   def authenticate
-    redirect_to cms_signin_path if session['user'].blank?
+    redirect_to caddie_signin_path if session['caddie'].blank?
   end
 end
