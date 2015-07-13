@@ -17,6 +17,7 @@ class Wechat::BaseController < ApplicationController
         when 'link'
           
         when 'event'
+          puts "******** #{notification}"
           qr_scene_id = notification['EventKey'] ? notification['EventKey'].scan(/^(qrscene_)?(\d{6})$/)[0][1].to_i : -1
           case notification['Event']
           when 'SCAN'

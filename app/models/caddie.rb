@@ -2,12 +2,7 @@ class Caddie < ActiveRecord::Base
   include UUID, AASM
   has_many :verification_codes
   aasm column: 'state' do
-    state :unactivated, initial: true
-    state :activated
-    state :prohibited
-    event :active do
-      transitions from: :unactivated, to: :activated
-    end
+    state :activated, initial: true
   end
 
   class << self
@@ -41,7 +36,7 @@ class Caddie < ActiveRecord::Base
     end
 
     def find_or_create options = {}
-      where(phone: options[:phone]).first || create!(phone: options[:phone], signed_up_at: Time.now)
+      where(open_id: options[:open_id]).first || create!(open_id: options[:open_id], signed_up_at: Time.now)
     end
   end
 end
