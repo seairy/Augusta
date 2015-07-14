@@ -8,7 +8,7 @@ class Caddie::BaseController < ApplicationController
     if session['caddie'].blank?
       redirect_to caddie_signin_path
     else
-      @current_caddie = Caddie.find(session['session']['id'])
+      @current_caddie = Caddie.find(session['caddie']['id'])
     end
   end
 end
