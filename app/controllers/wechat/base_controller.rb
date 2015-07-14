@@ -26,12 +26,12 @@ class Wechat::BaseController < ApplicationController
           when 'SCAN'
             case qr_scene_id
             when Wechat::Scene[:invite_caddie][:id]
-              
+              Caddie.scoring_for_player(open_id: notification['FromUserName'], ticket: notification['Ticket'])
             end
           when 'subscribe'
             case qr_scene_id
             when Wechat::Scene[:invite_caddie][:id]
-              
+              Caddie.scoring_for_player(open_id: notification['FromUserName'], ticket: notification['Ticket'])
             end
           end
         when 'voice'

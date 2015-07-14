@@ -48,11 +48,7 @@ Rails.application.routes.draw do
   namespace :caddie do
     root 'dashboard#index'
     get 'dashboard', to: 'dashboard#index', as: :dashboard
-    resources :verification_codes do
-      collection do
-        post :sign_up
-      end
-    end
+    resources :players
     resources :caddies
     get 'signin_with_open_id', to: 'sessions#create_with_open_id', as: :signin_with_open_id
     get 'oauth2', to: 'sessions#oauth2', as: :oauth2

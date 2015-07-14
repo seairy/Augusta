@@ -1,6 +1,7 @@
 class Caddie < ActiveRecord::Base
   include UUID, AASM
   has_many :verification_codes
+  has_many :players
   aasm column: 'state' do
     state :activated, initial: true
   end
@@ -26,13 +27,9 @@ class Caddie < ActiveRecord::Base
     end
 
     def sign_in options = {}
-      ActiveRecord::Base.transaction do
-        caddie = where(phone: options[:phone]).first || raise(PhoneNotFound.new)
-        raise InvalidStatus.new unless caddie.activated?
-        raise InvalidPassword.new unless caddie.hashed_password == Digest::MD5.hexdigest(options[:password])
-        caddie.update!(last_signined_at: administrator.current_signined_at, current_signined_at: Time.now)
-        caddie
-      end
+      caddie = where(open_id: options[:open_id]).first
+      caddie.update!(last_signined_at: administrator.current_signined_at, current_signined_at: Time.now)
+      caddie
     end
 
     def find_or_create open_id

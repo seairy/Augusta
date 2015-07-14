@@ -5,6 +5,10 @@ class Caddie::BaseController < ApplicationController
   before_action :authenticate
   
   def authenticate
-    redirect_to caddie_signin_path if session['caddie'].blank?
+    if session['caddie'].blank?
+      redirect_to caddie_signin_path
+    else
+      @current_caddie = Caddie.find(session['session']['id'])
+    end
   end
 end
