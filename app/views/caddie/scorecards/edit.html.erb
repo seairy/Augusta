@@ -1,6 +1,6 @@
 <div class="content">
   <div class="container no-bottom">
-    <h3><%= @scorecard.number %>号洞</h3>
+    <h1><%= @scorecard.number %>号洞</h1>
   </div>
   <div class="decoration"></div>
   <div class="one-third-responsive">
@@ -11,7 +11,8 @@
         <div class="form-row-lg"><label>罚杆：</label><%= f.select :penalties, (0..10).to_a %></div>
         <div class="form-row-lg"><label>开球方向：</label><%= f.select :direction, [['左侧', 'hook'], ['命中', 'pure'], ['右侧', 'slice']], selected: 'pure' %></div>
         <div class="form-row-lg"><label>开球距离：</label><%= f.select :driving_distance, ((1..50).to_a + (1..110).map{|i| i * 5 + 50}).map{|i| ["#{i}码", i]}, selected: '200' %></div>
-        <%= f.submit '确认提交', class: 'button button-green button-submit' %>
+        <%= link_to '确认提交', '#', onclick: "submitForm(edit_scorecard_#{@scorecard.id})", class: 'button button-green' %>
+        <%= link_to '返回', [:caddie, @scorecard.player], class: 'button button-blue' %>
       <% end %>
     </div>
   </div>
