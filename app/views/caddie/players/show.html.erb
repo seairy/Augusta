@@ -1,0 +1,13 @@
+<div class="content">
+  <div class="container no-bottom">
+    <h3><%= @player.match.venue.name %></h3>
+  </div>
+  <div class="decoration"></div>
+  <div class="one-third-responsive">
+    <% @player.scorecards.each do |scorecard| %>
+    <h4><%= scorecard.number %>号洞</h4>
+    
+    <div class="decoration"></div>
+    <% end %>
+  </div>
+</div>

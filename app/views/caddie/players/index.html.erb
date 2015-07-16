@@ -6,11 +6,11 @@
   <div class="one-third-responsive">
     <% @players.each do |player| %>
     <a href="<%= url_for([:caddie, player]) %>" class="user-list-item">
-        <%= image_tag(player.user.portrait.w300_h300_fl_q50.url || 'caddie/user-portrait.png') %>
-        <strong><%= player.user.nickname %><br></strong>
-        <em><%= player.match.venue.name %><br></em>
-        <em><%= player.match.created_at.strftime('%Y-%m-%d') %></em>
-        <i class="fa fa-chevron-right"></i>
+      <%= image_tag(player.user.portrait.w300_h300_fl_q50.url || 'caddie/user-portrait.png') %>
+      <strong><%= player.user.nickname %><br></strong>
+      <em><%= player.match.venue.name %><br></em>
+      <em><%= player.match.created_at.strftime('%Y-%m-%d') %></em>
+      <i class="fa fa-chevron-right"></i>
     </a>
     <div class="decoration"></div>
     <% end %>
