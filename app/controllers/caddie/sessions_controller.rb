@@ -12,4 +12,14 @@ class Caddie::SessionsController < Caddie::BaseController
     session[:caddie] = { id: caddie.id, name: caddie.name }
     redirect_to caddie_players_path
   end
+
+  def simulate
+    if Rails.env == 'development'
+      caddie = Caddie.first
+      session[:caddie] = { id: caddie.id, name: caddie.name }
+      redirect_to caddie_players_path
+    else
+      redirect_to caddie_oauth2_path
+    end
+  end
 end

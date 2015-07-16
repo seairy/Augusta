@@ -53,5 +53,6 @@ Rails.application.routes.draw do
     resources :scorecards
     get 'signin_with_open_id', to: 'sessions#create_with_open_id', as: :signin_with_open_id
     get 'oauth2', to: 'sessions#oauth2', as: :oauth2
+    get 'simulate', to: 'sessions#simulate', as: :simulate
   end
 end

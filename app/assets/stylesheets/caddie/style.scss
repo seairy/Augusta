@@ -598,3 +598,13 @@ body{
         transform: scale(1.1);
     } 
 }
+
+.simple-scorecard-form {
+  .form-row-lg {
+    padding-bottom: 20px;
+    font-size: 22px;
+    label {
+      float: left;
+    }
+  }
+}

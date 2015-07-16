@@ -1,14 +1,16 @@
 <div class="content">
   <div class="container no-bottom">
-    <h3><%= @scorecard %>号洞</h3>
+    <h3><%= @scorecard.number %>号洞</h3>
   </div>
   <div class="decoration"></div>
   <div class="one-third-responsive">
-    <%= form_for [:caddie, @scorecard] do |f| %>
-      总杆：<%= f.select :score, (1..50).to_a %><br>
-      推杆：<%= f.select :putts, (1..10).to_a %><br>
-      罚杆：<%= f.select :penalties, (1..10).to_a %><br>
-      <%= f.submit '确认提交', class: 'button button-green' %>
-    <% end %>
+    <div class="simple-scorecard-form">
+      <%= form_for [:caddie, @scorecard] do |f| %>
+        <div class="form-row-lg"><label>总杆：</label><%= f.select :score, (1..50).to_a %></div>
+        <div class="form-row-lg"><label>推杆：</label><%= f.select :putts, (1..10).to_a %></div>
+        <div class="form-row-lg"><label>罚杆：</label><%= f.select :penalties, (1..10).to_a %></div>
+        <%= f.submit '确认提交', class: 'button button-green' %>
+      <% end %>
+    </div>
   </div>
 </div>
