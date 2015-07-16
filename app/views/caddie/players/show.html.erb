@@ -10,7 +10,8 @@
     <h4><%= scorecard.number %>号洞 | Par <%= scorecard.par %> | <%= scorecard.distance_from_hole_to_tee_box %>码</h4>
     <a href="<%= url_for([:caddie, scorecard]) %>" class="user-list-item">
       <% if scorecard.finished? %>
-      <strong>杆数：</strong><%= scorecard.score %><br>
+      <strong>成绩：</strong><%= scorecard.score %>杆<br>
+      <strong>开球：</strong><%= scorecard.direction %>，<%= scorecard.driving_distance %>码<br>
       <% else %>
       未添加成绩<br>
       <% end %>
