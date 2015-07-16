@@ -6,7 +6,6 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <title>我爱高尔夫 - 球僮版</title>
   <%= stylesheet_link_tag 'caddie', media: 'all', 'data-turbolinks-track' => true %>
-  <%= javascript_include_tag 'caddie', 'data-turbolinks-track' => true %>
 </head>
 <body> 
   <div id="preloader">
@@ -29,5 +28,6 @@
     <div class="header-clear"></div>
   </div>     
   <%= yield %>
+  <%= javascript_include_tag 'caddie', 'data-turbolinks-track' => true %>
   <%= content_for :javascript %>
 </body>
