@@ -2,6 +2,10 @@
 class Caddie::ScorecardsController < Caddie::BaseController
   def edit
     @scorecard = Scorecard.find(params[:id])
+  end
+
+  def update
+    @scorecard = Scorecard.find(params[:id])
     if @scorecard.caddie_id == @current_caddie.id
       @scorecard.update!(scorecard_params)
     end

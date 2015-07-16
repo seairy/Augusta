@@ -8,7 +8,7 @@
   <div class="one-third-responsive">
     <% @player.scorecards.each do |scorecard| %>
     <h4><%= scorecard.number %>号洞 | Par <%= scorecard.par %> | <%= human_tee_box_color(scorecard.tee_box_color) %><%= scorecard.distance_from_hole_to_tee_box %>码</h4>
-    <a href="<%= url_for([:caddie, scorecard]) %>" class="user-list-item">
+    <a href="<%= url_for(edit_caddie_scorecard_path(scorecard)) %>" class="user-list-item">
       <% if scorecard.finished? %>
       <strong>成绩：</strong><%= scorecard.score %>杆<br>
       <strong>开球：</strong><%= scorecard.direction %>，<%= scorecard.driving_distance %>码<br>
