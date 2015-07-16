@@ -1,13 +1,13 @@
 <div class="content">
   <div class="container no-bottom">
-    <h3><%= @player.match.venue.name %></h3>
+    <h3><%= @scorecard %>号洞</h3>
     <strong>时间：</strong><%= @player.created_at.strftime('%Y-%m-%d %H:%M') %><br>
     <strong>用户：</strong><%= @player.user.nickname %><br>
   </div>
   <div class="decoration"></div>
   <div class="one-third-responsive">
     <% @player.scorecards.each do |scorecard| %>
-    <h4><%= scorecard.number %>号洞 | Par <%= scorecard.par %> | <%= human_tee_box_color(scorecard.tee_box_color) %><%= scorecard.distance_from_hole_to_tee_box %>码</h4>
+    <h4><%= scorecard.number %>号洞 | Par <%= scorecard.par %> | <%= scorecard.distance_from_hole_to_tee_box %>码</h4>
     <a href="<%= url_for([:caddie, scorecard]) %>" class="user-list-item">
       <% if scorecard.finished? %>
       <strong>成绩：</strong><%= scorecard.score %>杆<br>

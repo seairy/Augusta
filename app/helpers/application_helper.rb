@@ -9,4 +9,15 @@ module ApplicationHelper
       "+#{status}"
     end if status
   end
+
+  def human_tee_box_color tee_box_color
+    case tee_box_color
+    when :red then '红'
+    when :white then '白'
+    when :blue then '蓝'
+    when :black then '黑'
+    when :gold then '金'
+    else '未知'
+    end
+  end
 end
