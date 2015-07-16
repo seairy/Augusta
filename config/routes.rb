@@ -50,6 +50,7 @@ Rails.application.routes.draw do
     get 'dashboard', to: 'dashboard#index', as: :dashboard
     resources :players
     resources :caddies
+    resources :scorecards
     get 'signin_with_open_id', to: 'sessions#create_with_open_id', as: :signin_with_open_id
     get 'oauth2', to: 'sessions#oauth2', as: :oauth2
   end
