@@ -3485,9 +3485,13 @@ table tr:hover td{
 .user-list-item i{
     position:absolute;
     right:0px;
-    top:20px;
+    top:0px;
     font-size:12px;
     color:#1f1f1f;
+}
+
+.user-list-item span{
+    font-size: 16px;
 }
 
 .user-list-follow img{
