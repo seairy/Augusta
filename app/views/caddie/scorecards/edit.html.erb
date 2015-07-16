@@ -5,9 +5,9 @@
   <div class="decoration"></div>
   <div class="one-third-responsive">
     <%= form_for [:caddie, @scorecard] do |f| %>
-      总杆：<%= f.select :score, (0..50).map %><br>
-      推杆：<%= f.select :putts, (0..10).map %><br>
-      罚杆：<%= f.select :penalties, (0..10).map %><br>
+      总杆：<%= f.select :score, (1..50).to_a %><br>
+      推杆：<%= f.select :putts, (1..10).to_a %><br>
+      罚杆：<%= f.select :penalties, (1..10).to_a %><br>
       <%= f.submit '确认提交', class: 'button button-green' %>
     <% end %>
   </div>
