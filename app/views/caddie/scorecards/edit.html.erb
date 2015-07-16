@@ -1,23 +1,14 @@
 <div class="content">
   <div class="container no-bottom">
     <h3><%= @scorecard %>号洞</h3>
-    <strong>时间：</strong><%= @player.created_at.strftime('%Y-%m-%d %H:%M') %><br>
-    <strong>用户：</strong><%= @player.user.nickname %><br>
   </div>
   <div class="decoration"></div>
   <div class="one-third-responsive">
-    <% @player.scorecards.each do |scorecard| %>
-    <h4><%= scorecard.number %>号洞 | Par <%= scorecard.par %> | <%= scorecard.distance_from_hole_to_tee_box %>码</h4>
-    <a href="<%= url_for([:caddie, scorecard]) %>" class="user-list-item">
-      <% if scorecard.finished? %>
-      <strong>成绩：</strong><%= scorecard.score %>杆<br>
-      <strong>开球：</strong><%= scorecard.direction %>，<%= scorecard.driving_distance %>码<br>
-      <% else %>
-      未添加成绩<br>
-      <% end %>
-      <i class="fa fa-chevron-right"></i>
-    </a>
-    <div class="decoration"></div>
+    <%= form_for @scorecard do |f| %>
+    总杆：<%= f.select :score, (0..50).map %><br>
+    推杆：<%= f.select :putts, (0..10).map %><br>
+    罚杆：<%= f.select :penalties, (0..10).map %><br>
+    <%= f.submit '确认提交', class: 'button button-green' %>
     <% end %>
   </div>
 </div>
