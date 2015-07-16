@@ -1,113 +1,34 @@
 // JavaScript Document
 
-function submitForm(formId) {
-  jQuery(formId).submit();
-}
-
 (function ($) {
 
 $(window).load(function() { 
   $("#status").fadeOut(); // will first fade out the loading animation
-  $("#preloader").delay(400).fadeOut("medium"); // will fade out the white DIV that covers the website.
+  $("#preloader").delay(400).fadeOut("slow"); // will fade out the white DIV that covers the website.
 });
-    
+
 $(document).ready(function() {
     
-    //Remove 300ms lag set by -webkit-browsers     
-    window.addEventListener('load', function() {
-    FastClick.attach(document.body);
-  }, false);  
     
-    //Menu Settings
-    
-    $('.show-big-menu, .open-big-menu').click(function(){
-        $('.top-menu').addClass('top-menu-active');
-        $('.footer-menu-close').delay(0).fadeOut(250);
-        $('.fm-1').delay(150).fadeOut(250); 
-        $('.fm-2').delay(125).fadeOut(250); 
-        $('.fm-3').delay(100).fadeOut(250); 
-        $('.fm-4').delay(75).fadeOut(250); 
-        $('.fm-5').delay(50).fadeOut(250); 
-        $('.fm-6').delay(25).fadeOut(250); 
-        $('.menu-background').fadeIn(250);
+    //Top Menu 
+    $('.show-navigation').click(function(){
+        $('.menu-top').toggleClass('show-menus');
+        $('.menu-wrapper-background').fadeIn(250);
         return false;
     });
     
-    $('.top-menu a').hover(function() {
-        $(this).find('i:first-child').toggleClass('menu-ball-hover');
-    });    
-    
-    $('.footer-menu a').hover(function() {
-        $(this).find('i').toggleClass('menu-ball-hover');
-    });
-    
-    $('.close-menu, .menu-background').click(function(){
-        $('.top-menu').removeClass('top-menu-active');
-        $('.menu-background').fadeOut(250);
+    $('.close-menu, .menu-wrapper-background').click(function(){
+        $('.menu-top').toggleClass('show-menus');
+        $('.menu-wrapper-background').fadeOut(250);
         return false;
     });
     
-    $('.footer-menu-open').click(function(){
-        $('.footer-menu-close').fadeIn(50);
-        $('.fm-1').delay(25).fadeIn(250); 
-        $('.fm-2').delay(50).fadeIn(250); 
-        $('.fm-3').delay(75).fadeIn(250); 
-        $('.fm-4').delay(100).fadeIn(250); 
-        $('.fm-5').delay(125).fadeIn(250); 
-        $('.fm-6').delay(150).fadeIn(250); 
-        $('.top-menu').removeClass('top-menu-active');
-        $('.menu-background').fadeIn(250);
-        return false;
-    });    
-    
-    $('.footer-menu-close, .menu-background').click(function(){
-        $('.footer-menu-close').fadeOut(350);
-        $('.fm-1').delay(125).fadeOut(250); 
-        $('.fm-2').delay(100).fadeOut(250); 
-        $('.fm-3').delay(75).fadeOut(250); 
-        $('.fm-4').delay(50).fadeOut(250); 
-        $('.fm-5').delay(25).fadeOut(250); 
-        $('.fm-6').delay(0).fadeOut(250); 
-        $('.top-menu').removeClass('top-menu-active');        
-        $('.menu-background').delay(250).fadeOut(350);
-        return false;
+    $('.has-submenu').click(function(){    
+       //$(this).parent().find('.submenu').slideToggle(350); 
+       $(this).parent().find('.submenu').toggleClass('show-submenu'); 
+       $(this).find('.fa-plus').toggleClass('active-plus');
+       return false;
     });
-        
-    $('.deploy-submenu').click(function(){
-        $(this).toggleClass('active-submenu');
-        $(this).parent().find('.submenu').slideToggle(200);
-        return false;
-    });
-    
-    //Sharebox Settings//
-        
-    $('.show-share-bottom').click(function(){
-        $('.share-bottom').toggleClass('active-share-bottom'); 
-        return false;
-    });    
-    
-    $('.close-share-bottom').click(function(){
-       $('.share-bottom').removeClass('active-share-bottom'); 
-        return false;
-    });
-    
-    //Countdown timer
-
-  var endDate = "June 7, 2015 15:03:25";
-  
-  $('.countdown').countdown({
-    date: endDate,
-    render: function(data) {
-    $(this.el).html(
-    "<div class='countdown-box box-years'><div class='countdown-years'>" + this.leadingZeros(data.years, 2) + 
-    "</div><span>years</span></div><div class='countdown-box box-days'><div class='countdown-days'>" + this.leadingZeros(data.days, 2) + 
-    "</div><span>days</span></div><div class='countdown-box box-hours'><div class='countdown-hours'>" + this.leadingZeros(data.hours, 2) + 
-    "</div><span>hours</span></div><div class='countdown-box box-minutes'><div class='countdown-minutes'>" + this.leadingZeros(data.min, 2) + 
-    "</div><span>min</span></div><div class='countdown-box box-seconds'><div class='countdown-seconds'>" + this.leadingZeros(data.sec, 2) + 
-    "</div><span>sec</span></div>");
-    }
-  });
-  
     
   /*/////////*/
   /*Pie Chart*/
@@ -131,7 +52,51 @@ $(document).ready(function() {
         data : [20,10,40,30,10]
       }
     ]
+
   }
+
+  window.onload = function(){
+    var pie_chart_1 = document.getElementById("generate-pie-chart").getContext("2d");
+    window.pie_chart_1 = new Chart(pie_chart_1).Pie(pieData);
+    
+    var bar_chart_1 = document.getElementById("generate-bar-chart").getContext("2d");
+    window.pie_chart_1 = new Chart(bar_chart_1).Bar(barChartData);
+    
+  };
+                
+    //Share Bottom Socials
+
+    $('.show-share-bottom').click(function(){
+       $('.share-bottom').toggleClass('active-share-bottom'); 
+        return false;
+    });    
+    
+    $('.close-share-bottom, .open-menu, .open-more').click(function(){
+       $('.share-bottom').removeClass('active-share-bottom'); 
+        return false;
+    });
+
+  window.addEventListener('load', function() {
+    FastClick.attach(document.body);
+  }, false);  
+  
+    //Countdown timer
+
+  var endDate = "June 7, 2015 15:03:25";
+  
+  $('.countdown').countdown({
+    date: endDate,
+    render: function(data) {
+    $(this.el).html(
+    "<div class='countdown-box box-years'><div class='countdown-years'>" + this.leadingZeros(data.years, 2) + 
+    "</div><span>years</span></div><div class='countdown-box box-days'><div class='countdown-days'>" + this.leadingZeros(data.days, 2) + 
+    "</div><span>days</span></div><div class='countdown-box box-hours'><div class='countdown-hours'>" + this.leadingZeros(data.hours, 2) + 
+    "</div><span>hours</span></div><div class='countdown-box box-minutes'><div class='countdown-minutes'>" + this.leadingZeros(data.min, 2) + 
+    "</div><span>min</span></div><div class='countdown-box box-seconds'><div class='countdown-seconds'>" + this.leadingZeros(data.sec, 2) + 
+    "</div><span>sec</span></div>");
+    }
+  });
+  
   
   //Animate.css scroll to begin animation //  
   
@@ -148,7 +113,7 @@ $(document).ready(function() {
   //Go up
   
   $('.footer-up').click(function() {
-    $('#content').animate({
+    $('body, html').animate({
       scrollTop:0
     }, 800, 'easeInOutQuad');
     return false;
@@ -224,28 +189,6 @@ $(document).ready(function() {
     $(this).toggleClass('radio-two-checked');
     return false;
   });
-    
-    //Reminders & Checklists
-    
-    $('.reminder-check-square').click(function(){
-       $(this).toggleClass('reminder-check-square-selected'); 
-        return false;
-    });    
-    
-    $('.reminder-check-round').click(function(){
-       $(this).toggleClass('reminder-check-round-selected'); 
-        return false;
-    });
-    
-    $('.checklist-square').click(function(){
-       $(this).toggleClass('checklist-square-selected');
-        return false;
-    });    
-    
-    $('.checklist-round').click(function(){
-       $(this).toggleClass('checklist-round-selected');
-        return false;
-    });
   
     //Switches
     
@@ -447,33 +390,10 @@ $(document).ready(function() {
     owlQuoteSlider.trigger('owl.prev');
     return false;
   });
-    
-    //Circle Slider
-    
-    $(".circle-slider").owlCarousel({
-    items : 1,
-    itemsDesktop : [1920,2],
-    itemsDesktopSmall : [980,2],
-    itemsTablet: [768,2],
-    itemsTabletSmall: [480,1],
-    itemsMobile : [370,1],
-    singleItem : false,
-    itemsScaleUp : false,
-    slideSpeed : 800,
-    paginationSpeed : 300,
-    rewindSpeed : 250,
-    pagination:false,
-    autoPlay : false,
-  });
   
   /////////////////
   //Image Gallery//
   /////////////////
-    
-  $('.swipebox').click(function(){
-    $('.gallery-fix').fadeIn(0);
-  });
-    
   $(".swipebox").swipebox({
     useCSS : true, // false will force the use of jQuery for animations
     hideBarsDelay : 3000 // 0 to always show caption and action bar
@@ -572,26 +492,6 @@ $(document).ready(function() {
   }); 
   
   
-    //Coverpage Height 100%//
-  
-  var coverpage_height = 0;
-  
-  function initiate_coverpages(){
-    coverpage_height =  $(window).height();
-    $('.coverpage').css({ height: coverpage_height+1 });  
-  };
-  
-  initiate_coverpages();
-  
-  $(window).resize(function() {
-    initiate_coverpages();
-  });
-  
-  $.scrollIt();
-    
-
-    //Generate Fullscreen Elemeents
-    
     var screen_width = 0;
     var screen_height = 0;
     function resize_coverpage(){
@@ -599,32 +499,13 @@ $(document).ready(function() {
         screen_height = $(window).height();
 
          $('.coverpage-image').css({
-            height: screen_height,
-            width: screen_width
-        });          
-        $('.landing-page').css({
-            height: screen_height-1,
-            width: screen_width
-        });  
-        
-         $('.slider-image').css({
             height: screen_height -60,
             width: screen_width
-        });          
+        });  
     };
     resize_coverpage();
     $(window).resize(resize_coverpage);
     
-  $(".full-slider").owlCarousel({
-    slideSpeed : 500,
-    paginationSpeed : 500,
-    singleItem : true,
-    pagination:false,
-    afterInit : progressBar,
-    afterMove : moved,
-    startDragging : pauseOnDragging
-  });
-        
   $(".coverpage-slider").owlCarousel({
     slideSpeed : 500,
     paginationSpeed : 500,
@@ -635,49 +516,39 @@ $(document).ready(function() {
     startDragging : pauseOnDragging
   });
     
-    //Gallery Fixes
+
+  $.scrollIt();
     
-  $('.swipebox').click(function(){ 
-    $('.gallery').hide(0);
-    $('.portfolio-wide').hide(0);
+   //Fullscreen Slider Variables
+    var screen_width = 0;
+    var screen_height = 0;
+    function resize_slider(){
+        screen_width = $(window).width();
+        screen_height = $(window).height();
+
+         $('.slider-image').css({
+            height: screen_height-110,
+            width: screen_width
+        });  
+    };
+    resize_slider();
+    $(window).resize(resize_slider);
+ 
+  $(".full-slider").owlCarousel({
+    slideSpeed : 500,
+    paginationSpeed : 500,
+    singleItem : true,
+    pagination:false,
+    afterInit : progressBar,
+    afterMove : moved,
+    startDragging : pauseOnDragging
   });
     
-    // Hide Header on on scroll down
-    /*.nav-up class with negative margin to adjust it needed*/
-    /*.nav-down class needed*/
-    
-    var didScroll;
-    var lastScrollTop = 0;
-    var delta = 5;
-    var navbarHeight = $('header').outerHeight();
-
-    $(window).scroll(function(event){
-        didScroll = true;
-    });
-
-    setInterval(function() {
-        if (didScroll) {
-            hasScrolled();
-            didScroll = false;
-        }
-    }, 250);
-
-    function hasScrolled() {
-        var st = $(this).scrollTop();
-            if(Math.abs(lastScrollTop - st) <= delta)
-            return;
-
-        if (st > lastScrollTop && st > navbarHeight){
-            $('.header').removeClass('nav-down').addClass('nav-up');
-        } else {
-            if(st + $(window).height() < $(document).height()) {
-                $('.header').removeClass('nav-up').addClass('nav-down');
-            }
-        }
-        lastScrollTop = st;
-    }
-        
     
 });
 
 }(jQuery));
+
+function submitForm(formId) {
+  jQuery(formId).submit();
+}
