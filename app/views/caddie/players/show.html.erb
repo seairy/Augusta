@@ -12,7 +12,7 @@
     <strong>成绩：</strong><%= scorecard.score %>杆<br>
     <strong>开球：</strong><%= scorecard.direction %>，<%= scorecard.driving_distance %>码<br>
     <% else %>
-    <a href="<%= url_for(edit_caddie_scorecard_path(scorecard)) %>" class="user-list-item">
+    <a href="<%= url_for(edit_caddie_scorecard_path(scorecard)) %>" class="scorecard-list-item">
       <span>添加成绩</span><br>
       <i class="fa fa-chevron-right"></i>
     </a>

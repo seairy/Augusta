@@ -3485,12 +3485,91 @@ table tr:hover td{
 .user-list-item i{
     position:absolute;
     right:0px;
-    top:0px;
+    top:20px;
     font-size:12px;
     color:#1f1f1f;
 }
 
 .user-list-item span{
+    font-size: 16px;
+}
+
+.player-list-item{
+    margin-bottom:30px;
+}
+
+.player-list-item img{    
+    float:left;
+    margin-top: 8px;
+    width:50px;
+    height:50px;
+    border-radius:50px;
+}
+
+.player-list-item strong{
+    color:#1f1f1f;
+    margin-left:60px;
+    font-size:15px;
+    margin-bottom:0px;
+    margin-top:5px;
+    display:block;
+}
+
+.player-list-item em{
+    padding-left:10px;
+    font-style:normal;
+    color:#666666;
+    font-weight:500;
+}
+
+.player-list-item i{
+    position:absolute;
+    right:0px;
+    top:30px;
+    font-size:12px;
+    color:#1f1f1f;
+}
+
+.player-list-item span{
+    font-size: 16px;
+}
+
+.scorecard-list-item{
+    margin-bottom:30px;
+}
+
+.scorecard-list-item img{    
+    float:left;
+    width:50px;
+    height:50px;
+    border-radius:50px;
+}
+
+.scorecard-list-item strong{
+    color:#1f1f1f;
+    margin-left:60px;
+    font-size:15px;
+    margin-bottom:0px;
+    margin-top:5px;
+    display:block;
+}
+
+.scorecard-list-item em{
+    padding-left:10px;
+    font-style:normal;
+    color:#666666;
+    font-weight:500;
+}
+
+.scorecard-list-item i{
+    position:absolute;
+    right:0px;
+    top:0px;
+    font-size:12px;
+    color:#1f1f1f;
+}
+
+.scorecard-list-item span{
     font-size: 16px;
 }
 
