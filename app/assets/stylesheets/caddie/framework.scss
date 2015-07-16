@@ -3534,6 +3534,10 @@ table tr:hover td{
     font-size: 16px;
 }
 
+.scorecard-header {
+  font-size: 14px;
+}
+
 .scorecard-list-item{
     margin-bottom:30px;
 }
@@ -3569,8 +3573,19 @@ table tr:hover td{
     color:#1f1f1f;
 }
 
-.scorecard-list-item span{
+.scorecard-list-item div{
+    padding-top: 6px;
     font-size: 16px;
+}
+
+.scorecard-list-view {
+    font-size: 16px;
+    line-height: 22px;
+}
+
+.scorecard-list-view strong{
+    color:#1f1f1f;
+    font-size:15px;
 }
 
 .user-list-follow img{

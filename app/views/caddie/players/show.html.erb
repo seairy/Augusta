@@ -1,19 +1,21 @@
 <div class="content">
-  <div class="container no-bottom">
+  <div class="container no-bottom scorecard-header">
     <h3><%= @player.match.venue.name %></h3>
-    <strong>时间：</strong><%= @player.created_at.strftime('%Y-%m-%d %H:%M') %><br>
-    <strong>用户：</strong><%= @player.user.nickname %><br><br>
+    <strong>用户：</strong><%= @player.user.nickname %><br>
+    <strong>时间：</strong><%= @player.created_at.strftime('%Y-%m-%d %H:%M') %><br><br>
   </div>
   <div class="decoration"></div>
   <div class="one-third-responsive">
     <% @player.scorecards.each do |scorecard| %>
     <h4><%= scorecard.number %>号洞 | Par <%= scorecard.par %> | <%= human_tee_box_color(scorecard.tee_box_color) %><%= scorecard.distance_from_hole_to_tee_box %>码</h4>
     <% if scorecard.finished? %>
-    <strong>成绩：</strong><%= scorecard.score %>杆<br>
-    <strong>开球：</strong><%= scorecard.direction %>，<%= scorecard.driving_distance %>码<br>
+    <div class="scorecard-list-view mb30">
+      <strong>成绩：</strong><%= scorecard.score %>杆<br>
+      <strong>开球：</strong><%= human_direction(scorecard.direction) %>，<%= scorecard.driving_distance %>码<br>
+    </div>
     <% else %>
     <a href="<%= url_for(edit_caddie_scorecard_path(scorecard)) %>" class="scorecard-list-item">
-      <span>添加成绩</span><br>
+      <div>添加成绩</div><br>
       <i class="fa fa-chevron-right"></i>
     </a>
     <% end %>

@@ -20,4 +20,13 @@ module ApplicationHelper
     else '未知'
     end
   end
+
+  def human_direction direction
+    case direction
+    when :hook then '左侧'
+    when :pure then '命中'
+    when :slice then '右侧'
+    else '未知'
+    end
+  end
 end
