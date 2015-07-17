@@ -3535,7 +3535,19 @@ table tr:hover td{
 }
 
 .scorecard-header {
+  padding-left: 20px;
   font-size: 14px;
+  a {
+    color: inherit;
+  }
+}
+
+.scorecard-header i{
+    position:absolute;
+    left:0px;
+    top:30px;
+    font-size:12px;
+    color:#1f1f1f;
 }
 
 .scorecard-list-item{

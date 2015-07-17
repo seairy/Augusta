@@ -1,8 +1,11 @@
 <div class="content">
   <div class="container no-bottom scorecard-header">
-    <h3><%= @player.match.venue.name %></h3>
-    <strong>用户：</strong><%= @player.user.nickname %><br>
-    <strong>时间：</strong><%= @player.created_at.strftime('%Y-%m-%d %H:%M') %><br><br>
+    <a href="<%= url_for(caddie_players_path) %>">
+      <h3><%= @player.match.venue.name %></h3>
+      <strong>用户：</strong><%= @player.user.nickname %><br>
+      <strong>时间：</strong><%= @player.created_at.strftime('%Y-%m-%d %H:%M') %><br><br>
+    </a>
+    <i class="fa fa-chevron-left"></i>
   </div>
   <div class="decoration"></div>
   <div class="one-third-responsive">

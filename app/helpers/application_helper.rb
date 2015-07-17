@@ -29,4 +29,12 @@ module ApplicationHelper
     else '未知'
     end
   end
+
+  def human_scoring_type scoring_type
+    case scoring_type
+    when :simple then '简单记分'
+    when :professional then '专业记分'
+    else '未知'
+    end
+  end
 end

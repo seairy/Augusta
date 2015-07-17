@@ -620,3 +620,27 @@ body{
     font-size: 20px;
   }
 }
+
+.professional-scorecard-form {
+  .professional-scorecard-strokes {
+    .item {
+      list-style: none;
+      .form-row-lg {
+        padding-bottom: 4px;
+        height: 32px;
+        font-size: 22px;
+        label {
+          float: left;
+          margin-right: 8px;
+          line-height: 32px;
+        }
+      }
+      .button {
+        font-size: 20px;
+      }
+    }
+  }
+  .button {
+    font-size: 20px;
+  }
+}
