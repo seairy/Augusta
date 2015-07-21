@@ -11,7 +11,9 @@ class Caddie::ScorecardsController < Caddie::BaseController
       if @scorecard.player.scoring_type_simple?
         @scorecard.update!(scorecard_params)
       else
-        assaf
+        if params[:distance_from_hole] and params[:point_of_fall] and params[:penalties] and params[:club]
+          
+        end
       end
     end
     redirect_to [:caddie, @scorecard.player]

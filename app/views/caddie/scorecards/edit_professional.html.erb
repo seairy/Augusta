@@ -9,13 +9,14 @@
         <ul id="professional-scorecard-strokes" class="professional-scorecard-strokes">
           <li class="item">
             <div class="form-row-lg"><label>距离球洞：</label><%= select :distance_from_hole, nil, (((1..50).to_a + (1..110).map{|i| i * 5 + 50}).map{|i| ["#{i}码", i]}).insert(0, ['进洞', 0]), selected: 200 %></div>
-            <div class="form-row-lg"><label>球的状态：</label><%= select :point_of_fall, nil, [['果岭', 'green'], ['球道外左侧', 'left_rough'], ['球道', 'fairway'], ['球道外右侧', 'right_rough'], ['沙坑', 'bunker'], ['不可打', 'unplayable']], selected: 'fairway' %></div>
+            <div class="form-row-lg"><label>球的状态：</label><%= select :point_of_fall, nil, [['果岭', 'green'], ['球道外左侧', 'left_rough'], ['球道', 'fairway'], ['球道外右侧', 'right_rough'], ['沙坑', 'bunker'], ['不可打', 'unplayable'], ['进洞', 'hole']], selected: 'fairway' %></div>
             <div class="form-row-lg"><label>罚杆：</label><%= select :penalties, nil, (0..3).to_a, selected: 0 %></div>
             <div class="form-row-lg"><label>使用球杆：</label><%= select :club, nil, Stroke.clubs.keys %></div>
             <%= link_to '删除', '#', class: 'button button-red button-remove-stroke' %>
             <div class="decoration"></div>
           </li>
         </ul>
+        <%= text_area_tag :test, nil, class: 'text-input-one' %>
         <%= link_to '确认提交', '#', onclick: "submitForm(edit_scorecard_#{@scorecard.id})", class: 'button button-green' %>
         <%= link_to '增加', '#', class: 'button button-green button-add-stroke' %>
         <%= link_to '返回', [:caddie, @scorecard.player], class: 'button button-blue' %>
