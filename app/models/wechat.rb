@@ -58,7 +58,7 @@ class Wechat < ActiveRecord::Base
             {  
               "type" => "view",
               "name" => "球僮记分",
-              "url" => "http://ilovegolfclub.com/caddie/oauth2"
+              "url" => "http://ilovegolfclub.com/caddie/players"
             }]
           },
           {  

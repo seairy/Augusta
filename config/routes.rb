@@ -53,7 +53,7 @@ Rails.application.routes.draw do
     resources :players
     resources :caddies
     resources :scorecards
-    post 'sign_in', to: 'sessions#create', as: :sign_in
+    get 'sign_in', to: 'sessions#create', as: :sign_in
     get 'sign_up', to: 'caddies#sign_up_form', as: :sign_up_form
     post 'sign_up', to: 'caddies#sign_up', as: :sign_up
     get 'simulate_sign_in', to: 'sessions#simulate_sign_in', as: :simulate_sign_in
