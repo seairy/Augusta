@@ -6,7 +6,6 @@ class Caddie::SessionsController < Caddie::BaseController
 
   def create
     caddie = Caddie.find_or_create(Wechat.find_open_id(params[:code]))
-    session[:user] = { id: user.id }
     session[:caddie] = { id: caddie.id, name: caddie.name }
     redirect_to caddie_players_path
   end
