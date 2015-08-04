@@ -1,0 +1,14 @@
+<% @players.each do |player| %>
+<div class="panel panel-player-list">
+  <a href="<%= url_for([:caddie, player]) %>">
+    <div class="portrait"><%= image_tag 'caddie/blank.png', class: 'lazy', data: { original: (player.user.portrait.w300_h300_fl_q50.url || image_path('caddie/non-portrait.png')) } %></div>
+    <div class="nickname"><%= player.user.nickname %></div>
+    <div class="venue"><%= player.match.venue.name %></div>
+    <div class="played-at"><%= player.match.created_at.strftime('%Y-%m-%d') %> | <%= human_scoring_type(player.scoring_type) %></div>
+    <div class="clearfix"></div>
+  </a>
+</div>
+<% end %>
+<%= link_to_next_page @players, '下一页' do %>
+<a class="no-more-results">没有更多了</a>
+<% end %>

@@ -1,28 +1,31 @@
 <div class="content">
-  <div class="container no-bottom scorecard-header">
-    <a href="<%= url_for(caddie_players_path) %>">
-      <h3><%= @player.match.venue.name %></h3>
-      <strong>用户：</strong><%= @player.user.nickname %><br>
-      <strong>时间：</strong><%= @player.created_at.strftime('%Y-%m-%d %H:%M') %><br><br>
-    </a>
-    <i class="fa fa-chevron-left"></i>
+  <div class="panel panel-player-user">
+    <div class="portrait"><%= image_tag 'caddie/blank.png', class: 'lazy', data: { original: (@player.user.portrait.w300_h300_fl_q50.url || image_path('caddie/non-portrait.png')) } %></div>
+    <div class="nickname"><%= @player.user.nickname %></div>
+    <div class="venue"><%= @player.match.venue.name %></div>
+    <div class="played-at"><%= @player.match.created_at.strftime('%Y-%m-%d') %> | <%= human_scoring_type(@player.scoring_type) %></div>
+    <div class="clearfix"></div>
   </div>
-  <div class="decoration"></div>
-  <div class="one-third-responsive">
-    <% @player.scorecards.each do |scorecard| %>
-    <h4><%= scorecard.number %>号洞 | Par <%= scorecard.par %> | <%= human_tee_box_color(scorecard.tee_box_color) %><%= scorecard.distance_from_hole_to_tee_box %>码</h4>
-    <% if scorecard.finished? %>
-    <div class="scorecard-list-view mb30">
-      <strong>成绩：</strong><%= scorecard.score %>杆<br>
-      <strong>开球：</strong><%= human_direction(scorecard.direction) %>，<%= scorecard.driving_distance %>码<br>
+  <% @player.scorecards.each do |scorecard| %>
+  <div class="panel panel-scorecard-list clearfix">
+    <div class="hole">
+      <h4><%= scorecard.number %></h4>
+      <div>Par <%= scorecard.par %></div>
     </div>
-    <% else %>
     <a href="<%= url_for(edit_caddie_scorecard_path(scorecard)) %>" class="scorecard-list-item">
-      <div>添加成绩</div><br>
+      <% if scorecard.finished? %>
+      <div class="finished">
+        <div class="score">成绩：<%= scorecard.score %>杆</div>
+        <div class="driving">开球：<%= scorecard.driving_distance %>码<%= human_direction(scorecard.direction) %></div>
+      </div>
+      <% else %>
+      <div class="unfinished">
+        <div class="tee-box-color"><%= human_tee_box_color(scorecard.tee_box_color) %>色发球台</div>
+        <div class="distance"><%= scorecard.distance_from_hole_to_tee_box %>码</div>
+      </div>
+      <% end %>
       <i class="fa fa-chevron-right"></i>
     </a>
-    <% end %>
-    <div class="decoration"></div>
-    <% end %>
   </div>
+  <% end %>
 </div>

@@ -105,8 +105,8 @@ line-height:36px;
 }
 
 .form .form-label {
-font-size:13px;
-width:70px;
+font-size:17px;
+width:110px;
 float:left;
 text-align:right;
 color:#333;
@@ -130,6 +130,12 @@ border:none;
 border-bottom:3px solid #F4F4F4;
 letter-spacing:1px;
 background-color:#f4f4f4;
+}
+
+.form .select {
+  float: right;
+  height:37px;
+  font-size:17px;
 }
 
 .form .btn-submit {
@@ -181,151 +187,130 @@ color: #fff;
 }
 
 /* **************************************** */
-/* Task list                                */
+/* Player list                                */
 /* **************************************** */
 
-.panel-task-list {
+.panel-player-list {
   a {
     display: block;
     text-decoration: none;
     color: #666;
-    .user {
+    .portrait {
       float: left;
-      margin-bottom: 4px;
-      width: 194px;
-      .portrait {
-        float: left;
-        img {
-          width: 30px;
-          height: 30px;
-          border: 2px #ccc solid;
-          border-radius: 500px;
-        }
-      }
-      .nickname {
-        float: left;
-        margin-left: 8px;
-        height: 34px;
-        width: 140px;
-        line-height: 34px;
-        font-size: 17px;
-        font-weight: bold;
-        overflow: hidden;
-      }
-    }
-    .estimate-price {
-      float: right;
-      height: 34px;
-      width: 76px;
-      line-height: 34px;
-      text-align: center;
-      font-size: 18px;
-      font-weight: bold;
-      text-align: right;
-      color: #ec6941;
-    }
-    .published-at {
-      float: left;
-      color: #aaa;
-      font-size: 13px;
-    }
-    .region {
-      float: right;
-      font-size: 13px;
-    }
-    .task-content {
-      margin: 8px 0 12px 0;
-      word-wrap: break-word;
-      font-size: 13px;
-      letter-spacing: 0;
-      line-height: 17px;
-      height: 34px;
-      overflow: hidden;
-      display: -webkit-box;
-      -webkit-box-orient: vertical;
-      -webkit-line-clamp: 2;
-    }
-    .photographs {
-      padding-left: 5px;
+      margin-top: 12px;
       img {
-        float: left;
-        margin-right: 4px;
-        width: 90px;
+        width: 60px;
+        height: 60px;
+        border: 2px #ccc solid;
+        border-radius: 500px;
       }
+    }
+    .nickname, .venue, .played-at {
+      margin-left: 80px;
+      height: 30px;
+      width: 200px;
+      line-height: 30px;
+      font-size: 17px;
+      overflow: hidden;
+    }
+    .nickname {
+      font-weight: bold;
+    }
+    .played-at {
+      color: #999;
     }
   }
 }
 
 /* **************************************** */
-/* Show task                                */
+/* Show player                              */
 /* **************************************** */
 
-.panel-task-show {
-  display: block;
-  margin: 0 auto 10px;
-  padding: 8px 10px 18px;
-  width: 90%;
-  -webkit-border-radius:5px;
-  -moz-border-radius:5px;
-  border-radius:5px;
-  background-color: #f4f4f4;
-  text-decoration: none;
-  color: #666;
-  .user {
+.panel-player-user {
+  .portrait {
     float: left;
-    margin-bottom: 4px;
-    width: 194px;
-    .portrait {
-      float: left;
-      img {
-        width: 30px;
-        height: 30px;
-        border: 2px #ccc solid;
-        border-radius: 500px;
-      }
-    }
-    .nickname {
-      float: left;
-      margin-left: 8px;
-      height: 34px;
-      width: 140px;
-      line-height: 34px;
-      font-size: 17px;
-      font-weight: bold;
-      overflow: hidden;
+    margin-top: 12px;
+    img {
+      width: 60px;
+      height: 60px;
+      border: 2px #ccc solid;
+      border-radius: 500px;
     }
   }
-  .estimate-price {
-    float: right;
-    height: 34px;
-    width: 76px;
-    line-height: 34px;
-    text-align: center;
+  .nickname, .played-at {
+    margin-left: 80px;
+    height: 30px;
+    width: 200px;
+    line-height: 30px;
+    font-size: 17px;
+  }
+  .nickname {
     font-size: 18px;
     font-weight: bold;
-    text-align: right;
-    color: #ec6941;
   }
-  .published-at {
+  .venue {
+    margin: 0 0 2px 80px;
+    width: 200px;
+    font-size: 17px;
+  }
+  .played-at {
+    color: #999;
+  }
+}
+
+.panel-scorecard-list {
+  .hole {
     float: left;
-    color: #aaa;
-    font-size: 13px;
-  }
-  .region {
-    float: right;
-    font-size: 13px;
-  }
-  .task-content {
-    margin: 8px 0 12px 0;
-    font-size: 14px;
-    letter-spacing: 0;
-    line-height: 17px;
-  }
-  .photographs {
-    img {
-      margin-bottom: 4px;
-      width: 100%;
+    width: 80px;
+    height: 80px;
+    border: 6px #ccc solid;
+    border-radius: 500px;
+    text-align: center;
+    background-color: #fff;
+    h4 {
+      margin-top: 6px;
+      border-bottom: 1px #ccc solid;
+      font-size: 34px;
     }
+    div {
+      margin-top: 6px;
+    }
+  }
+  .finished, .unfinished {
+    float: left;
+    width: 180px;
+  }
+  .finished {
+    margin-top: 14px;
+    .score, .driving {
+      margin-left: 12px;
+      font-size: 20px;
+      line-height: 32px;
+    }
+  }
+  .unfinished {
+    margin-top: 14px;
+    .tee-box-color, .distance {
+      margin-left: 12px;
+      font-size: 20px;
+      color: #888;
+      line-height: 32px;
+    }
+  }
+  i {
+    float: right;
+    margin-top: 40px;
+  }
+}
+
+/* **************************************** */
+/* Edit scorecard                           */
+/* **************************************** */
+
+.panel-scorecard-number {
+  h1 {
+    font-size: 22px;
+    text-align: center;
   }
 }
 
