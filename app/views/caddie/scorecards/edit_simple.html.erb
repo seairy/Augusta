@@ -7,23 +7,23 @@
       <%= form_for [:caddie, @scorecard] do |f| %>
         <div class="form-line">
           <label class="form-label">总杆：</label>
-          <div class="form-content"><%= f.select :score, (1..50).to_a, selected: @scorecard.par %></div>
+          <div class="form-content"><%= f.select :score, (1..50).to_a, { selected: @scorecard.par }, class: 'select' %></div>
         </div>
         <div class="form-line">
           <label class="form-label">推杆：</label>
-          <div class="form-content"><%= f.select :putts, (0..10).to_a, class: 'select' %></div>
+          <div class="form-content"><%= f.select :putts, (0..10).to_a, {}, class: 'select' %></div>
         </div>
         <div class="form-line">
           <label class="form-label">罚杆：</label>
-          <div class="form-content"><%= f.select :penalties, (0..10).to_a, class: 'select' %></div>
+          <div class="form-content"><%= f.select :penalties, (0..10).to_a, {}, class: 'select' %></div>
         </div>
         <div class="form-line">
           <label class="form-label">开球方向：</label>
-          <div class="form-content"><%= f.select :direction, [['左侧', 'hook'], ['命中', 'pure'], ['右侧', 'slice']], selected: 'pure', class: 'select' %></div>
+          <div class="form-content"><%= f.select :direction, [['左侧', 'hook'], ['命中', 'pure'], ['右侧', 'slice']], { selected: 'pure' }, class: 'select' %></div>
         </div>
         <div class="form-line">
           <label class="form-label">开球距离：</label>
-          <div class="form-content"><%= f.select :driving_distance, ((1..50).to_a + (1..110).map{|i| i * 5 + 50}).map{|i| ["#{i}码", i]}, selected: '200', class: 'select' %></div>
+          <div class="form-content"><%= f.select :driving_distance, ((1..50).to_a + (1..110).map{|i| i * 5 + 50}).map{|i| ["#{i}码", i]}, { selected: '200' }, class: 'select' %></div>
         </div>
         <%= link_to '确认提交', '#', onclick: "submitForm(edit_scorecard_#{@scorecard.id})", class: 'btn btn-primary' %>
         <%= link_to '返回', [:caddie, @scorecard.player], class: 'btn btn-muted' %>
