@@ -83,6 +83,24 @@ module V1
         end
       end
 
+      desc '用户简单登录'
+      params do
+        requires :phone, type: String, regexp: /^1\d{10}$/, desc: '手机号码'
+        requires :verification_code, type: String, regexp: /^\d{4}$/, desc: '验证码'
+      end
+      post :sign_in_simple do
+        begin
+          user = User.sign_in_simple(phone: params[:phone], verification_code: params[:verification_code])
+          present user, with: Users::Entities::User
+        rescue PhoneNotFound
+          api_error!(20302)
+        rescue InvalidStatus
+          api_error!(20305)
+        rescue InvalidVerificationCode
+          api_error!(20304)
+        end
+      end
+
       desc '用户注销'
       delete :sign_out do
         authenticate!

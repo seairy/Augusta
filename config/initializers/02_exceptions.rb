@@ -28,5 +28,8 @@ exceptions = %w(
   AlreadyInvited
   InvalidTicket
   AlreadyScored
+  InvalidPhone
+  InvalidName
+  IncorrectVerificationCode
 )
 exceptions.each{|e| Object.const_set(e, Class.new(StandardError))} 

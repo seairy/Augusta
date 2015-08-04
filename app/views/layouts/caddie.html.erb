@@ -1,33 +1,18 @@
-<!DOCTYPE HTML>
-<head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-  <meta name="viewport" content="user-scalable=no, initial-scale=1.0, maximum-scale=1.0 minimal-ui"/>
-  <meta name="apple-mobile-web-app-capable" content="yes"/>
-  <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <title>我爱高尔夫 - 球僮版</title>
-  <%= stylesheet_link_tag 'caddie', media: 'all', 'data-turbolinks-track' => true %>
-</head>
-<body> 
-  <div id="preloader">
-    <div id="status">
-      <p class="center-text">
-        正在加载数据...
-        <em>加载时间取决于您的网络连接速度.</em>
-      </p>
-    </div>
-  </div>
-  <div class="all-elements">  
-    <div class="header">
-      <a class="header-logo" href="#"></a>
-      <div class="header-title">
-        <p>我爱高尔夫</p>
-        <p>球僮版</p>
-      </div>
-      <div class="decoration"></div>
-    </div>
-    <div class="header-clear"></div>
-  </div>     
-  <%= yield %>
-  <%= javascript_include_tag 'caddie', 'data-turbolinks-track' => true %>
-  <%= content_for :javascript %>
-</body>
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>我爱高尔夫 - 球僮记分</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <meta http-equiv="X-UA-Compatible" content="edge" />
+    <%= stylesheet_link_tag 'caddie', media: 'all' %>
+  </head>
+  <body>
+    <%= yield %>
+    <%= javascript_include_tag 'caddie' %>
+    <%= content_for :javascript %>
+  </body>
+</html>

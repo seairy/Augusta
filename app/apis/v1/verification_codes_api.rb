@@ -35,6 +35,25 @@ module V1
         end
       end
 
+      desc '获取用户简单登录验证码'
+      params do
+        requires :phone, type: String, regexp: /^1\d{10}$/, desc: '手机号码'
+      end
+      get :sign_in_simple do
+        begin
+          VerificationCode.sign_in_simple(phone: params[:phone])
+          present successful_json
+        rescue FrequentRequest
+          api_error!(20301)
+        rescue TooManyRequest
+          api_error!(20315)
+        rescue PhoneNotFound
+          api_error!(20302)
+        rescue InvalidUserType
+          api_error!(20316)
+        end
+      end
+
       desc '获取用户升级验证码'
       params do
         requires :phone, type: String, regexp: /^1\d{10}$/, desc: '手机号码'

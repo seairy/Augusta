@@ -102,6 +102,24 @@ class User < ActiveRecord::Base
       end
     end
 
+    def sign_in_simple options = {}
+      ActiveRecord::Base.transaction do
+        user = where(phone: options[:phone]).first || raise(PhoneNotFound.new)
+        raise InvalidStatus.new unless user.activated?
+        user.verification_codes.available.type_sign_in_simples.first.tap do |verification_code|
+          raise InvalidVerificationCode.new unless verification_code
+          if Rails.env == 'development'
+            raise InvalidVerificationCode.new if options[:verification_code] != '8888'
+          else
+            raise InvalidVerificationCode.new if options[:verification_code] != verification_code.content
+          end
+          verification_code.expired!
+        end
+        Token.generate!(user)
+        user
+      end
+    end
+
     def reset_password options = {}
       user = User.where(phone: options[:phone]).first
       raise PhoneNotFound.new unless user

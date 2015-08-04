@@ -42,17 +42,20 @@ Rails.application.routes.draw do
     resources :errors
     get '*not_found', to: 'errors#error_404'
   end
-  namespace :wechat do
-    root 'base#verify', via: [:get, :post]
-  end
   namespace :caddie do
-    root 'dashboard#index'
+    root 'base#verify', via: [:get, :post]
     get 'dashboard', to: 'dashboard#index', as: :dashboard
+    resources :verification_codes do
+      collection do
+        post :sign_up
+      end
+    end
     resources :players
     resources :caddies
     resources :scorecards
-    get 'signin_with_open_id', to: 'sessions#create_with_open_id', as: :signin_with_open_id
-    get 'oauth2', to: 'sessions#oauth2', as: :oauth2
-    get 'simulate', to: 'sessions#simulate', as: :simulate
+    post 'sign_in', to: 'sessions#create', as: :sign_in
+    get 'sign_up', to: 'caddies#sign_up_form', as: :sign_up_form
+    post 'sign_up', to: 'caddies#sign_up', as: :sign_up
+    get 'simulate_sign_in', to: 'sessions#simulate_sign_in', as: :simulate_sign_in
   end
 end
