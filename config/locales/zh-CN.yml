@@ -214,5 +214,14 @@ zh-CN:
       created_at: 创建时间
       updated_at: 更新时间
       setting: 设置
+      user:
+        portrait: 头像
+        type: 类型
+        phone: 电话
+        nickname: 昵称
+        signed_up_at: 注册时间
+        state/unactivated: 未激活
+        state/activated: 已激活
+        state/prohibited: 已禁用
     errors:
       <<: *errors

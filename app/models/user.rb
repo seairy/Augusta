@@ -1,6 +1,6 @@
 # -*- encoding : utf-8 -*-
 class User < ActiveRecord::Base
-  include UUID, AASM
+  include UUID, AASM, Trashable
   as_enum :type, [:guest, :member, :staff, :faker], map: :string
   mount_uploader :portrait, UserPortraitUploader
   has_many :verification_codes

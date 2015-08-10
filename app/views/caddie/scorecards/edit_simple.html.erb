@@ -4,7 +4,7 @@
   </div>
   <div class="panel">
     <div class="form">
-      <%= form_for [:caddie, @scorecard] do |f| %>
+      <%= form_for [:caddie, @scorecard], html: { id: 'edit_scorecard' } do |f| %>
         <div class="form-line">
           <label class="form-label">总杆：</label>
           <div class="form-content"><%= f.select :score, (1..50).to_a, { selected: @scorecard.par }, class: 'select' %></div>
@@ -25,9 +25,30 @@
           <label class="form-label">开球距离：</label>
           <div class="form-content"><%= f.select :driving_distance, ((1..50).to_a + (1..110).map{|i| i * 5 + 50}).map{|i| ["#{i}码", i]}, { selected: '200' }, class: 'select' %></div>
         </div>
-        <%= link_to '确认提交', '#', onclick: "submitForm(edit_scorecard_#{@scorecard.id})", class: 'btn btn-primary' %>
+        <%= link_to '确认提交', 'javascript:;', class: 'btn btn-primary btn-submit' %>
         <%= link_to '返回', [:caddie, @scorecard.player], class: 'btn btn-muted' %>
       <% end %>
     </div>
   </div>
 </div>
+<% content_for :javascript do %>
+  <script>
+    $(document).ready(function() {
+      $('.btn-submit').on("click", function (e) {
+        e.preventDefault();
+        $.ajax({
+          url: $('#edit_scorecard').attr('action'),
+          data: $('#edit_scorecard').serialize(),
+          method: 'PATCH',
+          success: function(data) {
+            if(data.result == 'success') {
+              window.location.href = '/caddie/players/' + data.message;
+            } else {
+              toastr.error(data.message);
+            }
+          }
+        });
+      });
+    });
+  </script>
+<% end %>

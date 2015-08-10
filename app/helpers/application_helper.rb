@@ -10,6 +10,16 @@ module ApplicationHelper
     end if status
   end
 
+  def user_type type
+    case type
+    when :guest then '游客'
+    when :member then '会员'
+    when :staff then '员工'
+    when :faker then '虚拟'
+    else '未知'
+    end
+  end
+
   def human_tee_box_color tee_box_color
     case tee_box_color
     when :red then '红'

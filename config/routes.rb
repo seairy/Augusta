@@ -30,6 +30,7 @@ Rails.application.routes.draw do
         put :cancel
       end
     end
+    resources :users
     resources :administrators
     resource :profile do
       get 'edit_password'

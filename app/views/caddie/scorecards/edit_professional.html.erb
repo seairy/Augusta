@@ -1,48 +1,80 @@
 <div class="content">
-  <div class="container no-bottom">
+  <div class="panel panel-scorecard-number">
     <h1><%= @scorecard.number %>号洞</h1>
   </div>
-  <div class="decoration"></div>
-  <div class="one-third-responsive">
-    <div class="professional-scorecard-form">
-      <%= form_for [:caddie, @scorecard] do |f| %>
-        <ul id="professional-scorecard-strokes" class="professional-scorecard-strokes">
-          <li class="item">
-            <div class="form-row-lg"><label>距离球洞：</label><%= select :distance_from_hole, nil, (((1..50).to_a + (1..110).map{|i| i * 5 + 50}).map{|i| ["#{i}码", i]}).insert(0, ['进洞', 0]), selected: 200 %></div>
-            <div class="form-row-lg"><label>球的状态：</label><%= select :point_of_fall, nil, [['果岭', 'green'], ['球道外左侧', 'left_rough'], ['球道', 'fairway'], ['球道外右侧', 'right_rough'], ['沙坑', 'bunker'], ['不可打', 'unplayable'], ['进洞', 'hole']], selected: 'fairway' %></div>
-            <div class="form-row-lg"><label>罚杆：</label><%= select :penalties, nil, (0..3).to_a, selected: 0 %></div>
-            <div class="form-row-lg"><label>使用球杆：</label><%= select :club, nil, Stroke.clubs.keys %></div>
-            <%= link_to '删除', '#', class: 'button button-red button-remove-stroke' %>
-            <div class="decoration"></div>
-          </li>
-        </ul>
-        <%= text_area_tag :test, nil, class: 'text-input-one' %>
-        <%= link_to '确认提交', '#', onclick: "submitForm(edit_scorecard_#{@scorecard.id})", class: 'button button-green' %>
-        <%= link_to '增加', '#', class: 'button button-green button-add-stroke' %>
-        <%= link_to '返回', [:caddie, @scorecard.player], class: 'button button-blue' %>
-      <% end %>
-    </div>
+  <%= form_for [:caddie, @scorecard], html: { id: 'edit_scorecard' } do |f| %>
+  <ul id="professional-scorecard-strokes">
+    <li class="item">
+      <div class="panel">
+        <div class="form">
+          <div class="form-line">
+            <label class="form-label">距离球洞：</label>
+            <div class="form-content"><%= select :distance_from_hole, nil, (((1..50).to_a + (1..110).map{|i| i * 5 + 50}).map{|i| ["#{i}码", i]}).insert(0, ['进洞', 0]), { selected: 200 }, class: 'select' %></div>
+          </div>
+          <div class="form-line">
+            <label class="form-label">球的状态：</label>
+            <div class="form-content"><%= select :point_of_fall, nil, [['果岭', 'green'], ['球道外左侧', 'left_rough'], ['球道', 'fairway'], ['球道外右侧', 'right_rough'], ['沙坑', 'bunker'], ['不可打', 'unplayable'], ['进洞', 'hole']], { selected: 'fairway' }, class: 'select' %></div>
+          </div>
+          <div class="form-line">
+            <label class="form-label">罚杆：</label>
+            <div class="form-content"><%= select :penalties, nil, (0..3).to_a, { selected: 0 }, class: 'select' %></div>
+          </div>
+          <div class="form-line">
+            <label class="form-label">使用球杆：</label>
+            <div class="form-content"><%= select :club, nil, Stroke.clubs.keys, {}, class: 'select' %></div>
+          </div>
+          <%= link_to '删除', '#', class: 'btn btn-danger btn-remove-stroke' %>            
+        </div>
+      </div>
+    </li>
+  </ul>
+  <% end %>
+  <div class="panel">
+    <%= link_to '增加一次击球', '#', class: 'btn btn-success btn-add-stroke' %>
+    <%= link_to '确认提交', '#', class: 'btn btn-primary btn-submit' %>
+    <%= link_to '返回', [:caddie, @scorecard.player], class: 'btn btn-muted' %>
   </div>
 </div>
 <% content_for :javascript do %>
   <script>
-    jQuery(document).ready(function() {
+    $(document).ready(function() {
       var max_strokes = 20;
-      var wrapper = jQuery("#professional-scorecard-strokes");
-      var add_button = jQuery(".button-add-stroke");
+      var wrapper = $("#professional-scorecard-strokes");
+      var add_button = $(".btn-add-stroke");
       var x = 1;
-      jQuery(add_button).click(function(e){
+      $(add_button).click(function(e){
         e.preventDefault();
         if(x < max_strokes){
           x++;
-          jQuery(wrapper).find('li:last').clone().appendTo(wrapper);
+          $(wrapper).find('li:last').clone().appendTo(wrapper);
+        } else {
+          toastr.error('最多可增加20次击球');
         }
       });
-      jQuery(wrapper).on("click",".button-remove-stroke", function(e){
+      $(wrapper).on("click", ".btn-remove-stroke", function(e){
         if (x > 1) {
-          e.preventDefault(); jQuery(this).parent('li').remove(); x--;
+          e.preventDefault();
+          $(this).parent().parent().parent().remove();
+          x--;
+        } else {
+          toastr.error('至少有1次击球');
         }
       })
+      $('.btn-submit').on("click", function (e) {
+        e.preventDefault();
+        $.ajax({
+          url: $('#edit_scorecard').attr('action'),
+          data: $('#edit_scorecard').serialize(),
+          method: 'PATCH',
+          success: function(data) {
+            if(data.result == 'success') {
+              window.location.href = '/caddie/players/' + data.message;
+            } else {
+              toastr.error(data.message);
+            }
+          }
+        });
+      });
     });
   </script>
 <% end %>

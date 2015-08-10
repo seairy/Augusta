@@ -118,7 +118,7 @@ height:35px;
 margin-left:70px;
 }
 
-.form .text-field,.btn-submit {
+.form .text-field {
 width:100%;
 line-height:36px;
 }
@@ -136,18 +136,6 @@ background-color:#f4f4f4;
 height:37px;
 width:120px;
 font-size:17px;
-}
-
-.form .btn-submit {
-display:block;
-background-color:#f15a24;
-color:#fff;
-font-size:16px;
-text-align:center;
-border-radius:2px;
-font-weight:700;
-height:36px;
-margin:32px 0 0;
 }
 
 /* **************************************** */
@@ -268,7 +256,7 @@ color: #fff;
     text-align: center;
     background-color: #fff;
     h4 {
-      margin-top: 6px;
+      margin-top: 2px;
       border-bottom: 1px #ccc solid;
       font-size: 34px;
     }
