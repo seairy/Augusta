@@ -2,7 +2,7 @@
 class Cms::UsersController < Cms::BaseController
   
   def index
-    @users = User.page(params[:page])
+    @users = User.latest.page(params[:page])
   end
   
   def show

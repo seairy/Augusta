@@ -15,6 +15,7 @@ class User < ActiveRecord::Base
       transitions from: :unactivated, to: :activated
     end
   end
+  scope :latest, -> { order(signed_up_at: :desc) }
   scope :recently, ->(days) { where('signed_up_at >= ?', (Time.now - days).beginning_of_day) }
   validates :nickname, length: { maximum: 20 }
 
