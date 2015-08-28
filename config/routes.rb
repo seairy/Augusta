@@ -24,6 +24,7 @@ Rails.application.routes.draw do
         put :update_distance_from_hole
       end
     end
+    resources :feedbacks
     resources :versions do
       member do
         put :publish
