@@ -48,7 +48,7 @@ class Caddie::BaseController < ApplicationController
           raise ArgumentError, 'Unknown Weixin Message'
         end
       end
-      render text: (params[:echostr] || 'success')
+      render plain: (params[:echostr] || 'success')
     else
       render text: 'failure'
     end
