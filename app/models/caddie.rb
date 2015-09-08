@@ -41,7 +41,7 @@ class Caddie < ActiveRecord::Base
     end
 
     def scoring_for_player options = {}
-      caddie = self.find_or_create(open_id: options[:open_id])
+      caddie = self.find_or_create(options[:open_id])
       player = Player.where(invite_caddie_ticket: options[:ticket]).first
       player.update!(caddie_id: caddie.id) if player and player.caddie.nil?
     end
