@@ -10,8 +10,7 @@ class Caddie::BaseController < ApplicationController
   def verify
     if params[:signature] and params[:timestamp] and params[:nonce] and Digest::SHA1.hexdigest([params[:timestamp], params[:nonce], Setting.key[:wechat][:token]].sort.join) == params[:signature]
       if request.post?
-        notification = MultiXml.parse(request.raw_post)['xml']
-        Rails.logger.info "************** [#{request.raw_post}]"
+        notification, result = MultiXml.parse(request.raw_post)['xml'], nil
         case notification['MsgType']
         when 'text'
           
@@ -31,12 +30,20 @@ class Caddie::BaseController < ApplicationController
           when 'SCAN'
             case qr_scene_id
             when Wechat::Scene[:invite_caddie][:id]
-              Caddie.scoring_for_player(open_id: notification['FromUserName'], ticket: notification['Ticket'])
+              if Caddie.scoring_for_player(open_id: notification['FromUserName'], ticket: notification['Ticket'])
+                result = reply_text_message(open_id: notification['FromUserName'], content: '欢迎使用我爱高尔夫球僮记分功能！')
+              else
+                result = reply_text_message(open_id: notification['FromUserName'], content: '欢迎使用我爱高尔夫球僮记分功能！')
+              end
             end
           when 'subscribe'
             case qr_scene_id
             when Wechat::Scene[:invite_caddie][:id]
-              Caddie.scoring_for_player(open_id: notification['FromUserName'], ticket: notification['Ticket'])
+              if Caddie.scoring_for_player(open_id: notification['FromUserName'], ticket: notification['Ticket'])
+                result = reply_text_message(open_id: notification['FromUserName'], content: '欢迎使用我爱高尔夫球僮记分功能！')
+              else
+                result = reply_text_message(open_id: notification['FromUserName'], content: '欢迎使用我爱高尔夫球僮记分功能！')
+              end
             end
           end
         when 'voice'
@@ -49,8 +56,13 @@ class Caddie::BaseController < ApplicationController
           raise ArgumentError, 'Unknown Weixin Message'
         end
       end
-      Rails.logger.info "************** [#{(params[:echostr] || 'success')}]"
-      render plain: (params[:echostr] || 'success')
+      if params[:echostr]
+        render plain: params[:echostr]
+      elsif result
+        render xml: result
+      else
+        render plain: 'success'
+      end
     else
       render text: 'failure'
     end
@@ -67,5 +79,15 @@ class Caddie::BaseController < ApplicationController
 
     def sign_up
       redirect_to caddie_sign_up_form_path if @current_caddie.unactivated?
+    end
+
+    def reply_text_message options = {}
+      "<xml>
+      <ToUserName><![CDATA[#{options[:open_id]}]]></ToUserName>
+      <FromUserName><![CDATA[#{Setting.key[:wechat][:appid]}]]></FromUserName>
+      <CreateTime>#{Time.now.to_i}</CreateTime>
+      <MsgType><![CDATA[text]]></MsgType>
+      <Content><![CDATA[#{options[:content]}]]></Content>
+      </xml>"
     end
 end
