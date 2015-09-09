@@ -48,6 +48,7 @@ class Caddie::BaseController < ApplicationController
           raise ArgumentError, 'Unknown Weixin Message'
         end
       end
+      Rails.logger.info "************** [#{(params[:echostr] || 'success')}]"
       render plain: (params[:echostr] || 'success')
     else
       render text: 'failure'
