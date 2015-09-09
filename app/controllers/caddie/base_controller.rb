@@ -83,11 +83,11 @@ class Caddie::BaseController < ApplicationController
 
     def reply_text_message options = {}
       "<xml>
-      <ToUserName><![CDATA[#{options[:open_id]}]]></ToUserName>
-      <FromUserName><![CDATA[#{Setting.key[:wechat][:appid]}]]></FromUserName>
-      <CreateTime>#{Time.now.to_i}</CreateTime>
-      <MsgType><![CDATA[text]]></MsgType>
-      <Content><![CDATA[#{options[:content]}]]></Content>
-      </xml>"
+<ToUserName><![CDATA[#{options[:open_id]}]]></ToUserName>
+<FromUserName><![CDATA[gh_0b644b570d06]]></FromUserName>
+<CreateTime>#{Time.now.to_i}</CreateTime>
+<MsgType><![CDATA[text]]></MsgType>
+<Content><![CDATA[#{options[:content]}]]></Content>
+</xml>"
     end
 end
