@@ -11,6 +11,7 @@ class Caddie::BaseController < ApplicationController
     if params[:signature] and params[:timestamp] and params[:nonce] and Digest::SHA1.hexdigest([params[:timestamp], params[:nonce], Setting.key[:wechat][:token]].sort.join) == params[:signature]
       if request.post?
         notification = MultiXml.parse(request.raw_post)['xml']
+        Rails.logger.info "************** [#{(notification}]"
         case notification['MsgType']
         when 'text'
           
