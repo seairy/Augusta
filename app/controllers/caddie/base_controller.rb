@@ -59,7 +59,7 @@ class Caddie::BaseController < ApplicationController
       if params[:echostr]
         render plain: params[:echostr]
       elsif result
-        render xml: result
+        render plain: result
       else
         render plain: 'success'
       end
